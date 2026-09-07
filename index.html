@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TzTools</title>
+</head>
+
+<body>
+
+  <h1>Welcome to TzTools 🚀</h1>
+
+  <p>Tell us what you need. We'll find the tool.</p>
+
+  <input
+    type="text"
+    id="search"
+    placeholder="What do you want to do?"
+  >
+
+  <button onclick="findTool()">Find Tool</button>
+
+  <div id="results"></div>
+
+  <script>
+    function findTool() {
+      const search = document.getElementById("search").value.toLowerCase();
+      const results = document.getElementById("results");
+
+      if (search.includes("logo") || search.includes("design")) {
+        results.innerHTML =
+          "<h2>🎨 Try Canva</h2><p>Great for creating designs, graphics and logos.</p>";
+      }
+
+      else if (search.includes("video") || search.includes("edit")) {
+        results.innerHTML =
+          "<h2>🎬 Try CapCut</h2><p>A popular tool for editing videos.</p>";
+      }
+
+      else if (search.includes("write") || search.includes("writing")) {
+        results.innerHTML =
+          "<h2>✍️ Try Grammarly</h2><p>Helps you improve your writing.</p>";
+      }
+
+      else if (search.includes("website") || search.includes("web")) {
+        results.innerHTML =
+          "<h2>🌐 Try WordPress</h2><p>A platform for creating websites.</p>";
+      }
+
+      else {
+        results.innerHTML =
+          "<h2>🤔 We don't have a recommendation yet.</h2><p>Try searching for logo, video, writing, or website.</p>";
+      }
+    }
+  </script>
+
+</body>
+</html>
