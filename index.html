@@ -4,6 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <meta
+    name="description"
+    content="TzTools helps you find the right digital tools for whatever you want to accomplish."
+  >
+
   <title>TzTools — Find the Right Tool</title>
 
   <link rel="stylesheet" href="style.css">
@@ -11,81 +16,700 @@
 
 <body>
 
+  <!-- ================= NAVBAR ================= -->
+
   <header class="navbar">
-    <div class="logo">Tz<span>Tools</span></div>
+
+    <a href="#" class="logo">
+      Tz<span>Tools</span>
+    </a>
+
+    <nav class="nav-links">
+      <button data-page="home">Home</button>
+      <button data-page="tools">Tools</button>
+      <button data-page="dashboard">Dashboard</button>
+      <button data-page="community">Community</button>
+      <button data-page="changelog">Changelog</button>
+    </nav>
+
+    <div class="nav-actions">
+
+      <button
+        id="themeButton"
+        class="icon-button"
+        aria-label="Toggle dark mode"
+        title="Toggle dark mode"
+      >
+        🌙
+      </button>
+
+      <button
+        id="menuButton"
+        class="menu-button"
+        aria-label="Open menu"
+      >
+        ☰
+      </button>
+
+    </div>
+
   </header>
 
-  <main>
 
-    <section class="hero">
+  <!-- ================= MOBILE MENU ================= -->
 
-      <p class="eyebrow">🚀 YOUR DIGITAL TOOL FINDER</p>
+  <div id="mobileMenu" class="mobile-menu">
 
-      <h1>
-        Find the right tool<br>
-        for what you want to do.
-      </h1>
+    <button data-page="home">🏠 Home</button>
+    <button data-page="tools">🛠️ Tools</button>
+    <button data-page="dashboard">📊 Dashboard</button>
+    <button data-page="community">⭐ Community</button>
+    <button data-page="changelog">📝 Changelog</button>
 
-      <p class="subtitle">
-        Tell TzTools what you're trying to accomplish,
-        and we'll help you find useful tools.
-      </p>
-
-      <div class="search-box">
-
-        <input
-          type="text"
-          id="search"
-          placeholder="What do you want to do?"
-        >
-
-        <button id="searchButton">
-          Find Tools
-        </button>
-
-      </div>
-
-      <p class="search-hint">
-        Try: “make a logo” · “edit a video” · “help me study”
-      </p>
-
-    </section>
+  </div>
 
 
-    <section class="categories">
+  <!-- ================= MAIN APP ================= -->
 
-      <h2>Explore categories</h2>
-
-      <div class="category-grid">
-
-        <button data-category="AI">🤖 AI</button>
-        <button data-category="Design">🎨 Design</button>
-        <button data-category="Video">🎬 Video</button>
-        <button data-category="Writing">✍️ Writing</button>
-        <button data-category="Website">🌐 Websites</button>
-        <button data-category="Student">📚 Students</button>
-        <button data-category="Productivity">⚡ Productivity</button>
-        <button data-category="Image">🖼️ Images</button>
-
-      </div>
-
-    </section>
+  <main id="app">
 
 
-    <section class="results-section">
+    <!-- ================= HOME ================= -->
 
-      <div id="results">
+    <section id="homePage" class="page active">
 
-        <div class="empty">
+      <section class="hero">
 
-          <h2>👋 Welcome to TzTools</h2>
+        <div class="eyebrow">
+          🚀 YOUR DIGITAL TOOL FINDER
+        </div>
 
-          <p>
-            Tell us what you want to accomplish
-            and we'll find tools that can help.
-          </p>
+        <h1>
+          Find the right tool
+          <br>
+          for what you want to do.
+        </h1>
+
+        <p class="subtitle">
+          Tell TzTools what you're trying to accomplish,
+          and we'll help you find useful tools.
+        </p>
+
+
+        <!-- SEARCH -->
+
+        <div class="search-wrapper">
+
+          <div class="search-box">
+
+            <span class="search-icon">🔎</span>
+
+            <input
+              type="text"
+              id="search"
+              autocomplete="off"
+              placeholder="What do you want to do?"
+              aria-label="Search for a tool"
+            >
+
+            <button id="clearSearch" class="clear-search">
+              ✕
+            </button>
+
+            <button id="searchButton">
+              Find Tools
+            </button>
+
+          </div>
+
+          <!-- SMART SUGGESTIONS -->
+
+          <div
+            id="suggestions"
+            class="suggestions"
+          ></div>
 
         </div>
+
+
+        <p class="search-hint">
+          Try "make a logo" · "edit a video" · "help me study"
+        </p>
+
+
+        <!-- QUICK SEARCHES -->
+
+        <div class="quick-searches">
+
+          <span>Popular:</span>
+
+          <button data-search="make a logo">
+            🎨 Make a logo
+          </button>
+
+          <button data-search="edit a video">
+            🎬 Edit a video
+          </button>
+
+          <button data-search="help me study">
+            📚 Study
+          </button>
+
+          <button data-search="build a website">
+            🌐 Build a website
+          </button>
+
+        </div>
+
+      </section>
+
+
+      <!-- ================= CATEGORIES ================= -->
+
+      <section class="categories">
+
+        <div class="section-heading">
+
+          <div>
+            <p class="section-label">EXPLORE</p>
+            <h2>Browse by category</h2>
+          </div>
+
+          <button
+            class="text-button"
+            data-page="tools"
+          >
+            View all →
+          </button>
+
+        </div>
+
+
+        <div class="category-grid">
+
+          <button data-category="AI">
+            <span>🤖</span>
+            <strong>AI</strong>
+            <small>Smart AI tools</small>
+          </button>
+
+          <button data-category="Design">
+            <span>🎨</span>
+            <strong>Design</strong>
+            <small>Logos & graphics</small>
+          </button>
+
+          <button data-category="Video">
+            <span>🎬</span>
+            <strong>Video</strong>
+            <small>Edit & create</small>
+          </button>
+
+          <button data-category="Writing">
+            <span>✍️</span>
+            <strong>Writing</strong>
+            <small>Write & improve</small>
+          </button>
+
+          <button data-category="Website">
+            <span>🌐</span>
+            <strong>Websites</strong>
+            <small>Build online</small>
+          </button>
+
+          <button data-category="Student">
+            <span>📚</span>
+            <strong>Students</strong>
+            <small>Study smarter</small>
+          </button>
+
+          <button data-category="Productivity">
+            <span>⚡</span>
+            <strong>Productivity</strong>
+            <small>Get organized</small>
+          </button>
+
+          <button data-category="Image">
+            <span>🖼️</span>
+            <strong>Images</strong>
+            <small>Edit photos</small>
+          </button>
+
+        </div>
+
+      </section>
+
+
+      <!-- ================= FEATURED ================= -->
+
+      <section class="featured-section">
+
+        <div class="section-heading">
+
+          <div>
+            <p class="section-label">DISCOVER</p>
+            <h2>Popular tools</h2>
+          </div>
+
+          <button
+            class="text-button"
+            data-page="tools"
+          >
+            Explore all →
+          </button>
+
+        </div>
+
+        <div id="featuredTools" class="tool-grid"></div>
+
+      </section>
+
+    </section>
+
+
+    <!-- ================= TOOLS PAGE ================= -->
+
+    <section id="toolsPage" class="page">
+
+      <div class="page-header">
+
+        <p class="section-label">TOOL DIRECTORY</p>
+
+        <h1>Explore tools</h1>
+
+        <p>
+          Find the right tool based on what you want to accomplish.
+        </p>
+
+      </div>
+
+
+      <!-- FILTER BAR -->
+
+      <div class="filter-panel">
+
+        <div class="filter-search">
+
+          <span>🔎</span>
+
+          <input
+            type="text"
+            id="directorySearch"
+            placeholder="Search tools..."
+          >
+
+        </div>
+
+
+        <select id="categoryFilter">
+
+          <option value="all">
+            All Categories
+          </option>
+
+          <option value="AI">AI</option>
+          <option value="Design">Design</option>
+          <option value="Video">Video</option>
+          <option value="Writing">Writing</option>
+          <option value="Website">Websites</option>
+          <option value="Student">Students</option>
+          <option value="Productivity">Productivity</option>
+          <option value="Image">Images</option>
+
+        </select>
+
+
+        <select id="pricingFilter">
+
+          <option value="all">
+            All Pricing
+          </option>
+
+          <option value="Free">
+            Free
+          </option>
+
+          <option value="Freemium">
+            Freemium
+          </option>
+
+          <option value="Paid">
+            Paid
+          </option>
+
+        </select>
+
+
+        <select id="ratingFilter">
+
+          <option value="0">
+            Any Rating
+          </option>
+
+          <option value="4.5">
+            ⭐ 4.5+
+          </option>
+
+          <option value="4.7">
+            ⭐ 4.7+
+          </option>
+
+          <option value="4.8">
+            ⭐ 4.8+
+          </option>
+
+        </select>
+
+
+        <select id="sortFilter">
+
+          <option value="recommended">
+            Recommended
+          </option>
+
+          <option value="rating">
+            Highest Rated
+          </option>
+
+          <option value="name">
+            Name A–Z
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div class="directory-layout">
+
+        <aside class="filter-sidebar">
+
+          <h3>Filter tools</h3>
+
+          <label>
+            <input type="checkbox" value="Free" class="pricing-check">
+            Free
+          </label>
+
+          <label>
+            <input type="checkbox" value="Freemium" class="pricing-check">
+            Freemium
+          </label>
+
+          <label>
+            <input type="checkbox" value="Paid" class="pricing-check">
+            Paid
+          </label>
+
+        </aside>
+
+
+        <div class="directory-results">
+
+          <div
+            id="directoryCount"
+            class="directory-count"
+          ></div>
+
+          <div
+            id="allTools"
+            class="tool-grid"
+          ></div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ================= DASHBOARD ================= -->
+
+    <section id="dashboardPage" class="page">
+
+      <div class="page-header">
+
+        <p class="section-label">YOUR SPACE</p>
+
+        <h1>Your dashboard</h1>
+
+        <p>
+          Keep track of your favourite tools and comparisons.
+        </p>
+
+      </div>
+
+
+      <div class="dashboard-grid">
+
+        <div class="dashboard-card">
+
+          <div class="dashboard-icon">
+            ❤️
+          </div>
+
+          <div>
+            <h3>Favourites</h3>
+            <p>Tools you've saved.</p>
+          </div>
+
+          <strong id="favouriteCount">
+            0
+          </strong>
+
+        </div>
+
+
+        <div class="dashboard-card">
+
+          <div class="dashboard-icon">
+            ⚖️
+          </div>
+
+          <div>
+            <h3>Comparisons</h3>
+            <p>Tools you've selected.</p>
+          </div>
+
+          <strong id="comparisonCount">
+            0
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="dashboard-section">
+
+        <div class="section-heading">
+
+          <div>
+            <p class="section-label">SAVED</p>
+            <h2>Your favourites</h2>
+          </div>
+
+        </div>
+
+        <div
+          id="favouriteTools"
+          class="tool-grid"
+        ></div>
+
+      </div>
+
+
+      <div class="dashboard-section">
+
+        <div class="section-heading">
+
+          <div>
+            <p class="section-label">COMPARE</p>
+            <h2>Tool comparison</h2>
+          </div>
+
+        </div>
+
+        <div id="comparisonView"></div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ================= COMMUNITY ================= -->
+
+    <section id="communityPage" class="page">
+
+      <div class="page-header">
+
+        <p class="section-label">COMMUNITY</p>
+
+        <h1>What people think</h1>
+
+        <p>
+          Discover highly-rated tools and share your experience.
+        </p>
+
+      </div>
+
+
+      <div class="community-stats">
+
+        <div>
+          <strong>100+</strong>
+          <span>Tools</span>
+        </div>
+
+        <div>
+          <strong>4.7★</strong>
+          <span>Average rating</span>
+        </div>
+
+        <div>
+          <strong>8</strong>
+          <span>Categories</span>
+        </div>
+
+      </div>
+
+
+      <div
+        id="communityTools"
+        class="tool-grid"
+      ></div>
+
+    </section>
+
+
+    <!-- ================= CHANGELOG ================= -->
+
+    <section id="changelogPage" class="page">
+
+      <div class="page-header">
+
+        <p class="section-label">UPDATES</p>
+
+        <h1>TzTools Changelog</h1>
+
+        <p>
+          See what's new, improved and coming next.
+        </p>
+
+      </div>
+
+
+      <div class="changelog">
+
+        <article class="change-item">
+
+          <div class="change-version">
+            V4.0
+          </div>
+
+          <div>
+
+            <h2>
+              TzTools gets a major upgrade 🚀
+            </h2>
+
+            <p class="change-date">
+              September 2026
+            </p>
+
+            <ul>
+
+              <li>
+                Added advanced search and filtering
+              </li>
+
+              <li>
+                Added smart search suggestions
+              </li>
+
+              <li>
+                Added favourites
+              </li>
+
+              <li>
+                Added tool comparison
+              </li>
+
+              <li>
+                Added dashboard foundation
+              </li>
+
+              <li>
+                Added dark mode
+              </li>
+
+              <li>
+                Improved mobile responsiveness
+              </li>
+
+            </ul>
+
+          </div>
+
+        </article>
+
+
+        <article class="change-item">
+
+          <div class="change-version">
+            V3.2
+          </div>
+
+          <div>
+
+            <h2>
+              Better tool discovery
+            </h2>
+
+            <p class="change-date">
+              2026
+            </p>
+
+            <ul>
+
+              <li>
+                Added tool ratings
+              </li>
+
+              <li>
+                Added "Best for" information
+              </li>
+
+              <li>
+                Added tool tags
+              </li>
+
+              <li>
+                Improved recommendation system
+              </li>
+
+            </ul>
+
+          </div>
+
+        </article>
+
+
+        <article class="change-item">
+
+          <div class="change-version">
+            V3.0
+          </div>
+
+          <div>
+
+            <h2>
+              TzTools becomes a real tool directory
+            </h2>
+
+            <p class="change-date">
+              2026
+            </p>
+
+            <ul>
+
+              <li>
+                Added multiple tool categories
+              </li>
+
+              <li>
+                Added real Visit Tool links
+              </li>
+
+              <li>
+                Added smart recommendations
+              </li>
+
+            </ul>
+
+          </div>
+
+        </article>
 
       </div>
 
@@ -94,1615 +718,77 @@
   </main>
 
 
+  <!-- ================= COMPARE BAR ================= -->
+
+  <div
+    id="compareBar"
+    class="compare-bar"
+  >
+
+    <div>
+
+      <strong>
+        ⚖️ Compare tools
+      </strong>
+
+      <span id="compareBarCount">
+        0 selected
+      </span>
+
+    </div>
+
+    <button id="openComparison">
+      Compare →
+    </button>
+
+  </div>
+
+
+  <!-- ================= TOAST ================= -->
+
+  <div
+    id="toast"
+    class="toast"
+  ></div>
+
+
+  <!-- ================= FOOTER ================= -->
+
   <footer>
 
+    <div class="footer-logo">
+      Tz<span>Tools</span>
+    </div>
+
     <p>
-      © 2026 TzTools. Find a tool. Get things done.
+      Tell us what you need. We'll find the tool.
     </p>
+
+    <div class="footer-links">
+
+      <button data-page="tools">
+        Tools
+      </button>
+
+      <button data-page="community">
+        Community
+      </button>
+
+      <button data-page="changelog">
+        Changelog
+      </button>
+
+    </div>
+
+    <small>
+      © 2026 TzTools. Find a tool. Get things done.
+    </small>
 
   </footer>
 
 
-  <script>
+  <script src="script.js"></script>
 
-    
-
-    const tools = [
-
-  /* =========================
-     DESIGN & LOGOS
-  ========================= */
-
-  {
-    name: "Canva",
-    description: "Create logos, graphics, presentations, posters and social media designs.",
-    category: "Design",
-    pricing: "Free plan",
-    rating: "4.8",
-    bestFor: "Beginners & quick designs",
-    tags: [
-      "logo", "logos", "design", "branding", "brand",
-      "graphics", "poster", "flyer", "presentation",
-      "social", "social media"
-    ],
-    url: "https://www.canva.com/"
-  },
-
-  {
-    name: "Adobe Express",
-    description: "Create graphics, logos, flyers, social posts and other visual content.",
-    category: "Design",
-    pricing: "Free plan",
-    rating: "4.7",
-    bestFor: "Social content & graphics",
-    tags: [
-      "logo", "logos", "design", "branding", "brand",
-      "graphics", "poster", "flyer", "social",
-      "images"
-    ],
-    url: "https://www.adobe.com/express/"
-  },
-
-  {
-    name: "Figma",
-    description: "Design interfaces, websites, apps and digital products.",
-    category: "Design",
-    pricing: "Free plan",
-    rating: "4.8",
-    bestFor: "UI & website design",
-    tags: [
-      "design", "ui", "ux", "website", "web",
-      "app", "interface", "prototype"
-    ],
-    url: "https://www.figma.com/"
-  },
-
-
-  /* =========================
-     VIDEO
-  ========================= */
-
-  {
-    name: "CapCut",
-    description: "Edit videos with effects, captions, transitions and creative tools.",
-    category: "Video",
-    pricing: "Free plan",
-    rating: "4.7",
-    bestFor: "Short-form videos",
-    tags: [
-      "video", "videos", "edit", "editing",
-      "reels", "shorts", "tiktok", "youtube",
-      "captions"
-    ],
-    url: "https://www.capcut.com/"
-  },
-
-  {
-    name: "DaVinci Resolve",
-    description: "Powerful video editing, color grading, effects and audio tools.",
-    category: "Video",
-    pricing: "Free plan",
-    rating: "4.9",
-    bestFor: "Advanced video editing",
-    tags: [
-      "video", "videos", "editing", "edit",
-      "film", "youtube", "color", "effects"
-    ],
-    url: "https://www.blackmagicdesign.com/products/davinciresolve"
-  },
-
-  {
-    name: "VEED",
-    description: "Create and edit videos online with captions, templates and effects.",
-    category: "Video",
-    pricing: "Free plan",
-    rating: "4.6",
-    bestFor: "Online video editing",
-    tags: [
-      "video", "videos", "editing", "edit",
-      "captions", "youtube", "social", "shorts"
-    ],
-    url: "https://www.veed.io/"
-  },
-
-
-  /* =========================
-     AI
-  ========================= */
-
-  {
-    name: "ChatGPT",
-    description: "Ask questions, brainstorm, write, learn and solve problems with AI.",
-    category: "AI",
-    pricing: "Free plan",
-    rating: "4.9",
-    bestFor: "General AI assistance",
-    tags: [
-      "ai", "chat", "writing", "study",
-      "research", "questions", "question",
-      "homework", "brainstorm", "learning"
-    ],
-    url: "https://chatgpt.com/"
-  },
-
-  {
-    name: "Claude",
-    description: "AI assistant for writing, analysis, brainstorming and problem solving.",
-    category: "AI",
-    pricing: "Free plan",
-    rating: "4.8",
-    bestFor: "Writing & analysis",
-    tags: [
-      "ai", "writing", "research",
-      "study", "brainstorm", "questions",
-      "question"
-    ],
-    url: "https://claude.ai/"
-  },
-
-  {
-    name: "Google Gemini",
-    description: "AI assistant for answering questions, learning, writing and brainstorming.",
-    category: "AI",
-    pricing: "Free plan",
-    rating: "4.7",
-    bestFor: "AI & research",
-    tags: [
-      "ai", "study", "writing", "research",
-      "questions", "question", "homework",
-      "learning"
-    ],
-    url: "https://gemini.google.com/"
-  },
-
-
-  /* =========================
-     WRITING
-  ========================= */
-
-  {
-    name: "Grammarly",
-    description: "Improve grammar, spelling, clarity and writing.",
-    category: "Writing",
-    pricing: "Free plan",
-    rating: "4.7",
-    bestFor: "Grammar & proofreading",
-    tags: [
-      "writing", "write", "grammar", "essay",
-      "school", "spelling", "spell"
-    ],
-    url: "https://www.grammarly.com/"
-  },
-
-  {
-    name: "QuillBot",
-    description: "Rewrite, paraphrase and improve your writing.",
-    category: "Writing",
-    pricing: "Free plan",
-    rating: "4.6",
-    bestFor: "Paraphrasing & rewriting",
-    tags: [
-      "writing", "write", "rewrite",
-      "paraphrase", "essay", "school",
-      "grammar"
-    ],
-    url: "https://quillbot.com/"
-  },
-
-  {
-    name: "Google Docs",
-    description: "Create, edit and collaborate on documents online.",
-    category: "Writing",
-    pricing: "Free",
-    rating: "4.8",
-    bestFor: "Documents & essays",
-    tags: [
-      "writing", "write", "document",
-      "documents", "essay", "school", "notes"
-    ],
-    url: "https://docs.google.com/"
-  },
-
-
-  /* =========================
-     WEBSITES
-  ========================= */
-
-  {
-    name: "WordPress",
-    description: "Create websites, blogs and online content.",
-    category: "Website",
-    pricing: "Free plan",
-    rating: "4.7",
-    bestFor: "Blogs & full websites",
-    tags: [
-      "website", "web", "site",
-      "blog", "blogging"
-    ],
-    url: "https://wordpress.com/"
-  },
-
-  {
-    name: "Wix",
-    description: "Build a website with templates and a visual website builder.",
-    category: "Website",
-    pricing: "Free plan",
-    rating: "4.7",
-    bestFor: "Easy website building",
-    tags: [
-      "website", "web", "site",
-      "business", "blog", "store"
-    ],
-    url: "https://www.wix.com/"
-  },
-
-  {
-    name: "Framer",
-    description: "Design and publish modern websites visually.",
-    category: "Website",
-    pricing: "Free plan",
-    rating: "4.8",
-    bestFor: "Modern websites",
-    tags: [
-      "website", "web", "site",
-      "design", "landing page"
-    ],
-    url: "https://www.framer.com/"
-  },
-
-
-  /* =========================
-     STUDENTS
-  ========================= */
-
-  {
-    name: "Khan Academy",
-    description: "Learn school subjects through lessons, explanations and practice.",
-    category: "Student",
-    pricing: "Free",
-    rating: "4.9",
-    bestFor: "Learning & practice",
-    tags: [
-      "student", "students", "study",
-      "studying", "school", "math",
-      "science", "learning", "learn",
-      "homework"
-    ],
-    url: "https://www.khanacademy.org/"
-  },
-
-  {
-    name: "WolframAlpha",
-    description: "Get computational answers and explore maths, science and more.",
-    category: "Student",
-    pricing: "Free plan",
-    rating: "4.7",
-    bestFor: "Maths & calculations",
-    tags: [
-      "student", "study", "studying",
-      "math", "science", "calculation",
-      "homework"
-    ],
-    url: "https://www.wolframalpha.com/"
-  },
-
-  {
-    name: "Quizlet",
-    description: "Study with flashcards, practice questions and learning activities.",
-    category: "Student",
-    pricing: "Free plan",
-    rating: "4.7",
-    bestFor: "Flashcards & revision",
-    tags: [
-      "student", "study", "studying",
-      "school", "flashcards", "quiz",
-      "learning", "learn"
-    ],
-    url: "https://quizlet.com/"
-  },
-
-
-  /* =========================
-     PRODUCTIVITY
-  ========================= */
-
-  {
-    name: "Notion",
-    description: "Organize notes, tasks, projects and your workspace.",
-    category: "Productivity",
-    pricing: "Free plan",
-    rating: "4.8",
-    bestFor: "Notes & organization",
-    tags: [
-      "productivity", "notes", "tasks",
-      "task", "planning", "plan",
-      "school", "organization",
-      "organize", "projects"
-    ],
-    url: "https://www.notion.com/"
-  },
-
-  {
-    name: "Trello",
-    description: "Organize projects and tasks using simple visual boards.",
-    category: "Productivity",
-    pricing: "Free plan",
-    rating: "4.6",
-    bestFor: "Projects & task planning",
-    tags: [
-      "productivity", "tasks", "task",
-      "planning", "plan", "projects",
-      "organization", "organize"
-    ],
-    url: "https://trello.com/"
-  },
-
-
-  /* =========================
-     IMAGES
-  ========================= */
-
-  {
-    name: "Remove.bg",
-    description: "Automatically remove backgrounds from images.",
-    category: "Image",
-    pricing: "Free plan",
-    rating: "4.7",
-    bestFor: "Removing backgrounds",
-    tags: [
-      "image", "images", "photo", "photos",
-      "picture", "pictures", "background",
-      "remove background", "transparent"
-    ],
-    url: "https://www.remove.bg/"
-  },
-
-  {
-    name: "Pixlr",
-    description: "Edit photos and images online with powerful editing tools.",
-    category: "Image",
-    pricing: "Free plan",
-    rating: "4.6",
-    bestFor: "Quick photo editing",
-    tags: [
-      "image", "images", "photo", "photos",
-      "picture", "pictures", "edit", "editing"
-    ],
-    url: "https://pixlr.com/"
-  }
-
-];
-
-
-/* =========================
-   GET PAGE ELEMENTS
-========================= */
-
-const searchInput = document.getElementById("search");
-const searchButton = document.getElementById("searchButton");
-const results = document.getElementById("results");
-
-
-/* =========================
-   FIND TOOLS
-========================= */
-
-function findTools() {
-
-  const query = searchInput.value.toLowerCase().trim();
-
-
-  if (!query) {
-
-    results.innerHTML = `
-      <div class="empty">
-        <h2>🔎 What are you looking for?</h2>
-        <p>Tell us what you want to accomplish.</p>
-      </div>
-    `;
-
-    return;
-  }
-
-
-  /* =========================
-     INTENT DETECTION
-  ========================= */
-
-  const intents = [
-
-    {
-      keywords: [
-        "logo",
-        "logos",
-        "branding",
-        "brand",
-        "flyer",
-        "poster",
-        "graphic",
-        "graphics",
-        "design"
-      ],
-      categories: ["Design"]
-    },
-
-    {
-      keywords: [
-        "video",
-        "videos",
-        "edit",
-        "editing",
-        "youtube",
-        "tiktok",
-        "reel",
-        "reels",
-        "shorts"
-      ],
-      categories: ["Video"]
-    },
-
-    {
-      keywords: [
-        "website",
-        "web",
-        "site",
-        "blog",
-        "landing",
-        "online store"
-      ],
-      categories: ["Website"]
-    },
-
-    {
-      keywords: [
-        "study",
-        "studying",
-        "school",
-        "student",
-        "students",
-        "homework",
-        "math",
-        "science",
-        "learn",
-        "learning",
-        "quiz",
-        "flashcards"
-      ],
-      categories: ["Student"]
-    },
-
-    {
-      keywords: [
-        "write",
-        "writing",
-        "essay",
-        "grammar",
-        "spell",
-        "spelling",
-        "rewrite",
-        "paraphrase"
-      ],
-      categories: ["Writing"]
-    },
-
-    {
-      keywords: [
-        "ai",
-        "artificial intelligence",
-        "chat",
-        "brainstorm",
-        "question",
-        "questions",
-        "research"
-      ],
-      categories: ["AI"]
-    },
-
-    {
-      keywords: [
-        "photo",
-        "photos",
-        "image",
-        "images",
-        "picture",
-        "pictures",
-        "background",
-        "remove background"
-      ],
-      categories: ["Image"]
-    },
-
-    {
-      keywords: [
-        "productivity",
-        "organize",
-        "organization",
-        "planning",
-        "plan",
-        "tasks",
-        "task",
-        "notes",
-        "projects"
-      ],
-      categories: ["Productivity"]
-    }
-
-  ];
-
-
-  /* =========================
-     DETECT CATEGORIES
-  ========================= */
-
-  let detectedCategories = [];
-
-
-  intents.forEach(intent => {
-
-    const matched = intent.keywords.some(keyword =>
-      query.includes(keyword)
-    );
-
-
-    if (matched) {
-
-      detectedCategories.push(...intent.categories);
-
-    }
-
-  });
-
-
-  /* =========================
-     SEARCH WORDS
-  ========================= */
-
-  const words = query
-    .replace(/[^\w\s]/g, "")
-    .split(/\s+/)
-    .filter(word => word.length > 2);
-
-
-  /* =========================
-     SCORE TOOLS
-  ========================= */
-
-  const scoredTools = tools.map(tool => {
-
-    let score = 0;
-
-    const name = tool.name.toLowerCase();
-
-    const description = tool.description.toLowerCase();
-
-    const category = tool.category.toLowerCase();
-
-    const tags = tool.tags.map(tag =>
-      tag.toLowerCase()
-    );
-
-
-    words.forEach(word => {
-
-      if (tags.includes(word)) {
-        score += 6;
-      }
-
-      if (name.includes(word)) {
-        score += 4;
-      }
-
-      if (category.includes(word)) {
-        score += 3;
-      }
-
-      if (description.includes(word)) {
-        score += 1;
-      }
-
-    });
-
-
-    /* =========================
-       INTENT SCORE
-    ========================= */
-
-    if (
-      detectedCategories.some(
-        detectedCategory =>
-          detectedCategory.toLowerCase() === category
-      )
-    ) {
-
-      score += 8;
-
-    }
-
-
-    return {
-      tool: tool,
-      score: score
-    };
-
-  });
-
-
-  /* =========================
-     TOP 10
-  ========================= */
-
-  const matchingTools = scoredTools
-    .filter(item => item.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 10)
-    .map(item => item.tool);
-
-
-  displayTools(matchingTools, query);
-
-}
-
-
-/* =========================
-   CATEGORY SEARCH
-========================= */
-
-function searchCategory(category) {
-
-  const matchingTools = tools.filter(tool =>
-    tool.category.toLowerCase() === category.toLowerCase()
-  );
-
-
-  displayTools(matchingTools, category);
-
-}
-
-
-/* =========================
-   DISPLAY TOOLS
-========================= */
-
-function displayTools(matchingTools, query) {
-
-  if (matchingTools.length === 0) {
-
-    results.innerHTML = `
-      <div class="empty">
-        <h2>🤔 No matching tools yet</h2>
-
-        <p>
-          Try “make a logo”, “edit a video”
-          or “help me study”.
-        </p>
-      </div>
-    `;
-
-    return;
-  }
-
-
-  results.innerHTML = `
-
-    <div class="results-heading">
-
-      <p>TOOLS FOR</p>
-
-      <h2>${query}</h2>
-
-    </div>
-
-
-    <div class="tool-grid">
-
-      ${matchingTools.map(tool => `
-
-        <article class="tool-card">
-
-          <div class="tool-icon">
-
-            ${getIcon(tool.category)}
-
-          </div>
-
-
-          <div class="tool-info">
-
-            <h3>${tool.name}</h3>
-
-
-            <p>
-              ${tool.description}
-            </p>
-
-
-            <div class="tool-rating">
-
-              <span class="rating">
-                ⭐ ${tool.rating}
-              </span>
-
-              <span class="best-for">
-                🎯 ${tool.bestFor}
-              </span>
-
-            </div>
-
-
-            <div class="tool-tags">
-
-              ${tool.tags
-                .slice(0, 4)
-                .map(tag => `<span>${tag}</span>`)
-                .join("")
-              }
-
-            </div>
-
-
-            <div class="tool-meta">
-
-              <span>
-                ${tool.category}
-              </span>
-
-              <span>
-                💰 ${tool.pricing}
-              </span>
-
-            </div>
-
-
-            <a
-              href="${tool.url}"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="visit-button"
-            >
-              Visit Tool →
-            </a>
-
-          </div>
-
-        </article>
-
-      `).join("")}
-
-    </div>
-
-  `;
-
-}
-
-
-/* =========================
-   CATEGORY ICONS
-========================= */
-
-function getIcon(category) {
-
-  const icons = {
-
-    AI: "🤖",
-
-    Design: "🎨",
-
-    Video: "🎬",
-
-    Writing: "✍️",
-
-    Website: "🌐",
-
-    Student: "📚",
-
-    Productivity: "⚡",
-
-    Image: "🖼️"
-
-  };
-
-
-  return icons[category] || "🛠️";
-
-}
-
-
-/* =========================
-   SEARCH BUTTON
-========================= */
-
-searchButton.addEventListener("click", findTools);
-
-
-/* =========================
-   ENTER KEY
-========================= */
-
-searchInput.addEventListener("keydown", function(event) {
-
-  if (event.key === "Enter") {
-
-    findTools();
-
-  }
-
-});
-
-
-/* =========================
-   CATEGORY BUTTONS
-========================= */
-
-document.querySelectorAll(".category-grid button").forEach(button => {
-
-  button.addEventListener("click", function() {
-
-    searchCategory(this.dataset.category);
-
-  });
-
-});
-<script>
-  <script>
-/* =========================================================
-   TZTOOLS V3.2
-   TOOL DATABASE + SMART SEARCH + CATEGORY SEARCH
-========================================================= */
-
-const tools = [
-
-  /* ================= DESIGN ================= */
-
-  {
-    name: "Canva",
-    description: "Create logos, posters, presentations, social media graphics and more.",
-    category: "Design",
-    pricing: "Freemium",
-    rating: "4.8",
-    bestFor: "Beginners & quick designs",
-    tags: ["logo", "branding", "graphics", "templates"],
-    url: "https://www.canva.com/"
-  },
-
-  {
-    name: "Adobe Express",
-    description: "Quickly create graphics, social posts, flyers, videos and branded content.",
-    category: "Design",
-    pricing: "Freemium",
-    rating: "4.7",
-    bestFor: "Fast creative projects",
-    tags: ["design", "graphics", "branding", "social media"],
-    url: "https://www.adobe.com/express/"
-  },
-
-  {
-    name: "Figma",
-    description: "Design websites, apps, interfaces and digital products collaboratively.",
-    category: "Design",
-    pricing: "Freemium",
-    rating: "4.7",
-    bestFor: "UI/UX & web design",
-    tags: ["ui", "ux", "web design", "prototype"],
-    url: "https://www.figma.com/"
-  },
-
-
-  /* ================= VIDEO ================= */
-
-  {
-    name: "CapCut",
-    description: "Edit videos with effects, transitions, captions, music and AI-powered tools.",
-    category: "Video",
-    pricing: "Freemium",
-    rating: "4.8",
-    bestFor: "Short-form & social videos",
-    tags: ["video", "TikTok", "YouTube", "reels"],
-    url: "https://www.capcut.com/"
-  },
-
-  {
-    name: "DaVinci Resolve",
-    description: "Professional video editing, color grading, visual effects and audio production.",
-    category: "Video",
-    pricing: "Free",
-    rating: "4.9",
-    bestFor: "Professional video editing",
-    tags: ["video", "editing", "color", "professional"],
-    url: "https://www.blackmagicdesign.com/products/davinciresolve"
-  },
-
-  {
-    name: "VEED",
-    description: "Simple online video editor for social media, subtitles, recordings and more.",
-    category: "Video",
-    pricing: "Freemium",
-    rating: "4.6",
-    bestFor: "Easy online editing",
-    tags: ["video", "subtitles", "social media", "online"],
-    url: "https://www.veed.io/"
-  },
-
-
-  /* ================= AI ================= */
-
-  {
-    name: "ChatGPT",
-    description: "AI assistant for questions, writing, brainstorming, learning, coding and research.",
-    category: "AI",
-    pricing: "Freemium",
-    rating: "4.9",
-    bestFor: "General AI assistance",
-    tags: ["ai", "chat", "writing", "learning"],
-    url: "https://chatgpt.com/"
-  },
-
-  {
-    name: "Claude",
-    description: "AI assistant for writing, analysis, brainstorming, coding and complex questions.",
-    category: "AI",
-    pricing: "Freemium",
-    rating: "4.8",
-    bestFor: "Writing & analysis",
-    tags: ["ai", "writing", "research", "coding"],
-    url: "https://claude.ai/"
-  },
-
-  {
-    name: "Google Gemini",
-    description: "Google's AI assistant for questions, brainstorming, learning and productivity.",
-    category: "AI",
-    pricing: "Freemium",
-    rating: "4.7",
-    bestFor: "AI & Google users",
-    tags: ["ai", "chat", "research", "learning"],
-    url: "https://gemini.google.com/"
-  },
-
-
-  /* ================= WRITING ================= */
-
-  {
-    name: "Grammarly",
-    description: "Improve grammar, spelling, clarity and writing style.",
-    category: "Writing",
-    pricing: "Freemium",
-    rating: "4.7",
-    bestFor: "Grammar & writing help",
-    tags: ["grammar", "writing", "spelling", "editing"],
-    url: "https://www.grammarly.com/"
-  },
-
-  {
-    name: "QuillBot",
-    description: "Paraphrase, summarize and improve written content.",
-    category: "Writing",
-    pricing: "Freemium",
-    rating: "4.6",
-    bestFor: "Paraphrasing & summaries",
-    tags: ["writing", "paraphrase", "rewrite", "summary"],
-    url: "https://quillbot.com/"
-  },
-
-  {
-    name: "Google Docs",
-    description: "Create and edit documents online with powerful collaboration features.",
-    category: "Writing",
-    pricing: "Free",
-    rating: "4.8",
-    bestFor: "Documents & collaboration",
-    tags: ["writing", "documents", "essays", "school"],
-    url: "https://docs.google.com/"
-  },
-
-
-  /* ================= WEBSITES ================= */
-
-  {
-    name: "WordPress",
-    description: "Create websites, blogs and online stores with a flexible website platform.",
-    category: "Website",
-    pricing: "Freemium",
-    rating: "4.7",
-    bestFor: "Blogs & full websites",
-    tags: ["website", "blog", "online store", "cms"],
-    url: "https://wordpress.com/"
-  },
-
-  {
-    name: "Wix",
-    description: "Build professional websites using a visual website builder.",
-    category: "Website",
-    pricing: "Freemium",
-    rating: "4.6",
-    bestFor: "Beginner website building",
-    tags: ["website", "business", "store", "builder"],
-    url: "https://www.wix.com/"
-  },
-
-  {
-    name: "Framer",
-    description: "Design and publish modern websites with a powerful visual editor.",
-    category: "Website",
-    pricing: "Freemium",
-    rating: "4.7",
-    bestFor: "Modern web design",
-    tags: ["website", "design", "landing page", "portfolio"],
-    url: "https://www.framer.com/"
-  },
-
-
-  /* ================= STUDENTS ================= */
-
-  {
-    name: "Khan Academy",
-    description: "Learn maths, science, computing and other subjects through free lessons.",
-    category: "Student",
-    pricing: "Free",
-    rating: "4.9",
-    bestFor: "Learning & school subjects",
-    tags: ["study", "math", "science", "learning"],
-    url: "https://www.khanacademy.org/"
-  },
-
-  {
-    name: "WolframAlpha",
-    description: "Computational engine for maths, science and factual questions.",
-    category: "Student",
-    pricing: "Freemium",
-    rating: "4.7",
-    bestFor: "Maths & calculations",
-    tags: ["math", "science", "calculator", "study"],
-    url: "https://www.wolframalpha.com/"
-  },
-
-  {
-    name: "Quizlet",
-    description: "Create and use flashcards and study activities to learn more effectively.",
-    category: "Student",
-    pricing: "Freemium",
-    rating: "4.6",
-    bestFor: "Flashcards & revision",
-    tags: ["study", "flashcards", "quiz", "revision"],
-    url: "https://quizlet.com/"
-  },
-
-
-  /* ================= PRODUCTIVITY ================= */
-
-  {
-    name: "Notion",
-    description: "Organize notes, projects, tasks, databases and personal workspaces.",
-    category: "Productivity",
-    pricing: "Freemium",
-    rating: "4.8",
-    bestFor: "Organization & notes",
-    tags: ["notes", "tasks", "planning", "projects"],
-    url: "https://www.notion.com/"
-  },
-
-  {
-    name: "Trello",
-    description: "Organize projects and tasks using simple visual boards.",
-    category: "Productivity",
-    pricing: "Freemium",
-    rating: "4.6",
-    bestFor: "Tasks & project planning",
-    tags: ["tasks", "projects", "planning", "organization"],
-    url: "https://trello.com/"
-  },
-
-
-  /* ================= IMAGES ================= */
-
-  {
-    name: "Remove.bg",
-    description: "Automatically remove backgrounds from images.",
-    category: "Image",
-    pricing: "Freemium",
-    rating: "4.7",
-    bestFor: "Background removal",
-    tags: ["image", "photo", "background", "editing"],
-    url: "https://www.remove.bg/"
-  },
-
-  {
-    name: "Pixlr",
-    description: "Online photo editor for creating and editing images quickly.",
-    category: "Image",
-    pricing: "Freemium",
-    rating: "4.5",
-    bestFor: "Quick photo editing",
-    tags: ["image", "photo", "editing", "graphics"],
-    url: "https://pixlr.com/"
-  }
-
-];
-
-
-/* =========================================================
-   GET ICON
-========================================================= */
-
-function getIcon(category) {
-
-  const icons = {
-    AI: "🤖",
-    Design: "🎨",
-    Video: "🎬",
-    Writing: "✍️",
-    Website: "🌐",
-    Student: "📚",
-    Productivity: "⚡",
-    Image: "🖼️"
-  };
-
-  return icons[category] || "🛠️";
-}
-
-
-/* =========================================================
-   DETECT USER INTENT
-========================================================= */
-
-function detectIntent(query) {
-
-  const text = query.toLowerCase();
-
-  const intentWords = {
-
-    Design: [
-      "logo",
-      "logos",
-      "branding",
-      "brand",
-      "flyer",
-      "poster",
-      "graphic",
-      "graphics",
-      "design"
-    ],
-
-    Video: [
-      "video",
-      "videos",
-      "edit",
-      "editing",
-      "youtube",
-      "tiktok",
-      "reel",
-      "reels",
-      "shorts"
-    ],
-
-    Website: [
-      "website",
-      "web",
-      "site",
-      "blog",
-      "landing",
-      "online store"
-    ],
-
-    Student: [
-      "study",
-      "studying",
-      "school",
-      "student",
-      "students",
-      "homework",
-      "math",
-      "science",
-      "learn",
-      "learning",
-      "quiz",
-      "flashcards"
-    ],
-
-    Writing: [
-      "write",
-      "writing",
-      "essay",
-      "grammar",
-      "spell",
-      "spelling",
-      "rewrite",
-      "paraphrase"
-    ],
-
-    AI: [
-      "ai",
-      "artificial intelligence",
-      "chat",
-      "brainstorm",
-      "question",
-      "questions",
-      "research"
-    ],
-
-    Image: [
-      "photo",
-      "photos",
-      "image",
-      "images",
-      "picture",
-      "pictures",
-      "background",
-      "remove background"
-    ],
-
-    Productivity: [
-      "productivity",
-      "organize",
-      "organization",
-      "planning",
-      "plan",
-      "tasks",
-      "task",
-      "notes",
-      "projects"
-    ]
-
-  };
-
-
-  for (const category in intentWords) {
-
-    for (const word of intentWords[category]) {
-
-      if (text.includes(word)) {
-        return category;
-      }
-
-    }
-
-  }
-
-  return null;
-}
-
-
-/* =========================================================
-   SEARCH TOOLS
-========================================================= */
-
-function findTools() {
-
-  const searchInput = document.getElementById("search");
-
-  const results = document.getElementById("results");
-
-  if (!searchInput || !results) {
-    return;
-  }
-
-  const query = searchInput.value.trim().toLowerCase();
-
-  if (!query) {
-
-    results.innerHTML = `
-      <div class="empty">
-
-        <h2>🔎 What are you looking for?</h2>
-
-        <p>
-          Tell us what you want to accomplish and we'll find useful tools.
-        </p>
-
-      </div>
-    `;
-
-    return;
-  }
-
-
-  const words = query
-    .split(/\s+/)
-    .filter(word => word.length > 1);
-
-
-  const detectedCategory = detectIntent(query);
-
-
-  const scoredTools = tools.map(tool => {
-
-    let score = 0;
-
-    const name = tool.name.toLowerCase();
-    const description = tool.description.toLowerCase();
-    const category = tool.category.toLowerCase();
-    const tags = tool.tags.map(tag => tag.toLowerCase());
-
-
-    words.forEach(word => {
-
-      if (tags.includes(word)) {
-        score += 6;
-      }
-
-      if (name.includes(word)) {
-        score += 4;
-      }
-
-      if (category.includes(word)) {
-        score += 3;
-      }
-
-      if (description.includes(word)) {
-        score += 1;
-      }
-
-    });
-
-
-    if (
-      detectedCategory &&
-      tool.category === detectedCategory
-    ) {
-      score += 8;
-    }
-
-
-    return {
-      ...tool,
-      score
-    };
-
-  });
-
-
-  const matchingTools = scoredTools
-    .filter(tool => tool.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 10);
-
-
-  if (matchingTools.length === 0) {
-
-    results.innerHTML = `
-      <div class="empty">
-
-        <h2>😕 No tools found</h2>
-
-        <p>
-          Try searching for something like
-          "make a logo", "edit a video", or "help me study".
-        </p>
-
-      </div>
-    `;
-
-    return;
-  }
-
-
-  displayTools(
-    matchingTools,
-    `Results for "${escapeHtml(query)}"`
-  );
-
-}
-
-
-/* =========================================================
-   DISPLAY TOOLS
-========================================================= */
-
-function displayTools(toolList, heading = "Recommended tools") {
-
-  const results = document.getElementById("results");
-
-  if (!results) {
-    return;
-  }
-
-
-  results.innerHTML = `
-
-    <div class="results-heading">
-
-      <p>TZTOOLS RECOMMENDATIONS</p>
-
-      <h2>${heading}</h2>
-
-    </div>
-
-    <div class="tool-grid">
-
-      ${toolList.map((tool, index) => `
-
-        <article
-          class="tool-card"
-          style="animation-delay: ${index * 0.05}s;"
-        >
-
-          <div class="tool-icon">
-            ${getIcon(tool.category)}
-          </div>
-
-
-          <div class="tool-info">
-
-            <h3>${escapeHtml(tool.name)}</h3>
-
-            <p>
-              ${escapeHtml(tool.description)}
-            </p>
-
-
-            <div class="tool-rating">
-
-              <span class="rating">
-                ⭐ ${escapeHtml(tool.rating)}
-              </span>
-
-              <span class="best-for">
-                🎯 ${escapeHtml(tool.bestFor)}
-              </span>
-
-            </div>
-
-
-            <div class="tool-tags">
-
-              ${tool.tags
-                .slice(0, 4)
-                .map(tag => `
-                  <span>${escapeHtml(tag)}</span>
-                `)
-                .join("")
-              }
-
-            </div>
-
-
-            <div class="tool-meta">
-
-              <span>
-                ${escapeHtml(tool.category)}
-              </span>
-
-              <span>
-                💰 ${escapeHtml(tool.pricing)}
-              </span>
-
-            </div>
-
-
-            <a
-              href="${tool.url}"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="visit-button"
-            >
-              Visit Tool →
-            </a>
-
-          </div>
-
-        </article>
-
-      `).join("")}
-
-    </div>
-
-  `;
-
-}
-
-
-/* =========================================================
-   CATEGORY SEARCH
-========================================================= */
-
-function searchCategory(category) {
-
-  const categoryTools = tools
-    .filter(tool => tool.category === category)
-    .slice(0, 10);
-
-
-  if (categoryTools.length === 0) {
-    return;
-  }
-
-
-  displayTools(
-    categoryTools,
-    `${category} tools`
-  );
-
-
-  const resultsSection =
-    document.querySelector(".results-section");
-
-
-  if (resultsSection) {
-
-    resultsSection.scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
-
-  }
-
-}
-
-
-/* =========================================================
-   ESCAPE HTML
-   Prevents search text from being interpreted as HTML.
-========================================================= */
-
-function escapeHtml(text) {
-
-  const div = document.createElement("div");
-
-  div.textContent = text;
-
-  return div.innerHTML;
-
-}
-
-
-/* =========================================================
-   EVENT LISTENERS
-========================================================= */
-
-document.addEventListener("DOMContentLoaded", () => {
-
-  const searchButton =
-    document.getElementById("searchButton");
-
-  const searchInput =
-    document.getElementById("search");
-
-
-  /* SEARCH BUTTON */
-
-  if (searchButton) {
-
-    searchButton.addEventListener("click", findTools);
-
-  }
-
-
-  /* ENTER KEY */
-
-  if (searchInput) {
-
-    searchInput.addEventListener("keydown", event => {
-
-      if (event.key === "Enter") {
-
-        findTools();
-
-      }
-
-    });
-
-  }
-
-
-  /* CATEGORY BUTTONS */
-
-  const categoryButtons =
-    document.querySelectorAll("[data-category]");
-
-
-  categoryButtons.forEach(button => {
-
-    button.addEventListener("click", () => {
-
-      const category =
-        button.dataset.category;
-
-      searchCategory(category);
-
-    });
-
-  });
-
-});
-</script>
 </body>
 </html>
+
