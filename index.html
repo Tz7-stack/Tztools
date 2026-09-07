@@ -105,81 +105,316 @@
 
   <script>
 
-    const tools = [
+    
 
-      {
-        name: "Canva",
-        description: "Create logos, graphics, presentations, posters and more.",
-        category: "Design",
-        pricing: "Free plan",
-        tags: ["logo", "design", "branding", "graphics", "poster"],
-        url: "https://www.canva.com/"
-      },
+      const tools = [
 
-      {
-        name: "Adobe Express",
-        description: "Create graphics, logos, social content and visual designs.",
-        category: "Design",
-        pricing: "Free plan",
-        tags: ["logo", "design", "branding", "graphics", "social"],
-        url: "https://www.adobe.com/express/"
-      },
+  /* =========================
+     DESIGN & LOGOS
+  ========================= */
 
-      {
-        name: "CapCut",
-        description: "Edit videos with effects, captions and transitions.",
-        category: "Video",
-        pricing: "Free plan",
-        tags: ["video", "edit", "editing", "reels", "shorts"],
-        url: "https://www.capcut.com/"
-      },
+  {
+    name: "Canva",
+    description: "Create logos, graphics, presentations, posters and social media designs.",
+    category: "Design",
+    pricing: "Free plan",
+    tags: [
+      "logo", "logos", "design", "branding", "graphics",
+      "poster", "flyer", "presentation", "social media"
+    ],
+    url: "https://www.canva.com/"
+  },
 
-      {
-        name: "Grammarly",
-        description: "Improve grammar, spelling, clarity and writing.",
-        category: "Writing",
-        pricing: "Free plan",
-        tags: ["writing", "grammar", "essay", "school", "write"],
-        url: "https://www.grammarly.com/"
-      },
+  {
+    name: "Adobe Express",
+    description: "Create graphics, logos, flyers, social posts and other visual content.",
+    category: "Design",
+    pricing: "Free plan",
+    tags: [
+      "logo", "design", "branding", "graphics",
+      "poster", "flyer", "social", "images"
+    ],
+    url: "https://www.adobe.com/express/"
+  },
 
-      {
-        name: "WordPress",
-        description: "Create websites, blogs and online content.",
-        category: "Website",
-        pricing: "Free plan",
-        tags: ["website", "web", "blog", "site"],
-        url: "https://wordpress.com/"
-      },
+  {
+    name: "Figma",
+    description: "Design interfaces, websites, apps and digital products.",
+    category: "Design",
+    pricing: "Free plan",
+    tags: [
+      "design", "ui", "ux", "website", "app",
+      "interface", "prototype"
+    ],
+    url: "https://www.figma.com/"
+  },
 
-      {
-        name: "ChatGPT",
-        description: "Ask questions, brainstorm, write, learn and solve problems.",
-        category: "AI",
-        pricing: "Free plan",
-        tags: ["ai", "chat", "writing", "study", "research"],
-        url: "https://chatgpt.com/"
-      },
 
-      {
-        name: "Khan Academy",
-        description: "Learn school subjects through lessons and practice.",
-        category: "Student",
-        pricing: "Free",
-        tags: ["student", "study", "school", "math", "science"],
-        url: "https://www.khanacademy.org/"
-      },
+  /* =========================
+     VIDEO
+  ========================= */
 
-      {
-        name: "Notion",
-        description: "Organize notes, tasks, projects and your workspace.",
-        category: "Productivity",
-        pricing: "Free plan",
-        tags: ["productivity", "notes", "tasks", "planning", "school"],
-        url: "https://www.notion.com/"
-      }
+  {
+    name: "CapCut",
+    description: "Edit videos with effects, captions, transitions and creative tools.",
+    category: "Video",
+    pricing: "Free plan",
+    tags: [
+      "video", "edit", "editing", "reels",
+      "shorts", "tiktok", "youtube", "captions"
+    ],
+    url: "https://www.capcut.com/"
+  },
 
-    ];
+  {
+    name: "DaVinci Resolve",
+    description: "Powerful video editing, color grading, effects and audio tools.",
+    category: "Video",
+    pricing: "Free plan",
+    tags: [
+      "video", "editing", "edit", "film",
+      "youtube", "color", "effects"
+    ],
+    url: "https://www.blackmagicdesign.com/products/davinciresolve"
+  },
+
+  {
+    name: "VEED",
+    description: "Create and edit videos online with captions, templates and effects.",
+    category: "Video",
+    pricing: "Free plan",
+    tags: [
+      "video", "editing", "edit", "captions",
+      "youtube", "social", "shorts"
+    ],
+    url: "https://www.veed.io/"
+  },
+
+
+  /* =========================
+     AI
+  ========================= */
+
+  {
+    name: "ChatGPT",
+    description: "Ask questions, brainstorm, write, learn and solve problems with AI.",
+    category: "AI",
+    pricing: "Free plan",
+    tags: [
+      "ai", "chat", "writing", "study",
+      "research", "questions", "homework", "brainstorm"
+    ],
+    url: "https://chatgpt.com/"
+  },
+
+  {
+    name: "Claude",
+    description: "AI assistant for writing, analysis, brainstorming and problem solving.",
+    category: "AI",
+    pricing: "Free plan",
+    tags: [
+      "ai", "writing", "research",
+      "study", "brainstorm", "questions"
+    ],
+    url: "https://claude.ai/"
+  },
+
+  {
+    name: "Google Gemini",
+    description: "AI assistant for answering questions, learning, writing and brainstorming.",
+    category: "AI",
+    pricing: "Free plan",
+    tags: [
+      "ai", "study", "writing", "research",
+      "questions", "homework"
+    ],
+    url: "https://gemini.google.com/"
+  },
+
+
+  /* =========================
+     WRITING
+  ========================= */
+
+  {
+    name: "Grammarly",
+    description: "Improve grammar, spelling, clarity and writing.",
+    category: "Writing",
+    pricing: "Free plan",
+    tags: [
+      "writing", "grammar", "essay",
+      "school", "write", "spelling"
+    ],
+    url: "https://www.grammarly.com/"
+  },
+
+  {
+    name: "QuillBot",
+    description: "Rewrite, paraphrase and improve your writing.",
+    category: "Writing",
+    pricing: "Free plan",
+    tags: [
+      "writing", "rewrite", "paraphrase",
+      "essay", "school", "grammar"
+    ],
+    url: "https://quillbot.com/"
+  },
+
+  {
+    name: "Google Docs",
+    description: "Create, edit and collaborate on documents online.",
+    category: "Writing",
+    pricing: "Free",
+    tags: [
+      "writing", "document", "essay",
+      "school", "notes", "documents"
+    ],
+    url: "https://docs.google.com/"
+  },
+
+
+  /* =========================
+     WEBSITES
+  ========================= */
+
+  {
+    name: "WordPress",
+    description: "Create websites, blogs and online content.",
+    category: "Website",
+    pricing: "Free plan",
+    tags: [
+      "website", "web", "blog",
+      "site", "blogging"
+    ],
+    url: "https://wordpress.com/"
+  },
+
+  {
+    name: "Wix",
+    description: "Build a website with templates and a visual website builder.",
+    category: "Website",
+    pricing: "Free plan",
+    tags: [
+      "website", "web", "site",
+      "business", "blog", "store"
+    ],
+    url: "https://www.wix.com/"
+  },
+
+  {
+    name: "Framer",
+    description: "Design and publish modern websites visually.",
+    category: "Website",
+    pricing: "Free plan",
+    tags: [
+      "website", "web", "site",
+      "design", "landing page"
+    ],
+    url: "https://www.framer.com/"
+  },
+
+
+  /* =========================
+     STUDENTS
+  ========================= */
+
+  {
+    name: "Khan Academy",
+    description: "Learn school subjects through lessons, explanations and practice.",
+    category: "Student",
+    pricing: "Free",
+    tags: [
+      "student", "study", "school",
+      "math", "science", "learning",
+      "homework"
+    ],
+    url: "https://www.khanacademy.org/"
+  },
+
+  {
+    name: "WolframAlpha",
+    description: "Get computational answers and explore maths, science and more.",
+    category: "Student",
+    pricing: "Free plan",
+    tags: [
+      "student", "study", "math",
+      "science", "calculation", "homework"
+    ],
+    url: "https://www.wolframalpha.com/"
+  },
+
+  {
+    name: "Quizlet",
+    description: "Study with flashcards, practice questions and learning activities.",
+    category: "Student",
+    pricing: "Free plan",
+    tags: [
+      "student", "study", "school",
+      "flashcards", "quiz", "learning"
+    ],
+    url: "https://quizlet.com/"
+  },
+
+
+  /* =========================
+     PRODUCTIVITY
+  ========================= */
+
+  {
+    name: "Notion",
+    description: "Organize notes, tasks, projects and your workspace.",
+    category: "Productivity",
+    pricing: "Free plan",
+    tags: [
+      "productivity", "notes", "tasks",
+      "planning", "school", "organization"
+    ],
+    url: "https://www.notion.com/"
+  },
+
+  {
+    name: "Trello",
+    description: "Organize projects and tasks using simple visual boards.",
+    category: "Productivity",
+    pricing: "Free plan",
+    tags: [
+      "productivity", "tasks",
+      "planning", "projects", "organization"
+    ],
+    url: "https://trello.com/"
+  },
+
+
+  /* =========================
+     IMAGES
+  ========================= */
+
+  {
+    name: "Remove.bg",
+    description: "Automatically remove backgrounds from images.",
+    category: "Image",
+    pricing: "Free plan",
+    tags: [
+      "image", "photo", "background",
+      "remove background", "transparent"
+    ],
+    url: "https://www.remove.bg/"
+  },
+
+  {
+    name: "Pixlr",
+    description: "Edit photos and images online with powerful editing tools.",
+    category: "Image",
+    pricing: "Free plan",
+    tags: [
+      "image", "photo", "edit",
+      "editing", "photos"
+    ],
+    url: "https://pixlr.com/"
+  }
+
+];
+    
 
 
     const searchInput = document.getElementById("search");
