@@ -3,56 +3,284 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TzTools</title> 
+
+  <title>TzTools — Find the Right Tool</title>
+
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-  <h1>Welcome to TzTools 🚀</h1>
+  <header class="navbar">
+    <div class="logo">Tz<span>Tools</span></div>
+  </header>
 
-  <p>Tell us what you need. We'll find the tool.</p>
+  <main>
 
-  <input
-    type="text"
-    id="search"
-    placeholder="What do you want to do?"
-  >
+    <section class="hero">
+      <p class="eyebrow">🚀 YOUR DIGITAL TOOL FINDER</p>
 
-  <button onclick="findTool()">Find Tool</button>
+      <h1>
+        Find the right tool<br>
+        for what you want to do.
+      </h1>
 
-  <div id="results"></div>
+      <p class="subtitle">
+        Tell TzTools what you're trying to accomplish,
+        and we'll show you useful tools to get it done.
+      </p>
+
+      <div class="search-box">
+        <input
+          type="text"
+          id="search"
+          placeholder="e.g. I want to make a logo"
+        >
+
+        <button onclick="findTools()">Find Tools</button>
+      </div>
+
+      <p class="search-hint">
+        Try: “make a logo” · “edit a video” · “build a website”
+      </p>
+    </section>
+
+
+    <section class="categories">
+
+      <h2>Explore categories</h2>
+
+      <div class="category-grid">
+
+        <button onclick="searchCategory('AI')">🤖 AI</button>
+        <button onclick="searchCategory('Design')">🎨 Design</button>
+        <button onclick="searchCategory('Video')">🎬 Video</button>
+        <button onclick="searchCategory('Writing')">✍️ Writing</button>
+        <button onclick="searchCategory('Website')">🌐 Websites</button>
+        <button onclick="searchCategory('Student')">📚 Students</button>
+        <button onclick="searchCategory('Productivity')">⚡ Productivity</button>
+        <button onclick="searchCategory('Image')">🖼️ Images</button>
+
+      </div>
+
+    </section>
+
+
+    <section id="results-section" class="results-section">
+
+      <div id="results"></div>
+
+    </section>
+
+  </main>
+
+
+  <footer>
+    <p>© 2026 TzTools. Find a tool. Get things done.</p>
+  </footer>
+
 
   <script>
-    function findTool() {
-      const search = document.getElementById("search").value.toLowerCase();
+
+    const tools = [
+
+      {
+        name: "Canva",
+        description: "Create logos, graphics, presentations, social posts and more.",
+        category: "Design",
+        pricing: "Free plan",
+        tags: ["logo", "logos", "design", "branding", "graphic", "graphics"],
+        url: "https://www.canva.com/"
+      },
+
+      {
+        name: "Adobe Express",
+        description: "Create logos, graphics, social content and other visual designs.",
+        category: "Design",
+        pricing: "Free plan",
+        tags: ["logo", "logos", "design", "branding", "graphic"],
+        url: "https://www.adobe.com/express/"
+      },
+
+      {
+        name: "Figma",
+        description: "Design interfaces, graphics, prototypes and digital products.",
+        category: "Design",
+        pricing: "Free plan",
+        tags: ["logo", "design", "ui", "ux", "prototype", "website"],
+        url: "https://www.figma.com/"
+      },
+
+      {
+        name: "CapCut",
+        description: "Edit videos, add effects, captions, transitions and more.",
+        category: "Video",
+        pricing: "Free plan",
+        tags: ["video", "edit", "editing", "reels", "shorts"],
+        url: "https://www.capcut.com/"
+      },
+
+      {
+        name: "Grammarly",
+        description: "Improve your writing, spelling, grammar and clarity.",
+        category: "Writing",
+        pricing: "Free plan",
+        tags: ["writing", "grammar", "essay", "school", "write"],
+        url: "https://www.grammarly.com/"
+      },
+
+      {
+        name: "WordPress",
+        description: "Create websites, blogs and online content.",
+        category: "Website",
+        pricing: "Free plan",
+        tags: ["website", "web", "blog", "site"],
+        url: "https://wordpress.com/"
+      }
+
+    ];
+
+
+    function findTools() {
+
+      const searchInput = document.getElementById("search");
       const results = document.getElementById("results");
 
-      if (search.includes("logo") || search.includes("design")) {
-        results.innerHTML =
-          "<h2>🎨 Try Canva</h2><p>Great for creating designs, graphics and logos.</p>";
+      const query = searchInput.value.toLowerCase().trim();
+
+      if (!query) {
+        results.innerHTML = `
+          <div class="empty">
+            <h2>🔎 What are you looking for?</h2>
+            <p>Tell us what you want to accomplish and we'll find matching tools.</p>
+          </div>
+        `;
+        return;
       }
 
-      else if (search.includes("video") || search.includes("edit")) {
-        results.innerHTML =
-          "<h2>🎬 Try CapCut</h2><p>A popular tool for editing videos.</p>";
-      }
+      const matchingTools = tools.filter(tool => {
 
-      else if (search.includes("write") || search.includes("writing")) {
-        results.innerHTML =
-          "<h2>✍️ Try Grammarly</h2><p>Helps you improve your writing.</p>";
-      }
+        const searchableText = (
+          tool.name + " " +
+          tool.description + " " +
+          tool.category + " " +
+          tool.tags.join(" ")
+        ).toLowerCase();
 
-      else if (search.includes("website") || search.includes("web")) {
-        results.innerHTML =
-          "<h2>🌐 Try WordPress</h2><p>A platform for creating websites.</p>";
-      }
+        return searchableText.includes(query);
 
-      else {
-        results.innerHTML =
-          "<h2>🤔 We don't have a recommendation yet.</h2><p>Try searching for logo, video, writing, or website.</p>";
-      }
+      });
+
+
+      displayTools(matchingTools, query);
+
     }
+
+
+    function searchCategory(category) {
+
+      const results = document.getElementById("results");
+
+      const matchingTools = tools.filter(tool =>
+        tool.category.toLowerCase() === category.toLowerCase()
+      );
+
+      displayTools(matchingTools, category);
+
+    }
+
+
+    function displayTools(matchingTools, query) {
+
+      const results = document.getElementById("results");
+
+      if (matchingTools.length === 0) {
+
+        results.innerHTML = `
+          <div class="empty">
+            <h2>🤔 We couldn't find a match yet.</h2>
+            <p>Try something like “make a logo”, “edit video” or “build a website”.</p>
+          </div>
+        `;
+
+        return;
+      }
+
+
+      results.innerHTML = `
+        <div class="results-heading">
+          <p>TOOLS FOR</p>
+          <h2>${query}</h2>
+        </div>
+
+        <div class="tool-grid">
+
+          ${matchingTools.map(tool => `
+
+            <article class="tool-card">
+
+              <div class="tool-icon">
+                ${getIcon(tool.category)}
+              </div>
+
+              <div class="tool-info">
+
+                <h3>${tool.name}</h3>
+
+                <p>${tool.description}</p>
+
+                <div class="tool-meta">
+                  <span>${tool.category}</span>
+                  <span>${tool.pricing}</span>
+                </div>
+
+                <a
+                  href="${tool.url}"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="visit-button"
+                >
+                  Visit Tool →
+                </a>
+
+              </div>
+
+            </article>
+
+          `).join("")}
+
+        </div>
+      `;
+
+    }
+
+
+    function getIcon(category) {
+
+      const icons = {
+        AI: "🤖",
+        Design: "🎨",
+        Video: "🎬",
+        Writing: "✍️",
+        Website: "🌐",
+        Student: "📚",
+        Productivity: "⚡",
+        Image: "🖼️"
+      };
+
+      return icons[category] || "🛠️";
+
+    }
+
+
+    document.getElementById("search").addEventListener("keydown", function(event) {
+
+      if (event.key === "Enter") {
+        findTools();
+      }
+
+    });
+
   </script>
 
 </body>
