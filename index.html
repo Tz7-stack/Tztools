@@ -422,18 +422,267 @@
     const results = document.getElementById("results");
 
 
-    function findTools() {
+    
 
-      const query = searchInput.value.toLowerCase().trim();
+      function findTools() {
 
-      if (!query) {
+  const query = searchInput.value.toLowerCase().trim();
 
-        results.innerHTML = `
-          <div class="empty">
-            <h2>🔎 What are you looking for?</h2>
-            <p>Tell us what you want to accomplish.</p>
-          </div>
-        `;
+  if (!query) {
+
+    results.innerHTML = `
+      <div class="empty">
+        <h2>🔎 What are you looking for?</h2>
+        <p>Tell us what you want to accomplish.</p>
+      </div>
+    `;
+
+    return;
+  }
+
+
+  /*
+    =========================
+    INTENT DETECTION
+  =========================
+  */
+
+  const intents = [
+
+    {
+      keywords: [
+        "logo",
+        "logos",
+        "branding",
+        "brand",
+        "flyer",
+        "poster",
+        "graphic",
+        "graphics",
+        "design"
+      ],
+      categories: ["Design"]
+    },
+
+    {
+      keywords: [
+        "video",
+        "videos",
+        "edit",
+        "editing",
+        "youtube",
+        "tiktok",
+        "reel",
+        "reels",
+        "shorts"
+      ],
+      categories: ["Video"]
+    },
+
+    {
+      keywords: [
+        "website",
+        "web",
+        "site",
+        "blog",
+        "landing",
+        "online store"
+      ],
+      categories: ["Website"]
+    },
+
+    {
+      keywords: [
+        "study",
+        "studying",
+        "school",
+        "student",
+        "homework",
+        "math",
+        "science",
+        "learn",
+        "learning",
+        "quiz",
+        "flashcards"
+      ],
+      categories: ["Student"]
+    },
+
+    {
+      keywords: [
+        "write",
+        "writing",
+        "essay",
+        "grammar",
+        "spell",
+        "spelling",
+        "rewrite",
+        "paraphrase"
+      ],
+      categories: ["Writing"]
+    },
+
+    {
+      keywords: [
+        "ai",
+        "artificial intelligence",
+        "chat",
+        "brainstorm",
+        "question",
+        "questions",
+        "research"
+      ],
+      categories: ["AI"]
+    },
+
+    {
+      keywords: [
+        "photo",
+        "photos",
+        "image",
+        "images",
+        "picture",
+        "pictures",
+        "background",
+        "remove background"
+      ],
+      categories: ["Image"]
+    },
+
+    {
+      keywords: [
+        "productivity",
+        "organize",
+        "organization",
+        "planning",
+        "plan",
+        "tasks",
+        "task",
+        "notes",
+        "projects"
+      ],
+      categories: ["Productivity"]
+    }
+
+  ];
+
+
+  /*
+    =========================
+    FIND USER'S INTENT
+  =========================
+  */
+
+  let detectedCategories = [];
+
+
+  intents.forEach(intent => {
+
+    const matched = intent.keywords.some(keyword =>
+      query.includes(keyword)
+    );
+
+    if (matched) {
+
+      detectedCategories.push(...intent.categories);
+
+    }
+
+  });
+
+
+  /*
+    =========================
+    SCORE TOOLS
+  =========================
+  */
+
+  const words = query
+    .replace(/[^\w\s]/g, "")
+    .split(/\s+/)
+    .filter(word => word.length > 2);
+
+
+  const scoredTools = tools.map(tool => {
+
+    let score = 0;
+
+    const name = tool.name.toLowerCase();
+
+    const description = tool.description.toLowerCase();
+
+    const category = tool.category.toLowerCase();
+
+    const tags = tool.tags.map(tag =>
+      tag.toLowerCase()
+    );
+
+
+    /*
+      Exact word matches
+    */
+
+    words.forEach(word => {
+
+      if (tags.includes(word)) {
+        score += 6;
+      }
+
+      if (name.includes(word)) {
+        score += 4;
+      }
+
+      if (category.includes(word)) {
+        score += 3;
+      }
+
+      if (description.includes(word)) {
+        score += 1;
+      }
+
+    });
+
+
+    /*
+      Intent/category match
+    */
+
+    if (
+      detectedCategories.some(
+        detectedCategory =>
+          detectedCategory.toLowerCase() === category
+      )
+    ) {
+
+      score += 8;
+
+    }
+
+
+    return {
+      tool: tool,
+      score: score
+    };
+
+  });
+
+
+  /*
+    =========================
+    GET RESULTS
+  =========================
+  */
+
+  const matchingTools = scoredTools
+    .filter(item => item.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 10)
+    .map(item => item.tool);
+
+
+  displayTools(matchingTools, query);
+
+}
 
         return;
       }
