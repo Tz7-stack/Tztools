@@ -17,6 +17,7 @@ body {
   position: relative;
 }
 
+
 /* =========================
    ANIMATED BACKGROUND
 ========================= */
@@ -294,33 +295,46 @@ body::after {
 .tool-card {
   display: flex;
   gap: 18px;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.92);
   border: 1px solid #e5e7eb;
   padding: 23px;
   border-radius: 19px;
   text-align: left;
   transition: 0.25s ease;
   animation: cardAppear 0.5s ease both;
+  box-shadow: 0 8px 25px rgba(17, 24, 39, 0.03);
 }
 
 .tool-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-6px);
   border-color: #c7d2fe;
-  box-shadow: 0 18px 40px rgba(17, 24, 39, 0.08);
+  box-shadow:
+    0 20px 45px rgba(17, 24, 39, 0.09),
+    0 5px 15px rgba(99, 102, 241, 0.06);
 }
 
+
+/* =========================
+   TOOL ICON
+========================= */
+
 .tool-icon {
-  width: 54px;
-  height: 54px;
+  width: 58px;
+  height: 58px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: #f3f4ff;
   border: 1px solid #e0e7ff;
-  border-radius: 15px;
-  font-size: 26px;
+  border-radius: 16px;
+  font-size: 27px;
   flex-shrink: 0;
 }
+
+
+/* =========================
+   TOOL INFORMATION
+========================= */
 
 .tool-info {
   flex: 1;
@@ -330,38 +344,107 @@ body::after {
 .tool-info h3 {
   font-size: 20px;
   margin-bottom: 7px;
+  letter-spacing: -0.3px;
 }
 
-.tool-info p {
+.tool-info > p {
   color: #6b7280;
   line-height: 1.55;
   font-size: 14px;
   margin-bottom: 15px;
 }
 
+
+/* =========================
+   RATING + BEST FOR
+========================= */
+
+.tool-rating {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 13px;
+}
+
+.tool-rating span {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.rating {
+  background: #fff7ed;
+  color: #c2410c;
+  border: 1px solid #fed7aa;
+}
+
+.best-for {
+  background: #eef2ff;
+  color: #4f46e5;
+  border: 1px solid #c7d2fe;
+}
+
+
+/* =========================
+   TOOL TAGS
+========================= */
+
+.tool-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.tool-tags span {
+  background: #f3f4f6;
+  color: #4b5563;
+  padding: 5px 8px;
+  border-radius: 7px;
+  font-size: 10px;
+  font-weight: 700;
+  border: 1px solid #e5e7eb;
+}
+
+
+/* =========================
+   META
+========================= */
+
 .tool-meta {
   display: flex;
   gap: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 17px;
   flex-wrap: wrap;
 }
 
 .tool-meta span {
   font-size: 11px;
-  background: #f3f4f6;
+  background: #f9fafb;
   padding: 6px 9px;
   border-radius: 7px;
   color: #4b5563;
   font-weight: 600;
+  border: 1px solid #e5e7eb;
 }
 
+
+/* =========================
+   VISIT BUTTON
+========================= */
+
 .visit-button {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   text-decoration: none;
   background: #111827;
   color: white;
-  padding: 10px 14px;
-  border-radius: 9px;
+  padding: 11px 15px;
+  border-radius: 10px;
   font-size: 13px;
   font-weight: 800;
   transition: 0.2s ease;
@@ -369,7 +452,12 @@ body::after {
 
 .visit-button:hover {
   background: #6366f1;
-  transform: translateX(2px);
+  transform: translateX(3px);
+  box-shadow: 0 8px 18px rgba(99, 102, 241, 0.2);
+}
+
+.visit-button:active {
+  transform: scale(0.97);
 }
 
 
@@ -510,6 +598,25 @@ footer p {
 
   .tool-card {
     padding: 19px;
+    gap: 14px;
+  }
+
+  .tool-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 23px;
+  }
+
+  .tool-info h3 {
+    font-size: 18px;
+  }
+
+  .tool-info > p {
+    font-size: 13px;
+  }
+
+  .tool-rating span {
+    font-size: 10px;
   }
 
   .results-heading h2 {
