@@ -502,7 +502,7 @@ const tools = [
     bestFor: "AI images",
     tags: ["ai", "image", "images", "art", "design"],
     url: "https://leonardo.ai/"
-  }
+  },
     {
         id: "openai",
         name: "OpenAI",
