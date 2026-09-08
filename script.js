@@ -932,7 +932,7 @@ function createToolCard(tool) {
 
         <div class="tool-tags">
 
-          ${tool.tags
+          ${tool.tags|| [])
             .slice(0, 4)
             .map(tag => `<span>#${tag}</span>`)
             .join("")}
