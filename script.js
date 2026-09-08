@@ -651,7 +651,21 @@ let comparisons =
 
 let recentlyUsed =
   JSON.parse(localStorage.getItem("tztools-recent")) || [];
+function trackRecentlyUsed(toolId) {
+  if (!toolId) return;
 
+  // Remove it first if it was already recently used
+  recentlyUsed = recentlyUsed.filter(id => id !== toolId);
+
+  // Add the newest tool to the beginning
+  recentlyUsed.unshift(toolId);
+
+  // Keep only the 10 most recently used tools
+  recentlyUsed = recentlyUsed.slice(0, 10);
+
+  // Save the updated list
+  localStorage.setItem("tztools-recent", JSON.stringify(recentlyUsed));
+}
 
 /* ================= ELEMENTS ================= */
 
