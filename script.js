@@ -900,6 +900,8 @@ function searchTools(query) {
 function createToolCard(tool) {
   const tags = tool.tags || tool.keywords || [];
   const link = tool.link || tool.url || "#";
+  const favorite =
+    typeof isFavorite === "function" && isFavorite(tool.id);
 
   return `
     <div class="tool-card">
@@ -912,7 +914,19 @@ function createToolCard(tool) {
 
         <div class="tool-header">
           <h3>${tool.name}</h3>
-          <span class="rating">⭐ ${tool.rating || "N/A"}</span>
+
+          <div class="tool-header-actions">
+            <span class="rating">⭐ ${tool.rating || "N/A"}</span>
+
+            <button
+              class="favorite-button ${favorite ? "active" : ""}"
+              onclick="toggleFavorite('${tool.id}')"
+              aria-label="${favorite ? "Remove from favorites" : "Add to favorites"}"
+              title="${favorite ? "Remove from favorites" : "Add to favorites"}"
+            >
+              ${favorite ? "❤️" : "♡"}
+            </button>
+          </div>
         </div>
 
         <p>
@@ -932,7 +946,11 @@ function createToolCard(tool) {
         </div>
 
         <div class="tool-actions">
-          <a href="${link}" target="_blank" rel="noopener noreferrer">
+          <a
+            href="${link}"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Visit Tool →
           </a>
         </div>
