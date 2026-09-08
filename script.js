@@ -898,32 +898,47 @@ function searchTools(query) {
 /* ================= TOOL CARD ================= */
 
 function createToolCard(tool) {
+  const tags = tool.tags || tool.keywords || [];
+  const link = tool.link || tool.url || "#";
+
   return `
     <div class="tool-card">
-      <div class="tool-header">
-        <h3>${tool.name}</h3>
-        <span class="rating">⭐ ${tool.rating || "N/A"}</span>
+
+      <div class="tool-icon">
+        ${tool.icon || "🛠️"}
       </div>
 
-      <span class="best-for">Best for: ${tool.bestFor || tool.description || "General use"}</span>
+      <div class="tool-info">
 
-      <div class="tool-tags">
-        ${(tool.tags || tool.keywords || [])
-          .slice(0, 4)
-          .map(tag => `<span>#${tag}</span>`)
-          .join("")}
+        <div class="tool-header">
+          <h3>${tool.name}</h3>
+          <span class="rating">⭐ ${tool.rating || "N/A"}</span>
+        </div>
+
+        <p>
+          ${tool.bestFor || tool.description || "A useful digital tool."}
+        </p>
+
+        <div class="tool-tags">
+          ${tags
+            .slice(0, 4)
+            .map(tag => `<span>#${tag}</span>`)
+            .join("")}
+        </div>
+
+        <div class="tool-meta">
+          <span>${tool.category || "Other"}</span>
+          <span>${tool.pricing || "Unknown"}</span>
+        </div>
+
+        <div class="tool-actions">
+          <a href="${link}" target="_blank" rel="noopener noreferrer">
+            Visit Tool →
+          </a>
+        </div>
+
       </div>
 
-      <div class="tool-meta">
-        <span>${tool.category}</span>
-        <span>${tool.pricing}</span>
-      </div>
-
-      <div class="tool-actions">
-        <a href="${tool.link || tool.url || "#"}" target="_blank" rel="noopener">
-          Visit Tool →
-        </a>
-      </div>
     </div>
   `;
 }
