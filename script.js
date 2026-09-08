@@ -925,6 +925,7 @@ function createToolCard(tool) {
 
 
 
+
 /* ================= RENDER TOOLS ================= */
 
 function renderTools(container, list) {
