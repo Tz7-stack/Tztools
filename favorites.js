@@ -35,7 +35,13 @@ function toggleFavorite(toolId) {
   }
 
   saveFavorites(favorites);
+if (typeof favourites !== "undefined") {
+  favourites = favorites;
+}
 
+if (typeof renderFavourites === "function") {
+  renderFavourites();
+}
   /* Refresh visible tools */
   if (typeof renderTools === "function" && typeof searchTools === "function") {
     const results = searchTools(searchInput ? searchInput.value : "");
