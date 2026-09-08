@@ -1,6 +1,6 @@
 /* ================= FAVORITES SYSTEM ================= */
 
-const FAVORITES_KEY = "tztools_favorites";
+const FAVORITES_KEY = "tztools-favourites";
 
 /* Get saved favorites */
 function getFavorites() {
