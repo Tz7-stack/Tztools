@@ -937,16 +937,25 @@ function createToolCard(tool) {
 
 /* ================= RENDER TOOLS ================= */
 
-function renderTools(container, list) {
 
+
+function renderTools(container, list) {
   if (!container) return;
 
-  if (!list.length) {
-
+  if (!list || !list.length) {
     container.innerHTML = `
       <div class="empty">
-
         <h2>🔎 No tools found</h2>
+        <p>Try a different search or category.</p>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = list
+    .map(tool => createToolCard(tool))
+    .join("");
+}
 
 
 /* ================= FEATURED ================= */
