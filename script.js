@@ -841,7 +841,7 @@ function scoreTool(tool, query) {
       score += 2;
     }
 
-    tool.tags.forEach(tag => {
+    (tool.tags || []).forEach(...)
 
       const t = tag.toLowerCase();
 
