@@ -428,117 +428,156 @@ document.addEventListener("click", event => {
 
 
 /* ================= TOOL SCORING ================= */
+/* ================= V4.5 SMART SEARCH ================= */
+
+const intentGroups = {
+
+  Design: {
+    keywords: [
+      "logo", "logos", "branding", "brand",
+      "flyer", "poster", "graphic", "graphics",
+      "design", "thumbnail", "banner"
+    ],
+    phrases: [
+      "make a logo",
+      "create a logo",
+      "design a logo",
+      "make a poster",
+      "make a flyer",
+      "create graphics",
+      "brand my business"
+    ]
+  },
+
+  Video: {
+    keywords: [
+      "video", "videos", "edit", "editing",
+      "youtube", "tiktok", "reel", "reels",
+      "shorts", "movie", "film", "caption"
+    ],
+    phrases: [
+      "edit a video",
+      "make a video",
+      "edit videos",
+      "make youtube videos",
+      "make tiktok videos",
+      "create reels"
+    ]
+  },
+
+  Website: {
+    keywords: [
+      "website", "web", "site", "blog",
+      "landing", "store", "shop", "portfolio"
+    ],
+    phrases: [
+      "build a website",
+      "make a website",
+      "create a website",
+      "build a site",
+      "make an online store"
+    ]
+  },
+
+  Student: {
+    keywords: [
+      "study", "studying", "school", "student",
+      "homework", "math", "science", "learn",
+      "learning", "quiz", "flashcards", "revision"
+    ],
+    phrases: [
+      "help me study",
+      "help with homework",
+      "study for an exam",
+      "learn mathematics",
+      "learn science",
+      "make flashcards"
+    ]
+  },
+
+  Writing: {
+    keywords: [
+      "write", "writing", "essay", "grammar",
+      "spell", "spelling", "rewrite",
+      "paraphrase", "document", "letter"
+    ],
+    phrases: [
+      "write an essay",
+      "fix my grammar",
+      "improve my writing",
+      "rewrite this",
+      "paraphrase this"
+    ]
+  },
+
+  AI: {
+    keywords: [
+      "ai", "artificial", "intelligence",
+      "chat", "brainstorm", "question",
+      "questions", "research", "assistant"
+    ],
+    phrases: [
+      "i need an ai",
+      "find an ai tool",
+      "help me brainstorm",
+      "research something"
+    ]
+  },
+
+  Image: {
+    keywords: [
+      "photo", "photos", "image", "images",
+      "picture", "pictures", "background",
+      "remove", "edit"
+    ],
+    phrases: [
+      "remove background",
+      "remove a background",
+      "edit a photo",
+      "edit an image",
+      "remove image background"
+    ]
+  },
+
+  Productivity: {
+    keywords: [
+      "productivity", "organize", "organization",
+      "planning", "plan", "tasks", "task",
+      "notes", "projects", "calendar"
+    ],
+    phrases: [
+      "organize my work",
+      "manage my tasks",
+      "plan my work",
+      "take notes",
+      "manage a project"
+    ]
+  }
+
+};
+
+
+/* ================= INTENT DETECTION ================= */
 
 function detectIntent(query) {
 
-  const q = query.toLowerCase();
-
-  const intents = {
-
-    Design: [
-      "logo",
-      "logos",
-      "branding",
-      "brand",
-      "flyer",
-      "poster",
-      "graphic",
-      "graphics",
-      "design"
-    ],
-
-    Video: [
-      "video",
-      "videos",
-      "edit",
-      "editing",
-      "youtube",
-      "tiktok",
-      "reel",
-      "reels",
-      "shorts"
-    ],
-
-    Website: [
-      "website",
-      "web",
-      "site",
-      "blog",
-      "landing",
-      "online store",
-      "store"
-    ],
-
-    Student: [
-      "study",
-      "studying",
-      "school",
-      "student",
-      "students",
-      "homework",
-      "math",
-      "science",
-      "learn",
-      "learning",
-      "quiz",
-      "flashcards"
-    ],
-
-    Writing: [
-      "write",
-      "writing",
-      "essay",
-      "grammar",
-      "spell",
-      "spelling",
-      "rewrite",
-      "paraphrase"
-    ],
-
-    AI: [
-      "ai",
-      "artificial intelligence",
-      "chat",
-      "brainstorm",
-      "question",
-      "questions",
-      "research"
-    ],
-
-    Image: [
-      "photo",
-      "photos",
-      "image",
-      "images",
-      "picture",
-      "pictures",
-      "background",
-      "remove background"
-    ],
-
-    Productivity: [
-      "productivity",
-      "organize",
-      "organization",
-      "planning",
-      "plan",
-      "tasks",
-      "task",
-      "notes",
-      "projects"
-    ]
-
-  };
+  const q = query.toLowerCase().trim();
 
   const detected = [];
 
-  for (const category in intents) {
+  for (const category in intentGroups) {
 
-    if (
-      intents[category].some(
-        word => q.includes(word)
-      )
-    ) {
+    const group = intentGroups[category];
+
+    const keywordMatch = group.keywords.some(
+      keyword => q.includes(keyword)
+    );
+
+    const phraseMatch = group.phrases.some(
+      phrase => q.includes(phrase)
+    );
+
+    if (keywordMatch || phraseMatch) {
       detected.push(category);
     }
 
@@ -548,6 +587,8 @@ function detectIntent(query) {
 
 }
 
+
+/* ================= SMART TOOL SCORING ================= */
 
 function scoreTool(tool, query) {
 
@@ -563,40 +604,121 @@ function scoreTool(tool, query) {
 
   const intents = detectIntent(q);
 
+
+  /* Exact tool name */
+
+  if (tool.name.toLowerCase() === q) {
+    score += 20;
+  }
+
+
+  /* Tool name */
+
   words.forEach(word => {
 
     if (
-      tool.tags.some(tag =>
-        tag.toLowerCase() === word
-      )
+      tool.name
+        .toLowerCase()
+        .includes(word)
     ) {
-      score += 6;
-    }
-
-    if (
-      tool.name.toLowerCase().includes(word)
-    ) {
-      score += 4;
-    }
-
-    if (
-      tool.category.toLowerCase().includes(word)
-    ) {
-      score += 3;
-    }
-
-    if (
-      tool.description.toLowerCase().includes(word)
-    ) {
-      score += 1;
+      score += 5;
     }
 
   });
 
 
+  /* Tags */
+
+  words.forEach(word => {
+
+    tool.tags.forEach(tag => {
+
+      const cleanTag =
+        tag.toLowerCase();
+
+      if (cleanTag === word) {
+        score += 8;
+      }
+
+      else if (
+        cleanTag.includes(word) ||
+        word.includes(cleanTag)
+      ) {
+        score += 4;
+      }
+
+    });
+
+  });
+
+
+  /* Category */
+
   if (intents.includes(tool.category)) {
-    score += 8;
+    score += 12;
   }
+
+
+  /* Description */
+
+  words.forEach(word => {
+
+    if (
+      tool.description
+        .toLowerCase()
+        .includes(word)
+    ) {
+      score += 2;
+    }
+
+  });
+
+
+  /* Best-for match */
+
+  words.forEach(word => {
+
+    if (
+      tool.bestFor
+        .toLowerCase()
+        .includes(word)
+    ) {
+      score += 4;
+    }
+
+  });
+
+
+  /* Phrase bonus */
+
+  const allPhrases =
+    Object.values(intentGroups)
+      .flatMap(group => group.phrases);
+
+  allPhrases.forEach(phrase => {
+
+    if (q.includes(phrase)) {
+
+      const category =
+        Object.keys(intentGroups)
+          .find(category =>
+            intentGroups[category]
+              .phrases
+              .includes(phrase)
+          );
+
+      if (category === tool.category) {
+        score += 10;
+      }
+
+    }
+
+  });
+
+
+  /* Rating becomes a small tie-breaker */
+
+  score += tool.rating * 0.5;
 
 
   return score;
@@ -604,9 +726,11 @@ function scoreTool(tool, query) {
 }
 
 
+/* ================= SEARCH TOOLS ================= */
+
 function searchTools(query) {
 
-  const scored = tools
+  const results = tools
     .map(tool => ({
       ...tool,
       score: scoreTool(tool, query)
@@ -622,9 +746,11 @@ function searchTools(query) {
 
     });
 
-  return scored.slice(0, 10);
+
+  return results.slice(0, 10);
 
 }
+
 
 
 /* ================= TOOL CARD ================= */
