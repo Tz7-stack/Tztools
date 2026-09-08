@@ -902,18 +902,27 @@ function createToolCard(tool) {
     <div class="tool-card">
       <div class="tool-header">
         <h3>${tool.name}</h3>
-        <span class="rating">⭐ ${tool.rating}</span>
+        <span class="rating">⭐ ${tool.rating || "N/A"}</span>
       </div>
-      <span class="best-for">Best for: ${tool.bestFor}</span>
+
+      <span class="best-for">Best for: ${tool.bestFor || tool.description || "General use"}</span>
+
       <div class="tool-tags">
-        ${(tool.tags || []).slice(0, 4).map(tag => `<span>#${tag}</span>`).join('')}
+        ${(tool.tags || tool.keywords || [])
+          .slice(0, 4)
+          .map(tag => `<span>#${tag}</span>`)
+          .join("")}
       </div>
+
       <div class="tool-meta">
         <span>${tool.category}</span>
         <span>${tool.pricing}</span>
       </div>
+
       <div class="tool-actions">
-        <a href="${tool.link}" target="_blank" rel="noopener">Visit Tool →</a>
+        <a href="${tool.link || tool.url || "#"}" target="_blank" rel="noopener">
+          Visit Tool →
+        </a>
       </div>
     </div>
   `;
@@ -938,21 +947,6 @@ function renderTools(container, list) {
       <div class="empty">
 
         <h2>🔎 No tools found</h2>
-
-        <p>
-          Try a different search or category.
-        </p>
-
-      </div>
-    `;
-
-    return;
-  }
-
-  container.innerHTML =
-    list.map(createToolCard).join("");
-
-}
 
 
 /* ================= FEATURED ================= */
