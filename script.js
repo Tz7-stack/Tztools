@@ -1,5 +1,5 @@
 /* =========================================================
-   TzTools V4 — Main JavaScript
+   TzTools V4.5 — COMPLETE BRAIN
    ========================================================= */
 
 
@@ -291,13 +291,17 @@ const tools = [
     bestFor: "Photo editing",
     tags: ["image", "photo", "editing", "graphics"],
     url: "https://pixlr.com/"
-  }
+  },
+
+
+  /* ================= V4.5 AI TOOLS ================= */
+
   {
     id: "perplexity",
     name: "Perplexity",
     icon: "🔎",
     category: "AI",
-    description: "AI-powered search and research with cited answers.",
+    description: "AI-powered search and research with useful cited answers.",
     rating: 4.8,
     pricing: "Freemium",
     bestFor: "Research",
@@ -371,19 +375,6 @@ const tools = [
   },
 
   {
-    id: "character-ai",
-    name: "Character.AI",
-    icon: "🎭",
-    category: "AI",
-    description: "Interact with AI characters and create conversational experiences.",
-    rating: 4.6,
-    pricing: "Freemium",
-    bestFor: "AI conversations",
-    tags: ["ai", "chat", "characters", "conversation"],
-    url: "https://character.ai/"
-  },
-
-  {
     id: "pi",
     name: "Pi",
     icon: "💡",
@@ -414,11 +405,11 @@ const tools = [
     name: "Copy.ai",
     icon: "✍️",
     category: "AI",
-    description: "AI-powered writing and content creation for individuals and teams.",
+    description: "AI-powered writing and content creation.",
     rating: 4.6,
     pricing: "Freemium",
     bestFor: "Content creation",
-    tags: ["ai", "writing", "copywriting", "content", "marketing"],
+    tags: ["ai", "writing", "copywriting", "content"],
     url: "https://www.copy.ai/"
   },
 
@@ -431,7 +422,7 @@ const tools = [
     rating: 4.6,
     pricing: "Paid",
     bestFor: "Marketing content",
-    tags: ["ai", "writing", "marketing", "content", "copywriting"],
+    tags: ["ai", "writing", "marketing", "content"],
     url: "https://www.jasper.ai/"
   },
 
@@ -444,21 +435,8 @@ const tools = [
     rating: 4.5,
     pricing: "Freemium",
     bestFor: "AI writing",
-    tags: ["ai", "writing", "content", "research", "copywriting"],
+    tags: ["ai", "writing", "content", "research"],
     url: "https://writesonic.com/"
-  },
-
-  {
-    id: "gamma-ai",
-    name: "Gamma AI",
-    icon: "🎨",
-    category: "AI",
-    description: "Turn ideas into polished presentations and visual documents.",
-    rating: 4.6,
-    pricing: "Freemium",
-    bestFor: "AI presentations",
-    tags: ["ai", "presentation", "design", "slides", "documents"],
-    url: "https://gamma.app/"
   },
 
   {
@@ -486,6 +464,46 @@ const tools = [
     tags: ["ai", "voice", "audio", "speech", "text to speech"],
     url: "https://elevenlabs.io/"
   },
+
+  {
+    id: "runway",
+    name: "Runway",
+    icon: "🎥",
+    category: "AI",
+    description: "Create and edit videos using powerful AI tools.",
+    rating: 4.7,
+    pricing: "Freemium",
+    bestFor: "AI video",
+    tags: ["ai", "video", "editing", "generation", "film"],
+    url: "https://runwayml.com/"
+  },
+
+  {
+    id: "suno",
+    name: "Suno",
+    icon: "🎵",
+    category: "AI",
+    description: "Create music and songs with AI.",
+    rating: 4.7,
+    pricing: "Freemium",
+    bestFor: "AI music",
+    tags: ["ai", "music", "audio", "song", "creative"],
+    url: "https://suno.com/"
+  },
+
+  {
+    id: "leonardo",
+    name: "Leonardo.Ai",
+    icon: "🖼️",
+    category: "AI",
+    description: "Create AI-generated images and creative visual content.",
+    rating: 4.7,
+    pricing: "Freemium",
+    bestFor: "AI images",
+    tags: ["ai", "image", "images", "art", "design"],
+    url: "https://leonardo.ai/"
+  }
+
 ];
 
 
@@ -496,6 +514,9 @@ let favourites =
 
 let comparisons =
   JSON.parse(localStorage.getItem("tztools-comparisons")) || [];
+
+let recentlyUsed =
+  JSON.parse(localStorage.getItem("tztools-recent")) || [];
 
 
 /* ================= ELEMENTS ================= */
@@ -549,6 +570,11 @@ function saveData() {
     JSON.stringify(comparisons)
   );
 
+  localStorage.setItem(
+    "tztools-recent",
+    JSON.stringify(recentlyUsed)
+  );
+
 }
 
 
@@ -573,204 +599,72 @@ function showToast(message) {
 }
 
 
-/* ================= PAGE NAVIGATION ================= */
-
-function showPage(pageName) {
-
-  document.querySelectorAll(".page").forEach(page => {
-    page.classList.remove("active");
-  });
-
-  const page = document.getElementById(pageName + "Page");
-
-  if (page) {
-    page.classList.add("active");
-  }
-
-  mobileMenu?.classList.remove("open");
-
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth"
-  });
-
-  if (pageName === "tools") {
-    renderDirectory();
-  }
-
-  if (pageName === "dashboard") {
-    renderDashboard();
-  }
-
-  if (pageName === "community") {
-    renderCommunity();
-  }
-
-}
-
-
-document.addEventListener("click", event => {
-
-  const pageButton = event.target.closest("[data-page]");
-
-  if (pageButton) {
-    showPage(pageButton.dataset.page);
-  }
-
-});
-
-
-/* ================= TOOL SCORING ================= */
-/* ================= V4.5 SMART SEARCH ================= */
+/* ================= SMART SEARCH ================= */
 
 const intentGroups = {
 
-  Design: {
-    keywords: [
-      "logo", "logos", "branding", "brand",
-      "flyer", "poster", "graphic", "graphics",
-      "design", "thumbnail", "banner"
-    ],
-    phrases: [
-      "make a logo",
-      "create a logo",
-      "design a logo",
-      "make a poster",
-      "make a flyer",
-      "create graphics",
-      "brand my business"
-    ]
-  },
+  Design: [
+    "logo", "logos", "branding", "brand",
+    "flyer", "poster", "graphic", "graphics",
+    "design", "thumbnail", "banner"
+  ],
 
-  Video: {
-    keywords: [
-      "video", "videos", "edit", "editing",
-      "youtube", "tiktok", "reel", "reels",
-      "shorts", "movie", "film", "caption"
-    ],
-    phrases: [
-      "edit a video",
-      "make a video",
-      "edit videos",
-      "make youtube videos",
-      "make tiktok videos",
-      "create reels"
-    ]
-  },
+  Video: [
+    "video", "videos", "edit", "editing",
+    "youtube", "tiktok", "reel", "reels",
+    "shorts", "movie", "film", "caption"
+  ],
 
-  Website: {
-    keywords: [
-      "website", "web", "site", "blog",
-      "landing", "store", "shop", "portfolio"
-    ],
-    phrases: [
-      "build a website",
-      "make a website",
-      "create a website",
-      "build a site",
-      "make an online store"
-    ]
-  },
+  Website: [
+    "website", "web", "site", "blog",
+    "landing", "store", "shop", "portfolio"
+  ],
 
-  Student: {
-    keywords: [
-      "study", "studying", "school", "student",
-      "homework", "math", "science", "learn",
-      "learning", "quiz", "flashcards", "revision"
-    ],
-    phrases: [
-      "help me study",
-      "help with homework",
-      "study for an exam",
-      "learn mathematics",
-      "learn science",
-      "make flashcards"
-    ]
-  },
+  Student: [
+    "study", "studying", "school", "student",
+    "homework", "math", "science", "learn",
+    "learning", "quiz", "flashcards", "revision"
+  ],
 
-  Writing: {
-    keywords: [
-      "write", "writing", "essay", "grammar",
-      "spell", "spelling", "rewrite",
-      "paraphrase", "document", "letter"
-    ],
-    phrases: [
-      "write an essay",
-      "fix my grammar",
-      "improve my writing",
-      "rewrite this",
-      "paraphrase this"
-    ]
-  },
+  Writing: [
+    "write", "writing", "essay", "grammar",
+    "spell", "spelling", "rewrite",
+    "paraphrase", "document", "letter"
+  ],
 
-  AI: {
-    keywords: [
-      "ai", "artificial", "intelligence",
-      "chat", "brainstorm", "question",
-      "questions", "research", "assistant"
-    ],
-    phrases: [
-      "i need an ai",
-      "find an ai tool",
-      "help me brainstorm",
-      "research something"
-    ]
-  },
+  AI: [
+    "ai", "artificial", "intelligence",
+    "chat", "brainstorm", "assistant",
+    "research", "question", "questions"
+  ],
 
-  Image: {
-    keywords: [
-      "photo", "photos", "image", "images",
-      "picture", "pictures", "background",
-      "remove", "edit"
-    ],
-    phrases: [
-      "remove background",
-      "remove a background",
-      "edit a photo",
-      "edit an image",
-      "remove image background"
-    ]
-  },
+  Image: [
+    "photo", "photos", "image", "images",
+    "picture", "pictures", "background"
+  ],
 
-  Productivity: {
-    keywords: [
-      "productivity", "organize", "organization",
-      "planning", "plan", "tasks", "task",
-      "notes", "projects", "calendar"
-    ],
-    phrases: [
-      "organize my work",
-      "manage my tasks",
-      "plan my work",
-      "take notes",
-      "manage a project"
-    ]
-  }
+  Productivity: [
+    "productivity", "organize", "organization",
+    "planning", "plan", "tasks", "task",
+    "notes", "projects", "calendar"
+  ]
 
 };
 
 
-/* ================= INTENT DETECTION ================= */
-
 function detectIntent(query) {
 
-  const q = query.toLowerCase().trim();
+  const q = query.toLowerCase();
 
   const detected = [];
 
   for (const category in intentGroups) {
 
-    const group = intentGroups[category];
-
-    const keywordMatch = group.keywords.some(
-      keyword => q.includes(keyword)
-    );
-
-    const phraseMatch = group.phrases.some(
-      phrase => q.includes(phrase)
-    );
-
-    if (keywordMatch || phraseMatch) {
+    if (
+      intentGroups[category].some(
+        word => q.includes(word)
+      )
+    ) {
       detected.push(category);
     }
 
@@ -781,8 +675,6 @@ function detectIntent(query) {
 }
 
 
-/* ================= SMART TOOL SCORING ================= */
-
 function scoreTool(tool, query) {
 
   const q = query.toLowerCase().trim();
@@ -792,50 +684,40 @@ function scoreTool(tool, query) {
   let score = 0;
 
   const words = q
+    .replace(/[^\w\s-]/g, "")
     .split(/\s+/)
     .filter(Boolean);
 
   const intents = detectIntent(q);
 
-
-  /* Exact tool name */
-
   if (tool.name.toLowerCase() === q) {
-    score += 20;
+    score += 30;
   }
 
-
-  /* Tool name */
-
   words.forEach(word => {
 
-    if (
-      tool.name
-        .toLowerCase()
-        .includes(word)
-    ) {
-      score += 5;
+    const name = tool.name.toLowerCase();
+    const description = tool.description.toLowerCase();
+
+    if (name.includes(word)) {
+      score += 7;
     }
 
-  });
-
-
-  /* Tags */
-
-  words.forEach(word => {
+    if (description.includes(word)) {
+      score += 2;
+    }
 
     tool.tags.forEach(tag => {
 
-      const cleanTag =
-        tag.toLowerCase();
+      const t = tag.toLowerCase();
 
-      if (cleanTag === word) {
-        score += 8;
+      if (t === word) {
+        score += 10;
       }
 
       else if (
-        cleanTag.includes(word) ||
-        word.includes(cleanTag)
+        t.includes(word) ||
+        word.includes(t)
       ) {
         score += 4;
       }
@@ -845,85 +727,21 @@ function scoreTool(tool, query) {
   });
 
 
-  /* Category */
-
   if (intents.includes(tool.category)) {
     score += 12;
   }
 
 
-  /* Description */
-
-  words.forEach(word => {
-
-    if (
-      tool.description
-        .toLowerCase()
-        .includes(word)
-    ) {
-      score += 2;
-    }
-
-  });
-
-
-  /* Best-for match */
-
-  words.forEach(word => {
-
-    if (
-      tool.bestFor
-        .toLowerCase()
-        .includes(word)
-    ) {
-      score += 4;
-    }
-
-  });
-
-
-  /* Phrase bonus */
-
-  const allPhrases =
-    Object.values(intentGroups)
-      .flatMap(group => group.phrases);
-
-  allPhrases.forEach(phrase => {
-
-    if (q.includes(phrase)) {
-
-      const category =
-        Object.keys(intentGroups)
-          .find(category =>
-            intentGroups[category]
-              .phrases
-              .includes(phrase)
-          );
-
-      if (category === tool.category) {
-        score += 10;
-      }
-
-    }
-
-  });
-
-
-  /* Rating becomes a small tie-breaker */
-
   score += tool.rating * 0.5;
-
 
   return score;
 
 }
 
 
-/* ================= SEARCH TOOLS ================= */
-
 function searchTools(query) {
 
-  const results = tools
+  return tools
     .map(tool => ({
       ...tool,
       score: scoreTool(tool, query)
@@ -937,13 +755,10 @@ function searchTools(query) {
 
       return b.rating - a.rating;
 
-    });
-
-
-  return results.slice(0, 10);
+    })
+    .slice(0, 10);
 
 }
-
 
 
 /* ================= TOOL CARD ================= */
@@ -957,7 +772,6 @@ function createToolCard(tool) {
     comparisons.includes(tool.id);
 
   return `
-
     <article class="tool-card">
 
       <div class="tool-icon">
@@ -994,7 +808,6 @@ function createToolCard(tool) {
         <div class="tool-meta">
 
           <span>${tool.category}</span>
-
           <span>${tool.pricing}</span>
 
         </div>
@@ -1006,6 +819,7 @@ function createToolCard(tool) {
             href="${tool.url}"
             target="_blank"
             rel="noopener noreferrer"
+            data-recent="${tool.id}"
           >
             Visit Tool →
           </a>
@@ -1021,7 +835,7 @@ function createToolCard(tool) {
             class="tool-action ${isCompared ? "active" : ""}"
             data-compare="${tool.id}"
           >
-            ${isCompared ? "✓ Compared" : "⚖️ Compare"}
+            ${isCompared ? "✓ Comparing" : "⚖ Compare"}
           </button>
 
         </div>
@@ -1029,11 +843,12 @@ function createToolCard(tool) {
       </div>
 
     </article>
-
   `;
 
 }
 
+
+/* ================= RENDER TOOLS ================= */
 
 function renderTools(container, list) {
 
@@ -1042,21 +857,18 @@ function renderTools(container, list) {
   if (!list.length) {
 
     container.innerHTML = `
-
       <div class="empty">
 
-        <h2>No tools found 😕</h2>
+        <h2>🔎 No tools found</h2>
 
         <p>
-          Try a different search or filter.
+          Try a different search or category.
         </p>
 
       </div>
-
     `;
 
     return;
-
   }
 
   container.innerHTML =
@@ -1069,380 +881,129 @@ function renderTools(container, list) {
 
 function renderFeatured() {
 
-  const popular = [...tools]
+  if (!featuredTools) return;
+
+  const featured = [...tools]
     .sort((a, b) => b.rating - a.rating)
     .slice(0, 6);
 
-  renderTools(featuredTools, popular);
+  renderTools(featuredTools, featured);
 
 }
 
 
-/* ================= MAIN SEARCH ================= */
+/* ================= DIRECTORY ================= */
 
-function performSearch() {
-
-  const query =
-    searchInput?.value.trim() || "";
-
-  if (!query) {
-
-    showToast("Tell me what you want to do 🔎");
-
-    return;
-
-  }
-
-  const results = searchTools(query);
-
-  showPage("tools");
-
-  directorySearch.value = query;
-
-  categoryFilter.value = "all";
-  pricingFilter.value = "all";
-  ratingFilter.value = "0";
-  sortFilter.value = "recommended";
-
-  document
-    .querySelectorAll(".pricing-check")
-    .forEach(check => {
-      check.checked = false;
-    });
-
-  renderDirectory(results);
-
-}
-
-
-/* ================= SMART SUGGESTIONS ================= */
-
-function renderSuggestions() {
-
-  if (!suggestions || !searchInput) return;
-
-  const query =
-    searchInput.value.trim();
-
-  if (!query) {
-
-    suggestions.classList.remove("open");
-    suggestions.innerHTML = "";
-
-    return;
-
-  }
-
-  const results = searchTools(query).slice(0, 5);
-
-  if (!results.length) {
-
-    suggestions.classList.remove("open");
-    suggestions.innerHTML = "";
-
-    return;
-
-  }
-
-  suggestions.innerHTML = results
-    .map(tool => `
-
-      <button
-        class="suggestion"
-        data-suggestion="${tool.id}"
-      >
-
-        <span class="suggestion-icon">
-          ${tool.icon}
-        </span>
-
-        <span>
-
-          <strong>${tool.name}</strong>
-
-          <small>
-            ${tool.category} · ${tool.bestFor}
-          </small>
-
-        </span>
-
-      </button>
-
-    `)
-    .join("");
-
-  suggestions.classList.add("open");
-
-}
-
-
-searchInput?.addEventListener(
-  "input",
-  () => {
-
-    clearSearch.style.display =
-      searchInput.value ? "block" : "none";
-
-    renderSuggestions();
-
-  }
-);
-
-
-searchInput?.addEventListener(
-  "keydown",
-  event => {
-
-    if (event.key === "Enter") {
-      performSearch();
-    }
-
-  }
-);
-
-
-searchButton?.addEventListener(
-  "click",
-  performSearch
-);
-
-
-clearSearch?.addEventListener(
-  "click",
-  () => {
-
-    searchInput.value = "";
-
-    clearSearch.style.display = "none";
-
-    suggestions.classList.remove("open");
-
-    searchInput.focus();
-
-  }
-);
-
-
-/* ================= SUGGESTION CLICK ================= */
-
-document.addEventListener("click", event => {
-
-  const suggestion =
-    event.target.closest("[data-suggestion]");
-
-  if (!suggestion) return;
-
-  const tool =
-    getTool(suggestion.dataset.suggestion);
-
-  if (!tool) return;
-
-  searchInput.value = tool.name;
-
-  suggestions.classList.remove("open");
-
-  performSearch();
-
-});
-
-
-/* ================= QUICK SEARCH ================= */
-
-document.addEventListener("click", event => {
-
-  const button =
-    event.target.closest("[data-search]");
-
-  if (!button) return;
-
-  const query =
-    button.dataset.search;
-
-  searchInput.value = query;
-
-  clearSearch.style.display = "block";
-
-  performSearch();
-
-});
-
-
-/* ================= CATEGORY CLICK ================= */
-
-document.addEventListener("click", event => {
-
-  const button =
-    event.target.closest("[data-category]");
-
-  if (!button) return;
-
-  const category =
-    button.dataset.category;
-
-  showPage("tools");
-
-  categoryFilter.value = category;
-
-  directorySearch.value = "";
-
-  renderDirectory();
-
-});
-
-
-/* ================= DIRECTORY FILTERING ================= */
-
-function renderDirectory(searchResults = null) {
+function renderDirectory() {
 
   if (!allTools) return;
 
-  let list =
-    searchResults || [...tools];
+  const query =
+    directorySearch?.value.toLowerCase().trim() || "";
 
-  if (!searchResults) {
+  const category =
+    categoryFilter?.value || "all";
 
-    const query =
-      directorySearch?.value
-        .trim()
-        .toLowerCase() || "";
+  const pricing =
+    pricingFilter?.value || "all";
 
-    const category =
-      categoryFilter?.value || "all";
+  const minimumRating =
+    Number(ratingFilter?.value || 0);
 
-    const pricing =
-      pricingFilter?.value || "all";
+  const sort =
+    sortFilter?.value || "recommended";
 
-    const minimumRating =
-      Number(ratingFilter?.value || 0);
-
-    const checkedPricing =
-      [...document.querySelectorAll(
-        ".pricing-check:checked"
-      )].map(check => check.value);
+  let results = [...tools];
 
 
-    if (query) {
+  if (query) {
 
-      list = list.filter(tool => {
+    results = results.filter(tool => {
 
-        const text = `
+      const searchable = [
+        tool.name,
+        tool.description,
+        tool.category,
+        tool.bestFor,
+        ...tool.tags
+      ]
+        .join(" ")
+        .toLowerCase();
 
-          ${tool.name}
-          ${tool.category}
-          ${tool.description}
-          ${tool.tags.join(" ")}
+      return searchable.includes(query);
 
-        `.toLowerCase();
-
-        return text.includes(query);
-
-      });
-
-    }
-
-
-    if (category !== "all") {
-
-      list = list.filter(
-        tool => tool.category === category
-      );
-
-    }
-
-
-    if (pricing !== "all") {
-
-      list = list.filter(
-        tool => tool.pricing === pricing
-      );
-
-    }
-
-
-    if (checkedPricing.length) {
-
-      list = list.filter(
-        tool => checkedPricing.includes(tool.pricing)
-      );
-
-    }
-
-
-    if (minimumRating > 0) {
-
-      list = list.filter(
-        tool => tool.rating >= minimumRating
-      );
-
-    }
-
-
-    if (sortFilter?.value === "rating") {
-
-      list.sort(
-        (a, b) => b.rating - a.rating
-      );
-
-    }
-
-
-    if (sortFilter?.value === "name") {
-
-      list.sort(
-        (a, b) => a.name.localeCompare(b.name)
-      );
-
-    }
+    });
 
   }
 
 
-  renderTools(allTools, list);
+  if (category !== "all") {
+
+    results = results.filter(
+      tool => tool.category === category
+    );
+
+  }
+
+
+  if (pricing !== "all") {
+
+    results = results.filter(
+      tool => tool.pricing === pricing
+    );
+
+  }
+
+
+  if (minimumRating > 0) {
+
+    results = results.filter(
+      tool => tool.rating >= minimumRating
+    );
+
+  }
+
+
+  const selectedPricing =
+    [...document.querySelectorAll(".pricing-check:checked")]
+      .map(input => input.value);
+
+  if (selectedPricing.length) {
+
+    results = results.filter(
+      tool => selectedPricing.includes(tool.pricing)
+    );
+
+  }
+
+
+  if (sort === "rating") {
+
+    results.sort(
+      (a, b) => b.rating - a.rating
+    );
+
+  }
+
+  else if (sort === "name") {
+
+    results.sort(
+      (a, b) => a.name.localeCompare(b.name)
+    );
+
+  }
 
 
   if (directoryCount) {
 
     directoryCount.textContent =
-      `${list.length} tool${list.length === 1 ? "" : "s"} found`;
+      `${results.length} tool${results.length === 1 ? "" : "s"} found`;
 
   }
 
+  renderTools(allTools, results);
+
 }
-
-
-/* ================= FILTER EVENTS ================= */
-
-[
-  directorySearch,
-  categoryFilter,
-  pricingFilter,
-  ratingFilter,
-  sortFilter
-].forEach(element => {
-
-  element?.addEventListener(
-    "input",
-    () => renderDirectory()
-  );
-
-  element?.addEventListener(
-    "change",
-    () => renderDirectory()
-  );
-
-});
-
-
-document
-  .querySelectorAll(".pricing-check")
-  .forEach(check => {
-
-    check.addEventListener(
-      "change",
-      () => renderDirectory()
-    );
-
-  });
 
 
 /* ================= FAVOURITES ================= */
@@ -1452,13 +1013,13 @@ function toggleFavourite(id) {
   if (favourites.includes(id)) {
 
     favourites =
-      favourites.filter(
-        favourite => favourite !== id
-      );
+      favourites.filter(item => item !== id);
 
     showToast("Removed from favourites");
 
-  } else {
+  }
+
+  else {
 
     favourites.push(id);
 
@@ -1468,37 +1029,26 @@ function toggleFavourite(id) {
 
   saveData();
 
-  refreshUI();
+  updateCounts();
+
+  renderFeatured();
+  renderDirectory();
+  renderDashboard();
+  renderCommunity();
 
 }
 
 
-function renderDashboard() {
+function renderFavourites() {
 
-  if (favouriteCount) {
-    favouriteCount.textContent =
-      favourites.length;
-  }
+  if (!favouriteTools) return;
 
-  if (comparisonCount) {
-    comparisonCount.textContent =
-      comparisons.length;
-  }
-
-
-  const favouriteList =
+  const list =
     favourites
       .map(getTool)
       .filter(Boolean);
 
-
-  renderTools(
-    favouriteTools,
-    favouriteList
-  );
-
-
-  renderComparison();
+  renderTools(favouriteTools, list);
 
 }
 
@@ -1510,19 +1060,17 @@ function toggleComparison(id) {
   if (comparisons.includes(id)) {
 
     comparisons =
-      comparisons.filter(
-        item => item !== id
-      );
+      comparisons.filter(item => item !== id);
 
     showToast("Removed from comparison");
 
-  } else {
+  }
+
+  else {
 
     if (comparisons.length >= 3) {
 
-      showToast(
-        "You can compare up to 3 tools."
-      );
+      showToast("You can compare up to 3 tools");
 
       return;
 
@@ -1536,31 +1084,11 @@ function toggleComparison(id) {
 
   saveData();
 
-  refreshUI();
+  updateCounts();
 
-}
-
-
-function updateCompareBar() {
-
-  if (!compareBar) return;
-
-  if (comparisons.length) {
-
-    compareBar.classList.add("show");
-
-  } else {
-
-    compareBar.classList.remove("show");
-
-  }
-
-  if (compareBarCount) {
-
-    compareBarCount.textContent =
-      `${comparisons.length} selected`;
-
-  }
+  renderFeatured();
+  renderDirectory();
+  renderDashboard();
 
 }
 
@@ -1578,18 +1106,15 @@ function renderComparison() {
   if (!selected.length) {
 
     comparisonView.innerHTML = `
-
       <div class="empty">
 
-        <h2>No tools selected</h2>
+        <h2>⚖️ No tools selected</h2>
 
         <p>
-          Choose up to 3 tools from the directory
-          to compare them.
+          Choose up to 3 tools to compare them.
         </p>
 
       </div>
-
     `;
 
     return;
@@ -1610,9 +1135,7 @@ function renderComparison() {
             <th>Feature</th>
 
             ${selected
-              .map(tool =>
-                `<th>${tool.icon} ${tool.name}</th>`
-              )
+              .map(tool => `<th>${tool.icon} ${tool.name}</th>`)
               .join("")}
 
           </tr>
@@ -1622,75 +1145,40 @@ function renderComparison() {
         <tbody>
 
           <tr>
-
             <td>Category</td>
-
-            ${selected
-              .map(tool =>
-                `<td>${tool.category}</td>`
-              )
-              .join("")}
-
+            ${selected.map(tool => `<td>${tool.category}</td>`).join("")}
           </tr>
 
           <tr>
-
             <td>Rating</td>
-
-            ${selected
-              .map(tool =>
-                `<td>⭐ ${tool.rating}</td>`
-              )
-              .join("")}
-
+            ${selected.map(tool => `<td>⭐ ${tool.rating}</td>`).join("")}
           </tr>
 
           <tr>
-
             <td>Pricing</td>
-
-            ${selected
-              .map(tool =>
-                `<td>${tool.pricing}</td>`
-              )
-              .join("")}
-
+            ${selected.map(tool => `<td>${tool.pricing}</td>`).join("")}
           </tr>
 
           <tr>
-
             <td>Best for</td>
-
-            ${selected
-              .map(tool =>
-                `<td>${tool.bestFor}</td>`
-              )
-              .join("")}
-
+            ${selected.map(tool => `<td>${tool.bestFor}</td>`).join("")}
           </tr>
 
           <tr>
+            <td>Action</td>
 
-            <td>Visit</td>
-
-            ${selected
-              .map(tool => `
-
-                <td>
-
-                  <a
-                    class="visit-button"
-                    href="${tool.url}"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Visit →
-                  </a>
-
-                </td>
-
-              `)
-              .join("")}
+            ${selected.map(tool => `
+              <td>
+                <a
+                  class="visit-button"
+                  href="${tool.url}"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Visit →
+                </a>
+              </td>
+            `).join("")}
 
           </tr>
 
@@ -1699,33 +1187,331 @@ function renderComparison() {
       </table>
 
     </div>
-
   `;
 
 }
 
 
-openComparison?.addEventListener(
-  "click",
-  () => {
+/* ================= DASHBOARD ================= */
 
-    showPage("dashboard");
+function renderDashboard() {
 
-    setTimeout(() => {
+  renderFavourites();
+  renderComparison();
+  updateCounts();
 
-      comparisonView?.scrollIntoView({
-        behavior: "smooth"
-      });
+}
 
-    }, 100);
+
+/* ================= COMMUNITY ================= */
+
+function renderCommunity() {
+
+  if (!communityTools) return;
+
+  const popular =
+    [...tools]
+      .sort((a, b) => b.rating - a.rating)
+      .slice(0, 8);
+
+  renderTools(communityTools, popular);
+
+}
+
+
+/* ================= COUNTS ================= */
+
+function updateCounts() {
+
+  if (favouriteCount) {
+    favouriteCount.textContent =
+      favourites.length;
+  }
+
+  if (comparisonCount) {
+    comparisonCount.textContent =
+      comparisons.length;
+  }
+
+  if (compareBarCount) {
+
+    compareBarCount.textContent =
+      `${comparisons.length} selected`;
 
   }
-);
+
+  if (compareBar) {
+
+    compareBar.classList.toggle(
+      "show",
+      comparisons.length > 0
+    );
+
+  }
+
+}
 
 
-/* ================= TOOL ACTIONS ================= */
+/* ================= RECENTLY USED ================= */
+
+function addRecentlyUsed(id) {
+
+  recentlyUsed =
+    recentlyUsed.filter(item => item !== id);
+
+  recentlyUsed.unshift(id);
+
+  recentlyUsed =
+    recentlyUsed.slice(0, 6);
+
+  saveData();
+
+}
+
+
+/* ================= SEARCH SUGGESTIONS ================= */
+
+const suggestionSearches = [
+  {
+    icon: "🎨",
+    text: "Make a logo"
+  },
+  {
+    icon: "🎬",
+    text: "Edit a video"
+  },
+  {
+    icon: "📚",
+    text: "Help me study"
+  },
+  {
+    icon: "🌐",
+    text: "Build a website"
+  },
+  {
+    icon: "🤖",
+    text: "Find an AI tool"
+  }
+];
+
+
+function renderSuggestions(query) {
+
+  if (!suggestions) return;
+
+  const q = query.toLowerCase().trim();
+
+  if (!q) {
+
+    suggestions.classList.remove("open");
+    suggestions.innerHTML = "";
+
+    return;
+
+  }
+
+
+  const matching =
+    suggestionSearches
+      .filter(item =>
+        item.text.toLowerCase().includes(q)
+      )
+      .slice(0, 5);
+
+
+  if (!matching.length) {
+
+    suggestions.classList.remove("open");
+    suggestions.innerHTML = "";
+
+    return;
+
+  }
+
+
+  suggestions.innerHTML =
+    matching.map(item => `
+
+      <button
+        class="suggestion"
+        data-search="${item.text}"
+      >
+
+        <span class="suggestion-icon">
+          ${item.icon}
+        </span>
+
+        <span>
+          ${item.text}
+        </span>
+
+      </button>
+
+    `).join("");
+
+
+  suggestions.classList.add("open");
+
+}
+
+
+/* ================= HOME SEARCH ================= */
+
+function performSearch(query) {
+
+  const cleanQuery =
+    query.trim();
+
+  if (!cleanQuery) {
+
+    showToast("Tell us what you want to accomplish.");
+
+    return;
+
+  }
+
+  const results =
+    searchTools(cleanQuery);
+
+
+  showPage("tools");
+
+
+  if (directorySearch) {
+    directorySearch.value = cleanQuery;
+  }
+
+  if (categoryFilter) {
+    categoryFilter.value = "all";
+  }
+
+  if (pricingFilter) {
+    pricingFilter.value = "all";
+  }
+
+  if (ratingFilter) {
+    ratingFilter.value = "0";
+  }
+
+  if (sortFilter) {
+    sortFilter.value = "recommended";
+  }
+
+
+  if (directoryCount) {
+
+    directoryCount.textContent =
+      `${results.length} recommended tool${results.length === 1 ? "" : "s"}`;
+
+  }
+
+
+  renderTools(allTools, results);
+
+}
+
+
+/* ================= PAGE NAVIGATION ================= */
+
+function showPage(pageName) {
+
+  document
+    .querySelectorAll(".page")
+    .forEach(page => {
+      page.classList.remove("active");
+    });
+
+
+  const page =
+    document.getElementById(
+      pageName + "Page"
+    );
+
+
+  if (page) {
+    page.classList.add("active");
+  }
+
+
+  mobileMenu?.classList.remove("open");
+
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+
+
+  if (pageName === "tools") {
+    renderDirectory();
+  }
+
+  if (pageName === "dashboard") {
+    renderDashboard();
+  }
+
+  if (pageName === "community") {
+    renderCommunity();
+  }
+
+}
+
+
+/* ================= EVENTS ================= */
 
 document.addEventListener("click", event => {
+
+  const pageButton =
+    event.target.closest("[data-page]");
+
+  if (pageButton) {
+
+    showPage(
+      pageButton.dataset.page
+    );
+
+    return;
+
+  }
+
+
+  const categoryButton =
+    event.target.closest("[data-category]");
+
+  if (categoryButton) {
+
+    showPage("tools");
+
+    if (categoryFilter) {
+      categoryFilter.value =
+        categoryButton.dataset.category;
+    }
+
+    renderDirectory();
+
+    return;
+
+  }
+
+
+  const searchQuick =
+    event.target.closest("[data-search]");
+
+  if (searchQuick) {
+
+    const query =
+      searchQuick.dataset.search;
+
+    if (searchInput) {
+      searchInput.value = query;
+    }
+
+    performSearch(query);
+
+    return;
+
+  }
+
 
   const favouriteButton =
     event.target.closest("[data-favourite]");
@@ -1750,84 +1536,148 @@ document.addEventListener("click", event => {
       compareButton.dataset.compare
     );
 
+    return;
+
+  }
+
+
+  const recentLink =
+    event.target.closest("[data-recent]");
+
+  if (recentLink) {
+
+    addRecentlyUsed(
+      recentLink.dataset.recent
+    );
+
   }
 
 });
 
 
-/* ================= COMMUNITY ================= */
+/* ================= SEARCH EVENTS ================= */
 
-function renderCommunity() {
-
-  const popular =
-    [...tools]
-      .sort((a, b) => b.rating - a.rating)
-      .slice(0, 8);
-
-  renderTools(
-    communityTools,
-    popular
-  );
-
-}
-
-
-/* ================= DARK MODE ================= */
-
-function updateThemeButton() {
-
-  if (!themeButton) return;
-
-  const dark =
-    document.body.classList.contains(
-      "dark-mode"
-    );
-
-  themeButton.textContent =
-    dark ? "☀️" : "🌙";
-
-}
-
-
-function loadTheme() {
-
-  const savedTheme =
-    localStorage.getItem(
-      "tztools-theme"
-    );
-
-  if (savedTheme === "dark") {
-
-    document.body.classList.add(
-      "dark-mode"
-    );
-
-  }
-
-  updateThemeButton();
-
-}
-
-
-themeButton?.addEventListener(
+searchButton?.addEventListener(
   "click",
   () => {
 
-    document.body.classList.toggle(
-      "dark-mode"
+    performSearch(
+      searchInput?.value || ""
     );
 
-    const dark =
-      document.body.classList.contains(
-        "dark-mode"
+    if (suggestions) {
+      suggestions.classList.remove("open");
+    }
+
+  }
+);
+
+
+searchInput?.addEventListener(
+  "input",
+  () => {
+
+    const value =
+      searchInput.value;
+
+    if (clearSearch) {
+
+      clearSearch.style.display =
+        value ? "block" : "none";
+
+    }
+
+    renderSuggestions(value);
+
+  }
+);
+
+
+searchInput?.addEventListener(
+  "keydown",
+  event => {
+
+    if (event.key === "Enter") {
+
+      event.preventDefault();
+
+      performSearch(
+        searchInput.value
       );
 
-    localStorage.setItem(
-      "tztools-theme",
-      dark ? "dark" : "light"
+    }
+
+  }
+);
+
+
+clearSearch?.addEventListener(
+  "click",
+  () => {
+
+    searchInput.value = "";
+
+    clearSearch.style.display =
+      "none";
+
+    suggestions?.classList.remove("open");
+
+    searchInput.focus();
+
+  }
+);
+
+
+/* ================= DIRECTORY EVENTS ================= */
+
+[
+  directorySearch,
+  categoryFilter,
+  pricingFilter,
+  ratingFilter,
+  sortFilter
+].forEach(element => {
+
+  element?.addEventListener(
+    "input",
+    renderDirectory
+  );
+
+  element?.addEventListener(
+    "change",
+    renderDirectory
+  );
+
+});
+
+
+document
+  .querySelectorAll(".pricing-check")
+  .forEach(checkbox => {
+
+    checkbox.addEventListener(
+      "change",
+      renderDirectory
     );
 
-    updateThemeButton();
+  });
+
+
+/* ================= COMPARE ================= */
+
+openComparison?.addEventListener(
+  "click",
+  () => {
+
+    showPage("dashboard");
+
+    setTimeout(() => {
+
+      comparisonView?.scrollIntoView({
+        behavior: "smooth"
+      });
+
+    }, 150);
 
   }
 );
@@ -1839,33 +1689,82 @@ menuButton?.addEventListener(
   "click",
   () => {
 
-    mobileMenu?.classList.toggle(
-      "open"
-    );
+    mobileMenu?.classList.toggle("open");
 
   }
 );
 
 
-/* ================= REFRESH UI ================= */
+/* ================= DARK MODE ================= */
 
-function refreshUI() {
+function applyTheme() {
 
-  renderFeatured();
+  const theme =
+    localStorage.getItem("tztools-theme");
 
-  renderDirectory();
+  if (theme === "dark") {
 
-  renderDashboard();
+    document.body.classList.add(
+      "dark-mode"
+    );
 
-  renderCommunity();
+    if (themeButton) {
+      themeButton.textContent = "☀️";
+    }
 
-  updateCompareBar();
+  }
+
+  else {
+
+    document.body.classList.remove(
+      "dark-mode"
+    );
+
+    if (themeButton) {
+      themeButton.textContent = "🌙";
+    }
+
+  }
 
 }
 
 
-/* ================= START APP ================= */
+themeButton?.addEventListener(
+  "click",
+  () => {
 
-loadTheme();
+    const dark =
+      document.body.classList.toggle(
+        "dark-mode"
+      );
 
-refreshUI();
+    localStorage.setItem(
+      "tztools-theme",
+      dark ? "dark" : "light"
+    );
+
+    themeButton.textContent =
+      dark ? "☀️" : "🌙";
+
+  }
+);
+
+
+/* ================= INITIALIZE ================= */
+
+applyTheme();
+
+renderFeatured();
+
+renderDirectory();
+
+renderDashboard();
+
+renderCommunity();
+
+updateCounts();
+
+
+console.log(
+  `TzTools V4.5 loaded successfully — ${tools.length} tools`
+);
