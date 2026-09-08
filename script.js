@@ -292,7 +292,200 @@ const tools = [
     tags: ["image", "photo", "editing", "graphics"],
     url: "https://pixlr.com/"
   }
+  {
+    id: "perplexity",
+    name: "Perplexity",
+    icon: "🔎",
+    category: "AI",
+    description: "AI-powered search and research with cited answers.",
+    rating: 4.8,
+    pricing: "Freemium",
+    bestFor: "Research",
+    tags: ["ai", "search", "research", "questions", "answers"],
+    url: "https://www.perplexity.ai/"
+  },
 
+  {
+    id: "mistral-le-chat",
+    name: "Le Chat",
+    icon: "💬",
+    category: "AI",
+    description: "AI assistant for writing, research, coding and everyday tasks.",
+    rating: 4.7,
+    pricing: "Freemium",
+    bestFor: "AI assistance",
+    tags: ["ai", "chat", "writing", "research", "coding"],
+    url: "https://chat.mistral.ai/"
+  },
+
+  {
+    id: "deepseek",
+    name: "DeepSeek",
+    icon: "🧠",
+    category: "AI",
+    description: "AI assistant for questions, reasoning, writing and coding.",
+    rating: 4.7,
+    pricing: "Free",
+    bestFor: "Reasoning & coding",
+    tags: ["ai", "chat", "coding", "math", "questions"],
+    url: "https://www.deepseek.com/"
+  },
+
+  {
+    id: "grok",
+    name: "Grok",
+    icon: "⚡",
+    category: "AI",
+    description: "AI assistant for questions, brainstorming and general tasks.",
+    rating: 4.6,
+    pricing: "Freemium",
+    bestFor: "General AI",
+    tags: ["ai", "chat", "questions", "brainstorm"],
+    url: "https://grok.com/"
+  },
+
+  {
+    id: "copilot",
+    name: "Microsoft Copilot",
+    icon: "🪟",
+    category: "AI",
+    description: "AI assistant for answering questions, writing and productivity.",
+    rating: 4.7,
+    pricing: "Freemium",
+    bestFor: "Everyday assistance",
+    tags: ["ai", "chat", "writing", "productivity", "questions"],
+    url: "https://copilot.microsoft.com/"
+  },
+
+  {
+    id: "meta-ai",
+    name: "Meta AI",
+    icon: "✨",
+    category: "AI",
+    description: "AI assistant for questions, ideas, writing and creative tasks.",
+    rating: 4.6,
+    pricing: "Free",
+    bestFor: "Everyday AI",
+    tags: ["ai", "chat", "ideas", "writing", "questions"],
+    url: "https://www.meta.ai/"
+  },
+
+  {
+    id: "character-ai",
+    name: "Character.AI",
+    icon: "🎭",
+    category: "AI",
+    description: "Interact with AI characters and create conversational experiences.",
+    rating: 4.6,
+    pricing: "Freemium",
+    bestFor: "AI conversations",
+    tags: ["ai", "chat", "characters", "conversation"],
+    url: "https://character.ai/"
+  },
+
+  {
+    id: "pi",
+    name: "Pi",
+    icon: "💡",
+    category: "AI",
+    description: "Conversational AI designed for helpful everyday discussions.",
+    rating: 4.5,
+    pricing: "Free",
+    bestFor: "Conversation",
+    tags: ["ai", "chat", "conversation", "questions"],
+    url: "https://pi.ai/"
+  },
+
+  {
+    id: "gamma",
+    name: "Gamma",
+    icon: "📊",
+    category: "AI",
+    description: "Create presentations, documents and visual content with AI.",
+    rating: 4.7,
+    pricing: "Freemium",
+    bestFor: "Presentations",
+    tags: ["ai", "presentation", "slides", "documents", "design"],
+    url: "https://gamma.app/"
+  },
+
+  {
+    id: "copy-ai",
+    name: "Copy.ai",
+    icon: "✍️",
+    category: "AI",
+    description: "AI-powered writing and content creation for individuals and teams.",
+    rating: 4.6,
+    pricing: "Freemium",
+    bestFor: "Content creation",
+    tags: ["ai", "writing", "copywriting", "content", "marketing"],
+    url: "https://www.copy.ai/"
+  },
+
+  {
+    id: "jasper",
+    name: "Jasper",
+    icon: "📝",
+    category: "AI",
+    description: "AI platform for creating and improving marketing content.",
+    rating: 4.6,
+    pricing: "Paid",
+    bestFor: "Marketing content",
+    tags: ["ai", "writing", "marketing", "content", "copywriting"],
+    url: "https://www.jasper.ai/"
+  },
+
+  {
+    id: "writesonic",
+    name: "Writesonic",
+    icon: "🖊️",
+    category: "AI",
+    description: "AI tools for writing, content creation and research.",
+    rating: 4.5,
+    pricing: "Freemium",
+    bestFor: "AI writing",
+    tags: ["ai", "writing", "content", "research", "copywriting"],
+    url: "https://writesonic.com/"
+  },
+
+  {
+    id: "gamma-ai",
+    name: "Gamma AI",
+    icon: "🎨",
+    category: "AI",
+    description: "Turn ideas into polished presentations and visual documents.",
+    rating: 4.6,
+    pricing: "Freemium",
+    bestFor: "AI presentations",
+    tags: ["ai", "presentation", "design", "slides", "documents"],
+    url: "https://gamma.app/"
+  },
+
+  {
+    id: "otter-ai",
+    name: "Otter.ai",
+    icon: "🎙️",
+    category: "AI",
+    description: "Record, transcribe and summarize conversations and meetings.",
+    rating: 4.6,
+    pricing: "Freemium",
+    bestFor: "Transcription",
+    tags: ["ai", "transcription", "notes", "meetings", "audio"],
+    url: "https://otter.ai/"
+  },
+
+  {
+    id: "elevenlabs",
+    name: "ElevenLabs",
+    icon: "🔊",
+    category: "AI",
+    description: "Create AI-generated voices, speech and audio content.",
+    rating: 4.8,
+    pricing: "Freemium",
+    bestFor: "AI voice",
+    tags: ["ai", "voice", "audio", "speech", "text to speech"],
+    url: "https://elevenlabs.io/"
+  },
 ];
 
 
