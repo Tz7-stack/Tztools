@@ -503,7 +503,141 @@ const tools = [
     tags: ["ai", "image", "images", "art", "design"],
     url: "https://leonardo.ai/"
   }
-
+    {
+        id: "openai",
+        name: "OpenAI",
+        description: "AI tools for writing, coding, research, and more.",
+        category: "AI",
+        pricing: "Freemium",
+        url: "https://openai.com",
+        keywords: ["ai", "chat", "writing", "coding", "research"]
+    },
+    {
+        id: "mistral",
+        name: "Mistral AI",
+        description: "AI models and assistants for everyday tasks and development.",
+        category: "AI",
+        pricing: "Freemium",
+        url: "https://mistral.ai",
+        keywords: ["ai", "chat", "coding", "models"]
+    },
+    {
+        id: "huggingface",
+        name: "Hugging Face",
+        description: "A huge hub for AI models, datasets, and machine learning tools.",
+        category: "AI",
+        pricing: "Free",
+        url: "https://huggingface.co",
+        keywords: ["ai", "models", "machine learning", "datasets"]
+    },
+    {
+        id: "deepseek",
+        name: "DeepSeek",
+        description: "AI assistant focused on reasoning, coding, and general tasks.",
+        category: "AI",
+        pricing: "Free",
+        url: "https://www.deepseek.com",
+        keywords: ["ai", "coding", "reasoning", "chat"]
+    },
+    {
+        id: "perplexity",
+        name: "Perplexity",
+        description: "AI-powered search and research assistant.",
+        category: "AI",
+        pricing: "Freemium",
+        url: "https://www.perplexity.ai",
+        keywords: ["ai", "search", "research", "answers"]
+    },
+    {
+        id: "gemini",
+        name: "Google Gemini",
+        description: "Google's AI assistant for writing, research, images, and more.",
+        category: "AI",
+        pricing: "Freemium",
+        url: "https://gemini.google.com",
+        keywords: ["ai", "google", "writing", "research", "images"]
+    },
+    {
+        id: "copilot",
+        name: "Microsoft Copilot",
+        description: "AI assistant for productivity, research, writing, and everyday questions.",
+        category: "AI",
+        pricing: "Freemium",
+        url: "https://copilot.microsoft.com",
+        keywords: ["ai", "microsoft", "productivity", "writing", "research"]
+    },
+    {
+        id: "poe",
+        name: "Poe",
+        description: "A platform for interacting with multiple AI assistants and models.",
+        category: "AI",
+        pricing: "Freemium",
+        url: "https://poe.com",
+        keywords: ["ai", "chat", "models", "assistants"]
+    },
+    {
+        id: "character-ai",
+        name: "Character.AI",
+        description: "Create and chat with AI-powered characters.",
+        category: "AI",
+        pricing: "Freemium",
+        url: "https://character.ai",
+        keywords: ["ai", "chat", "characters", "conversation"]
+    },
+    {
+        id: "pi",
+        name: "Pi",
+        description: "A conversational AI designed for helpful everyday conversations.",
+        category: "AI",
+        pricing: "Free",
+        url: "https://pi.ai",
+        keywords: ["ai", "chat", "conversation", "assistant"]
+    },
+    {
+        id: "you",
+        name: "You.com",
+        description: "AI-powered search, research, and productivity tools.",
+        category: "AI",
+        pricing: "Freemium",
+        url: "https://you.com",
+        keywords: ["ai", "search", "research", "productivity"]
+    },
+    {
+        id: "gamma",
+        name: "Gamma",
+        description: "Create presentations, documents, and webpages with AI.",
+        category: "AI",
+        pricing: "Freemium",
+        url: "https://gamma.app",
+        keywords: ["ai", "presentations", "documents", "websites"]
+    },
+    {
+        id: "jasper",
+        name: "Jasper",
+        description: "AI platform for marketing content and business writing.",
+        category: "AI",
+        pricing: "Paid",
+        url: "https://www.jasper.ai",
+        keywords: ["ai", "writing", "marketing", "content"]
+    },
+    {
+        id: "writesonic",
+        name: "Writesonic",
+        description: "AI tools for writing, content creation, and research.",
+        category: "AI",
+        pricing: "Freemium",
+        url: "https://writesonic.com",
+        keywords: ["ai", "writing", "content", "research"]
+    },
+    {
+        id: "copy-ai",
+        name: "Copy.ai",
+        description: "AI-powered tools for writing, marketing, and business workflows.",
+        category: "AI",
+        pricing: "Freemium",
+        url: "https://www.copy.ai",
+        keywords: ["ai", "writing", "marketing", "business"]
+    },
 ];
 
 
