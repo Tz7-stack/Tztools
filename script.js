@@ -898,29 +898,34 @@ function searchTools(query) {
 /* ================= TOOL CARD ================= */
 
 function createToolCard(tool) {
-  return `
-    <div class="tool-card">
-      <div class="tool-header">
-        <h3>${tool.name}</h3>
-        <span class="rating">⭐ ${tool.rating}</span>
-      </div>
-      <span class="best-for">Best for: ${tool.bestFor}</span>
-      <div class="tool-tags">
-        ${(tool.tags || [])
-          .slice(0, 4)
-          .map(tag => `<span>#${tag}</span>`)
-          .join('')}
-      </div>
-      <div class="tool-meta">
-        <span>${tool.category}</span>
-        <span>${tool.pricing}</span>
-      </div>
-      <div class="tool-actions">
-        <a href="${tool.link}" target="_blank" rel="noopener">Visit Tool →</a>
-      </div>
+  const card = document.createElement("div");
+  card.className = "tool-card";
+  card.innerHTML = `
+    <h3>${tool.name}</h3>
+    <span class="rating">⭐ ${tool.rating}</span>
+    <span class="best-for">Best for: ${tool.bestFor}</span>
+    <div class="tool-tags">
+      ${(tool.tags || []).slice(0, 4).map(tag => `<span>#${tag}</span>`).join('')}
+    </div>
+    <div class="tool-meta">
+      <span>${tool.category}</span>
+      <span>${tool.pricing}</span>
+    </div>
+    <div class="tool-actions">
+      <a href="${tool.link}" target="_blank" rel="noopener">Visit Tool →</a>
     </div>
   `;
+  return card;
 }
+
+function renderTools(tools) {
+  const container = document.getElementById("toolContainer");
+  container.innerHTML = ""; // clear old content
+  const fragment = document.createDocumentFragment();
+  tools.forEach(tool => fragment.appendChild(createToolCard(tool)));
+  container.appendChild(fragment);
+}
+
 
 
 
