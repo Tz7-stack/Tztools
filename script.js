@@ -950,7 +950,8 @@ function createToolCard(tool) {
             href="${link}"
             target="_blank"
             rel="noopener noreferrer"
-          >
+          onclick="trackRecentlyUsed('${tool.id}')"
+>
             Visit Tool →
           </a>
         </div>
