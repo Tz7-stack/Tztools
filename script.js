@@ -673,7 +673,28 @@ function trackRecentlyUsed(toolId) {
     renderRecentlyUsed();
   }
 }
+function renderRecentlyUsed() {
+  const container = document.getElementById("recentlyUsedContainer");
 
+  if (!container) return;
+
+  const recentTools = recentlyUsed
+    .map(id => getTool(id))
+    .filter(Boolean);
+
+  if (recentTools.length === 0) {
+    container.innerHTML = `
+      <p class="empty-state">
+        You haven't used any tools yet.
+      </p>
+    `;
+    return;
+  }
+
+  container.innerHTML = recentTools
+    .map(tool => createToolCard(tool))
+    .join("");
+}
 /* ================= ELEMENTS ================= */
 
 const searchInput = document.getElementById("search");
