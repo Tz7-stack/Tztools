@@ -1,0 +1,32 @@
+<svg viewBox="0 0 300 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- Define the script font style -->
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
+      .script-text {
+        font-family: 'Great Vibes', cursive;
+        font-size: 72px;
+        font-weight: 400;
+        fill: #6366f1;
+        letter-spacing: -2px;
+      }
+      .accent {
+        fill: #4f46e5;
+      }
+    </style>
+  </defs>
+  
+  <!-- Background (optional - remove if you want transparent) -->
+  <rect width="300" height="100" fill="none"/>
+  
+  <!-- Script text "TZ Web" -->
+  <text x="20" y="75" class="script-text">TZ Web</text>
+  
+  <!-- Decorative underline accent -->
+  <path d="M 20 82 Q 80 85 150 82 T 280 82" 
+        stroke="#6366f1" 
+        stroke-width="2" 
+        fill="none" 
+        stroke-linecap="round"
+        opacity="0.6"/>
+</svg>
