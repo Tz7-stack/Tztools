@@ -14,11 +14,13 @@
     content="TzTools — Find the right digital tool for whatever you want to accomplish."
   >
 
-  <meta name="theme-color" content="#6366f1">
+  <meta
+    name="theme-color"
+    content="#6366f1"
+  >
 
   <title>TzTools — Find The Right Tool</title>
 
-  <!-- V6 Stylesheet -->
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -27,21 +29,47 @@
   <!-- ================= NAVBAR ================= -->
 
   <header class="navbar">
+
     <div class="container nav-container">
 
-      <a href="#" class="logo">
+      <a href="#home" class="logo">
         Tz<span>Tools</span>
       </a>
 
-      <nav class="nav-links">
-        <a href="#home">Home</a>
-        <a href="#tools">Tools</a>
-        <a href="#categories">Categories</a>
-        <a href="#dashboard">Dashboard</a>
+
+      <nav
+        class="nav-links"
+        id="navLinks"
+      >
+
+        <a href="#home">
+          Home
+        </a>
+
+        <a href="#tools">
+          Tools
+        </a>
+
+        <button
+          type="button"
+          class="nav-category-button"
+          id="categoriesButton"
+        >
+          Categories
+          <span>⌄</span>
+        </button>
+
+        <a href="#dashboard">
+          Dashboard
+        </a>
+
       </nav>
 
+
       <div class="nav-actions">
+
         <button
+          type="button"
           class="icon-button"
           id="themeToggle"
           aria-label="Toggle dark mode"
@@ -50,33 +78,189 @@
         </button>
 
         <button
+          type="button"
           class="menu-button"
           id="menuButton"
           aria-label="Open menu"
+          aria-expanded="false"
         >
           ☰
         </button>
+
       </div>
 
     </div>
+
   </header>
+
+
+  <!-- ================= CATEGORY MENU ================= -->
+
+  <div
+    class="category-menu-overlay"
+    id="categoriesOverlay"
+    aria-hidden="true"
+  >
+
+    <div
+      class="category-menu"
+      id="categoriesMenu"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="categoryMenuTitle"
+    >
+
+      <div class="category-menu-header">
+
+        <div>
+
+          <p class="section-label">
+            EXPLORE
+          </p>
+
+          <h2 id="categoryMenuTitle">
+            What are you looking for?
+          </h2>
+
+          <p>
+            Browse tools by category.
+          </p>
+
+        </div>
+
+
+        <button
+          type="button"
+          class="category-menu-close"
+          id="categoriesClose"
+          aria-label="Close categories"
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      <div class="category-menu-grid">
+
+        <button
+          type="button"
+          class="category-card"
+          data-category="AI"
+        >
+          <span>🤖</span>
+          <strong>AI</strong>
+          <small>AI-powered tools</small>
+        </button>
+
+
+        <button
+          type="button"
+          class="category-card"
+          data-category="Design"
+        >
+          <span>🎨</span>
+          <strong>Design</strong>
+          <small>Logos & graphics</small>
+        </button>
+
+
+        <button
+          type="button"
+          class="category-card"
+          data-category="Video"
+        >
+          <span>🎬</span>
+          <strong>Video</strong>
+          <small>Video creation</small>
+        </button>
+
+
+        <button
+          type="button"
+          class="category-card"
+          data-category="Writing"
+        >
+          <span>✍️</span>
+          <strong>Writing</strong>
+          <small>Write & improve</small>
+        </button>
+
+
+        <button
+          type="button"
+          class="category-card"
+          data-category="Websites"
+        >
+          <span>🌐</span>
+          <strong>Websites</strong>
+          <small>Build websites</small>
+        </button>
+
+
+        <button
+          type="button"
+          class="category-card"
+          data-category="Students"
+        >
+          <span>📚</span>
+          <strong>Students</strong>
+          <small>Learn & study</small>
+        </button>
+
+
+        <button
+          type="button"
+          class="category-card"
+          data-category="Productivity"
+        >
+          <span>⚡</span>
+          <strong>Productivity</strong>
+          <small>Get things done</small>
+        </button>
+
+
+        <button
+          type="button"
+          class="category-card"
+          data-category="all"
+        >
+          <span>✨</span>
+          <strong>View All</strong>
+          <small>Explore everything</small>
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
 
 
   <!-- ================= MAIN ================= -->
 
   <main>
 
-    <!-- HERO -->
 
-    <section id="home" class="hero">
+    <!-- ================= HERO ================= -->
+
+    <section
+      id="home"
+      class="hero"
+    >
+
       <div class="container hero-content">
 
-        <p class="eyebrow">YOUR DIGITAL TOOL FINDER</p>
+        <p class="eyebrow">
+          YOUR DIGITAL TOOL FINDER
+        </p>
+
 
         <h1>
           Tell us what you need.
           <span>We'll find the tools.</span>
         </h1>
+
 
         <p class="hero-subtitle">
           Discover the right digital tools for AI, design, video,
@@ -84,31 +268,41 @@
         </p>
 
 
-        <!-- SEARCH -->
+        <!-- SMART SEARCH -->
 
         <div class="search-wrapper">
 
           <div class="search-box">
 
-            <span class="search-icon">🔎</span>
+            <span class="search-icon">
+              🔎
+            </span>
+
 
             <input
               type="text"
               id="searchInput"
               placeholder="What do you want to accomplish?"
               autocomplete="off"
+              aria-label="Search for a tool"
             >
 
-            <button id="searchButton">
+
+            <button
+              type="button"
+              id="searchButton"
+            >
               Search
             </button>
 
           </div>
 
+
           <div
             id="suggestions"
             class="suggestions"
           ></div>
+
 
           <p class="search-hint">
             Try: "make a logo", "edit videos", "study maths",
@@ -122,75 +316,103 @@
 
         <div class="quick-searches">
 
-          <button data-search="make a logo">
+          <button
+            type="button"
+            class="quick-search"
+            data-query="make a logo"
+            data-search="make a logo"
+          >
             🎨 Make a logo
           </button>
 
-          <button data-search="edit videos">
+
+          <button
+            type="button"
+            class="quick-search"
+            data-query="edit videos"
+            data-search="edit videos"
+          >
             🎬 Edit videos
           </button>
 
-          <button data-search="study">
+
+          <button
+            type="button"
+            class="quick-search"
+            data-query="study"
+            data-search="study"
+          >
             📚 Study
           </button>
 
-          <button data-search="build a website">
+
+          <button
+            type="button"
+            class="quick-search"
+            data-query="build a website"
+            data-search="build a website"
+          >
             🌐 Build a website
           </button>
 
-          <button data-search="write">
+
+          <button
+            type="button"
+            class="quick-search"
+            data-query="write"
+            data-search="write"
+          >
             ✍️ Write
           </button>
 
         </div>
 
       </div>
+
     </section>
 
 
     <!-- ================= TOOLS ================= -->
 
-    <section id="tools" class="section">
+    <section
+      id="tools"
+      class="section tools-section"
+    >
 
       <div class="container">
+
 
         <div class="section-header">
 
           <div>
+
             <p class="section-label">
               DISCOVER
             </p>
+
 
             <h2>
               Recommended Tools
             </h2>
 
+
             <p>
               Tools that can help you get where you want to go.
             </p>
+
           </div>
 
         </div>
 
 
-        <!-- FILTERS -->
+        <!-- CATEGORY FILTER -->
 
         <div class="filter-panel">
 
-          <div class="filter-search">
-
-            <span>🔎</span>
-
-            <input
-              type="text"
-              id="directorySearch"
-              placeholder="Search tools..."
-            >
-
-          </div>
-
-
-          <select id="categoryFilter">
+          <select
+            id="categoryFilter"
+            aria-label="Filter tools by category"
+          >
 
             <option value="all">
               All Categories
@@ -224,6 +446,18 @@
               Productivity
             </option>
 
+            <option value="Images">
+              Images
+            </option>
+
+            <option value="Audio">
+              Audio
+            </option>
+
+            <option value="PDF & Documents">
+              PDF & Documents
+            </option>
+
           </select>
 
         </div>
@@ -241,7 +475,7 @@
     </section>
 
 
-    <!-- ================= CATEGORIES ================= -->
+    <!-- ================= CATEGORY CTA ================= -->
 
     <section
       id="categories"
@@ -250,71 +484,35 @@
 
       <div class="container">
 
-        <div class="section-header centered">
+        <div class="category-cta">
 
-          <p class="section-label">
-            EXPLORE
-          </p>
+          <div>
 
-          <h2>
-            Browse by Category
-          </h2>
-
-          <p>
-            Find tools based on what you're trying to do.
-          </p>
-
-        </div>
+            <p class="section-label">
+              EXPLORE
+            </p>
 
 
-        <div class="category-grid">
+            <h2>
+              Not sure where to start?
+            </h2>
 
-          <button class="category-card" data-category="AI">
-            <span>🤖</span>
-            <strong>AI</strong>
-            <small>AI-powered tools</small>
-          </button>
 
-          <button class="category-card" data-category="Design">
-            <span>🎨</span>
-            <strong>Design</strong>
-            <small>Logos & graphics</small>
-          </button>
+            <p>
+              Browse our categories and discover tools made
+              for different tasks.
+            </p>
 
-          <button class="category-card" data-category="Video">
-            <span>🎬</span>
-            <strong>Video</strong>
-            <small>Video creation</small>
-          </button>
+          </div>
 
-          <button class="category-card" data-category="Writing">
-            <span>✍️</span>
-            <strong>Writing</strong>
-            <small>Write & improve</small>
-          </button>
 
-          <button class="category-card" data-category="Websites">
-            <span>🌐</span>
-            <strong>Websites</strong>
-            <small>Build websites</small>
-          </button>
-
-          <button class="category-card" data-category="Students">
-            <span>📚</span>
-            <strong>Students</strong>
-            <small>Learn & study</small>
-          </button>
-
-          <button class="category-card" data-category="Productivity">
-            <span>⚡</span>
-            <strong>Productivity</strong>
-            <small>Get things done</small>
-          </button>
-
-          <button class="category-card" data-category="all">
-            <span>✨</span>
-            <strong>View All</strong>
-            <small>Explore everything</small>
+          <button
+            type="button"
+            class="primary-button"
+            id="categoriesButtonHero"
+          >
+            Explore Categories
+            <span>→</span>
           </button>
 
         </div>
@@ -339,89 +537,36 @@
             YOUR SPACE
           </p>
 
+
           <h2>
             Dashboard
           </h2>
 
+
           <p>
-            Your saved and recently used tools will appear here.
+            Your personal tools, favorites and activity will
+            live here.
           </p>
 
         </div>
 
 
-        <div class="dashboard-grid">
+        <div class="dashboard-placeholder">
 
-          <div class="dashboard-card">
-
-            <div class="dashboard-icon">
-              ❤️
-            </div>
-
-            <div>
-              <h3>Favorites</h3>
-              <p id="favoriteCount">0 tools saved</p>
-            </div>
-
+          <div class="dashboard-placeholder-icon">
+            ✨
           </div>
 
 
-          <div class="dashboard-card">
-
-            <div class="dashboard-icon">
-              🕘
-            </div>
-
-            <div>
-              <h3>Recently Used</h3>
-              <p id="recentCount">0 tools used</p>
-            </div>
-
-          </div>
+          <h3>
+            Your personal dashboard
+          </h3>
 
 
-          <div class="dashboard-card">
-
-            <div class="dashboard-icon">
-              ⚖️
-            </div>
-
-            <div>
-              <h3>Compare</h3>
-              <p id="comparisonCount">0 tools selected</p>
-            </div>
-
-          </div>
-
-        </div>
-
-
-        <div class="dashboard-content">
-
-          <div class="dashboard-column">
-
-            <h3>❤️ Favorites</h3>
-
-            <div id="favoritesContainer">
-              <p class="empty-state">
-                Your favorite tools will appear here.
-              </p>
-            </div>
-
-          </div>
-
-
-          <div class="dashboard-column">
-
-            <h3>🕘 Recently Used</h3>
-
-            <div id="recentlyUsedContainer">
-              <p class="empty-state">
-                Tools you use will appear here.
-              </p>
-            </div>
-
-          </div>
+          <p>
+            Favorites, recently used tools and comparisons
+            will be available here.
+          </p>
 
         </div>
 
@@ -438,11 +583,16 @@
 
     <div class="container footer-content">
 
+
       <div>
 
-        <a href="#" class="footer-logo">
+        <a
+          href="#home"
+          class="footer-logo"
+        >
           TzTools
         </a>
+
 
         <p>
           Find the right tool for whatever you want to accomplish.
@@ -453,9 +603,20 @@
 
       <div class="footer-links">
 
-        <a href="#home">Home</a>
-        <a href="#tools">Tools</a>
-        <a href="#categories">Categories</a>
+        <a href="#home">
+          Home
+        </a>
+
+        <a href="#tools">
+          Tools
+        </a>
+
+        <button
+          type="button"
+          id="footerCategoriesButton"
+        >
+          Categories
+        </button>
 
       </div>
 
