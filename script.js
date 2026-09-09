@@ -650,29 +650,6 @@ let comparisons =
   JSON.parse(localStorage.getItem("tztools-comparisons")) || [];
 
 let recentlyUsed =
-function trackRecentlyUsed(toolId) {
-  if (!toolId) return;
-
-  // Remove it first if it was already recently used
-  recentlyUsed = recentlyUsed.filter(id => id !== toolId);
-
-  // Add the newest tool to the beginning
-  recentlyUsed.unshift(toolId);
-
-  // Keep only the 10 most recently used tools
-  recentlyUsed = recentlyUsed.slice(0, 10);
-
-  // Save the updated list
-  localStorage.setItem(
-    "tztools-recent",
-    JSON.stringify(recentlyUsed)
-  );
-
-  // Refresh Recently Used on the Dashboard
-  if (typeof renderRecentlyUsed === "function") {
-    renderRecentlyUsed();
-  }
-}
 function renderRecentlyUsed() {
   const container = document.getElementById("recentlyUsedContainer");
 
@@ -695,6 +672,7 @@ function renderRecentlyUsed() {
     .map(tool => createToolCard(tool))
     .join("");
 }
+  
 /* ================= ELEMENTS ================= */
 
 const searchInput = document.getElementById("search");
