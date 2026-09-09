@@ -1,47 +1,55 @@
 /* =========================================================
-   TzTools V6.5
-   Smart Search + Favorites + Recently Used + Dashboard
-   ========================================================= */
+   TZTOOLS V6.6 → V6.9
+   Smart Search + Filters + Categories + Compare
+   Favorites + Recently Used + Dashboard
+   UI Polish + Accessibility + Performance
+========================================================= */
+
+"use strict";
+
+/* =========================================================
+   TOOL DATABASE
+========================================================= */
 
 const tools = [
-  // ==================== AI ====================
+  // AI
   {
     name: "ChatGPT",
     category: "AI",
     icon: "🤖",
-    description: "AI assistant for writing, studying, coding, brainstorming and more.",
+    description: "AI assistant for writing, learning, brainstorming, coding and more.",
     rating: 4.9,
     pricing: "Freemium",
     url: "https://chatgpt.com/",
-    keywords: ["ai", "assistant", "chat", "study", "writing", "coding", "research"]
+    keywords: ["ai", "chat", "assistant", "writing", "study", "coding", "research"]
   },
   {
     name: "Google Gemini",
     category: "AI",
     icon: "✨",
-    description: "Google's AI assistant for questions, ideas, research and productivity.",
+    description: "Google's AI assistant for research, writing, ideas and productivity.",
     rating: 4.7,
     pricing: "Freemium",
     url: "https://gemini.google.com/",
-    keywords: ["ai", "assistant", "google", "research", "study"]
+    keywords: ["ai", "google", "assistant", "research", "study", "writing"]
   },
   {
     name: "Claude",
     category: "AI",
     icon: "🧠",
-    description: "AI assistant useful for writing, analysis, coding and documents.",
+    description: "AI assistant designed for writing, analysis, coding and reasoning.",
     rating: 4.8,
     pricing: "Freemium",
     url: "https://claude.ai/",
-    keywords: ["ai", "writing", "coding", "documents", "analysis"]
+    keywords: ["ai", "assistant", "writing", "coding", "analysis"]
   },
   {
     name: "Microsoft Copilot",
     category: "AI",
-    icon: "⚡",
-    description: "AI assistant for answers, ideas, writing and everyday productivity.",
+    icon: "🚀",
+    description: "AI assistant for answers, ideas, writing and productivity.",
     rating: 4.6,
-    pricing: "Freemium",
+    pricing: "Free",
     url: "https://copilot.microsoft.com/",
     keywords: ["ai", "assistant", "writing", "productivity"]
   },
@@ -53,49 +61,49 @@ const tools = [
     rating: 4.7,
     pricing: "Freemium",
     url: "https://www.perplexity.ai/",
-    keywords: ["ai", "search", "research", "answers"]
+    keywords: ["ai", "search", "research", "answers", "study"]
   },
 
-  // ==================== DESIGN ====================
+  // Design
   {
     name: "Canva",
     category: "Design",
     icon: "🎨",
-    description: "Create logos, posters, presentations, social graphics and more.",
+    description: "Easy design platform for logos, posters, presentations and social media.",
     rating: 4.8,
     pricing: "Freemium",
     url: "https://www.canva.com/",
-    keywords: ["logo", "design", "poster", "graphics", "presentation", "social media"]
+    keywords: ["logo", "design", "poster", "graphic", "social media", "presentation"]
   },
   {
     name: "Adobe Express",
     category: "Design",
     icon: "🖌️",
-    description: "Quickly create graphics, flyers, social posts and visual content.",
-    rating: 4.6,
+    description: "Create graphics, flyers, social posts and other visual content.",
+    rating: 4.7,
     pricing: "Freemium",
-    url: "https://www.adobe.com/express/",
-    keywords: ["logo", "design", "graphics", "poster", "flyer"]
+    url: "https://www.adobe.com/express",
+    keywords: ["logo", "design", "graphic", "poster", "flyer"]
   },
   {
     name: "Figma",
     category: "Design",
-    icon: "🔷",
-    description: "Professional interface and collaborative design platform.",
+    icon: "🧩",
+    description: "Collaborative design tool for interfaces, prototypes and graphics.",
     rating: 4.8,
     pricing: "Freemium",
     url: "https://www.figma.com/",
-    keywords: ["design", "ui", "ux", "interface", "prototype", "website"]
+    keywords: ["design", "ui", "ux", "prototype", "website", "app"]
   },
   {
     name: "Photopea",
     category: "Design",
     icon: "🖼️",
-    description: "Browser-based image editor with powerful editing features.",
+    description: "Browser-based image editor with powerful Photoshop-style features.",
     rating: 4.7,
     pricing: "Free",
     url: "https://www.photopea.com/",
-    keywords: ["photo", "image", "edit", "photoshop", "design"]
+    keywords: ["photo", "image", "photoshop", "design", "edit"]
   },
   {
     name: "Pixlr",
@@ -105,25 +113,25 @@ const tools = [
     rating: 4.5,
     pricing: "Freemium",
     url: "https://pixlr.com/",
-    keywords: ["photo", "image", "edit", "design"]
+    keywords: ["photo", "image", "edit", "design", "graphic"]
   },
 
-  // ==================== VIDEO ====================
+  // Video
   {
     name: "CapCut",
     category: "Video",
     icon: "🎬",
-    description: "Easy video editor for short-form and social media content.",
+    description: "Popular video editor for short-form videos, effects and social content.",
     rating: 4.8,
     pricing: "Freemium",
     url: "https://www.capcut.com/",
-    keywords: ["video", "edit", "tiktok", "reels", "shorts"]
+    keywords: ["video", "edit", "tiktok", "reels", "shorts", "effects"]
   },
   {
     name: "DaVinci Resolve",
     category: "Video",
     icon: "🎞️",
-    description: "Professional video editing, color grading and audio production.",
+    description: "Professional video editing, color grading and visual effects software.",
     rating: 4.9,
     pricing: "Free",
     url: "https://www.blackmagicdesign.com/products/davinciresolve",
@@ -133,34 +141,34 @@ const tools = [
     name: "VEED",
     category: "Video",
     icon: "📹",
-    description: "Simple browser-based video editor with creator tools.",
-    rating: 4.6,
+    description: "Simple online video editor with captions, effects and social tools.",
+    rating: 4.5,
     pricing: "Freemium",
     url: "https://www.veed.io/",
-    keywords: ["video", "edit", "subtitles", "social"]
+    keywords: ["video", "edit", "captions", "social", "online"]
   },
   {
     name: "Clipchamp",
     category: "Video",
     icon: "✂️",
-    description: "Easy online video editor from Microsoft.",
+    description: "Easy browser-based video editor from Microsoft.",
     rating: 4.5,
     pricing: "Freemium",
     url: "https://clipchamp.com/",
-    keywords: ["video", "edit", "microsoft"]
+    keywords: ["video", "edit", "microsoft", "social"]
   },
   {
     name: "InVideo",
     category: "Video",
     icon: "🎥",
-    description: "Create videos using templates and AI-powered tools.",
+    description: "Online video creation platform with templates and AI features.",
     rating: 4.5,
     pricing: "Freemium",
     url: "https://invideo.io/",
-    keywords: ["video", "ai", "creator", "editing"]
+    keywords: ["video", "ai", "template", "editing", "social"]
   },
 
-  // ==================== WRITING ====================
+  // Writing
   {
     name: "Grammarly",
     category: "Writing",
@@ -169,55 +177,55 @@ const tools = [
     rating: 4.7,
     pricing: "Freemium",
     url: "https://www.grammarly.com/",
-    keywords: ["writing", "grammar", "essay", "school", "spell"]
+    keywords: ["writing", "grammar", "english", "school", "essay"]
   },
   {
     name: "QuillBot",
     category: "Writing",
     icon: "📝",
-    description: "Paraphrasing, summarizing and writing assistance.",
+    description: "Writing and paraphrasing assistant with several useful tools.",
     rating: 4.6,
     pricing: "Freemium",
     url: "https://quillbot.com/",
-    keywords: ["writing", "paraphrase", "summarize", "essay"]
+    keywords: ["writing", "paraphrase", "essay", "grammar", "school"]
   },
   {
     name: "Google Docs",
     category: "Writing",
     icon: "📄",
-    description: "Create and collaborate on documents online.",
-    rating: 4.8,
+    description: "Online document editor for writing and collaboration.",
+    rating: 4.7,
     pricing: "Free",
     url: "https://docs.google.com/",
-    keywords: ["writing", "document", "essay", "school"]
+    keywords: ["writing", "document", "essay", "school", "collaboration"]
   },
   {
     name: "LanguageTool",
     category: "Writing",
     icon: "🔤",
-    description: "Grammar and spelling checker supporting many languages.",
-    rating: 4.6,
+    description: "Grammar, spelling and style checker.",
+    rating: 4.5,
     pricing: "Freemium",
     url: "https://languagetool.org/",
-    keywords: ["grammar", "writing", "spell", "essay"]
+    keywords: ["grammar", "writing", "spelling", "english"]
   },
   {
     name: "Hemingway Editor",
     category: "Writing",
     icon: "📚",
-    description: "Make writing clearer, simpler and easier to read.",
-    rating: 4.5,
+    description: "Helps make writing clearer, simpler and easier to read.",
+    rating: 4.4,
     pricing: "Free",
     url: "https://hemingwayapp.com/",
-    keywords: ["writing", "essay", "readability"]
+    keywords: ["writing", "essay", "clarity", "school"]
   },
 
-  // ==================== WEBSITES ====================
+  // Websites
   {
     name: "WordPress",
     category: "Websites",
     icon: "🌐",
-    description: "Create websites and blogs with WordPress.",
+    description: "Website and blog creation platform.",
     rating: 4.7,
     pricing: "Freemium",
     url: "https://wordpress.com/",
@@ -226,60 +234,60 @@ const tools = [
   {
     name: "Wix",
     category: "Websites",
-    icon: "🌍",
-    description: "Build websites using a visual website builder.",
+    icon: "🏗️",
+    description: "Website builder with templates and drag-and-drop tools.",
     rating: 4.6,
     pricing: "Freemium",
     url: "https://www.wix.com/",
-    keywords: ["website", "web", "site", "business"]
+    keywords: ["website", "builder", "business", "site"]
   },
   {
     name: "Framer",
     category: "Websites",
-    icon: "🟣",
-    description: "Design and publish modern websites visually.",
+    icon: "⚡",
+    description: "Modern website builder for visually impressive websites.",
     rating: 4.7,
     pricing: "Freemium",
     url: "https://www.framer.com/",
-    keywords: ["website", "web", "design", "landing page"]
+    keywords: ["website", "web", "design", "site", "portfolio"]
   },
   {
     name: "Webflow",
     category: "Websites",
-    icon: "🔵",
-    description: "Professional visual website development platform.",
+    icon: "💻",
+    description: "Professional visual website builder.",
     rating: 4.7,
     pricing: "Freemium",
     url: "https://webflow.com/",
-    keywords: ["website", "web", "development", "design"]
+    keywords: ["website", "web", "design", "professional"]
   },
   {
     name: "Carrd",
     category: "Websites",
     icon: "🪪",
-    description: "Create simple responsive one-page websites.",
+    description: "Simple platform for creating one-page websites.",
     rating: 4.6,
     pricing: "Freemium",
     url: "https://carrd.co/",
-    keywords: ["website", "landing page", "portfolio"]
+    keywords: ["website", "landing page", "portfolio", "site"]
   },
   {
     name: "GitHub Pages",
     category: "Websites",
     icon: "🐙",
-    description: "Host websites directly from GitHub repositories.",
-    rating: 4.8,
+    description: "Free static website hosting directly from GitHub repositories.",
+    rating: 4.7,
     pricing: "Free",
     url: "https://pages.github.com/",
-    keywords: ["website", "hosting", "github", "coding"]
+    keywords: ["website", "hosting", "github", "coding", "developer"]
   },
 
-  // ==================== STUDENTS ====================
+  // Students
   {
     name: "Khan Academy",
     category: "Students",
     icon: "🎓",
-    description: "Free lessons and practice across many school subjects.",
+    description: "Free lessons and practice for many school subjects.",
     rating: 4.9,
     pricing: "Free",
     url: "https://www.khanacademy.org/",
@@ -289,7 +297,7 @@ const tools = [
     name: "WolframAlpha",
     category: "Students",
     icon: "🧮",
-    description: "Computational engine for maths, science and factual questions.",
+    description: "Computational knowledge engine useful for maths and science.",
     rating: 4.8,
     pricing: "Freemium",
     url: "https://www.wolframalpha.com/",
@@ -299,17 +307,17 @@ const tools = [
     name: "Quizlet",
     category: "Students",
     icon: "🃏",
-    description: "Study using flashcards, quizzes and learning activities.",
+    description: "Flashcards and study tools for learning and revision.",
     rating: 4.7,
     pricing: "Freemium",
     url: "https://quizlet.com/",
-    keywords: ["study", "flashcards", "quiz", "school"]
+    keywords: ["study", "flashcards", "revision", "school"]
   },
   {
     name: "Desmos",
     category: "Students",
     icon: "📈",
-    description: "Online graphing calculator and mathematics tools.",
+    description: "Powerful online graphing and maths calculator.",
     rating: 4.8,
     pricing: "Free",
     url: "https://www.desmos.com/",
@@ -319,7 +327,7 @@ const tools = [
     name: "GeoGebra",
     category: "Students",
     icon: "📐",
-    description: "Interactive mathematics tools for geometry and algebra.",
+    description: "Interactive mathematics tools for geometry, algebra and more.",
     rating: 4.8,
     pricing: "Free",
     url: "https://www.geogebra.org/",
@@ -329,30 +337,30 @@ const tools = [
     name: "Google Scholar",
     category: "Students",
     icon: "🔬",
-    description: "Search engine for academic papers and scholarly research.",
-    rating: 4.7,
+    description: "Search engine for scholarly literature and academic research.",
+    rating: 4.6,
     pricing: "Free",
     url: "https://scholar.google.com/",
-    keywords: ["research", "study", "academic", "papers"]
+    keywords: ["study", "research", "academic", "school"]
   },
 
-  // ==================== PRODUCTIVITY ====================
+  // Productivity
   {
     name: "Notion",
     category: "Productivity",
     icon: "📓",
-    description: "Organize notes, projects, tasks and information.",
+    description: "Workspace for notes, planning, projects and databases.",
     rating: 4.8,
     pricing: "Freemium",
     url: "https://www.notion.com/",
-    keywords: ["productivity", "notes", "tasks", "planning"]
+    keywords: ["productivity", "notes", "planning", "school", "tasks"]
   },
   {
     name: "Trello",
     category: "Productivity",
     icon: "📋",
-    description: "Manage projects and tasks using visual boards.",
-    rating: 4.7,
+    description: "Visual task and project management platform.",
+    rating: 4.6,
     pricing: "Freemium",
     url: "https://trello.com/",
     keywords: ["productivity", "tasks", "project", "planning"]
@@ -361,7 +369,7 @@ const tools = [
     name: "Todoist",
     category: "Productivity",
     icon: "✅",
-    description: "Task manager for organizing everyday work and goals.",
+    description: "Task manager for organizing things you need to do.",
     rating: 4.7,
     pricing: "Freemium",
     url: "https://todoist.com/",
@@ -370,9 +378,9 @@ const tools = [
   {
     name: "Asana",
     category: "Productivity",
-    icon: "🗂️",
+    icon: "📊",
     description: "Project and task management platform.",
-    rating: 4.7,
+    rating: 4.6,
     pricing: "Freemium",
     url: "https://asana.com/",
     keywords: ["productivity", "project", "tasks", "team"]
@@ -381,19 +389,19 @@ const tools = [
     name: "Google Keep",
     category: "Productivity",
     icon: "💡",
-    description: "Quick notes, lists and reminders.",
-    rating: 4.6,
+    description: "Simple notes, lists and reminders.",
+    rating: 4.5,
     pricing: "Free",
     url: "https://keep.google.com/",
-    keywords: ["notes", "productivity", "tasks", "reminders"]
+    keywords: ["notes", "tasks", "productivity", "reminders"]
   },
 
-  // ==================== IMAGES ====================
+  // Images
   {
     name: "Remove.bg",
     category: "Images",
     icon: "🪄",
-    description: "Remove image backgrounds automatically.",
+    description: "Automatically remove backgrounds from images.",
     rating: 4.7,
     pricing: "Freemium",
     url: "https://www.remove.bg/",
@@ -402,7 +410,7 @@ const tools = [
   {
     name: "TinyPNG",
     category: "Images",
-    icon: "🗜️",
+    icon: "🐼",
     description: "Compress PNG and JPEG images while reducing file size.",
     rating: 4.7,
     pricing: "Freemium",
@@ -413,7 +421,7 @@ const tools = [
     name: "Unsplash",
     category: "Images",
     icon: "📷",
-    description: "Find high-quality stock photographs.",
+    description: "Large collection of free-to-use photos.",
     rating: 4.8,
     pricing: "Free",
     url: "https://unsplash.com/",
@@ -422,7 +430,7 @@ const tools = [
   {
     name: "Pexels",
     category: "Images",
-    icon: "📸",
+    icon: "🌄",
     description: "Free stock photos and videos.",
     rating: 4.8,
     pricing: "Free",
@@ -430,7 +438,7 @@ const tools = [
     keywords: ["image", "photo", "video", "stock"]
   },
 
-  // ==================== AUDIO ====================
+  // Audio
   {
     name: "Audacity",
     category: "Audio",
@@ -445,59 +453,78 @@ const tools = [
     name: "BandLab",
     category: "Audio",
     icon: "🎵",
-    description: "Create, record and collaborate on music online.",
-    rating: 4.7,
+    description: "Online music creation and audio production platform.",
+    rating: 4.6,
     pricing: "Free",
     url: "https://www.bandlab.com/",
-    keywords: ["music", "audio", "record", "beat"]
+    keywords: ["music", "audio", "beat", "record", "song"]
   },
 
-  // ==================== PDF ====================
+  // PDF
   {
     name: "Smallpdf",
     category: "PDF & Documents",
     icon: "📕",
-    description: "Compress, convert, merge and edit PDF files.",
+    description: "Online PDF tools for converting, compressing and editing documents.",
     rating: 4.7,
     pricing: "Freemium",
     url: "https://smallpdf.com/",
-    keywords: ["pdf", "document", "compress", "convert"]
+    keywords: ["pdf", "document", "convert", "compress"]
   },
   {
     name: "iLovePDF",
     category: "PDF & Documents",
     icon: "❤️",
-    description: "Online tools for merging, splitting and converting PDFs.",
+    description: "Collection of useful PDF editing and conversion tools.",
     rating: 4.7,
     pricing: "Freemium",
     url: "https://www.ilovepdf.com/",
-    keywords: ["pdf", "document", "merge", "convert"]
+    keywords: ["pdf", "document", "merge", "convert", "compress"]
   },
   {
     name: "PDF24",
     category: "PDF & Documents",
     icon: "📘",
-    description: "Free online PDF tools for everyday document tasks.",
+    description: "Free online tools for working with PDF documents.",
     rating: 4.7,
     pricing: "Free",
     url: "https://tools.pdf24.org/",
-    keywords: ["pdf", "document", "convert", "merge"]
+    keywords: ["pdf", "document", "convert", "edit"]
   }
 ];
 
-
 /* =========================================================
    STORAGE
-   ========================================================= */
+========================================================= */
 
 const FAVORITES_KEY = "tztools_favorites";
 const RECENT_KEY = "tztools_recent";
-const MAX_RECENT = 10;
 
+function readStorage(key, fallback = []) {
+  try {
+    const value = JSON.parse(localStorage.getItem(key));
+    return Array.isArray(value) ? value : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function writeStorage(key, value) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch {
+    // Storage may be unavailable.
+  }
+}
+
+let favorites = new Set(readStorage(FAVORITES_KEY));
+let recentTools = readStorage(RECENT_KEY);
+
+const compareTools = new Set();
 
 /* =========================================================
    DOM
-   ========================================================= */
+========================================================= */
 
 const searchInput = document.getElementById("searchInput");
 const searchButton = document.getElementById("searchButton");
@@ -507,139 +534,55 @@ const categoryFilter = document.getElementById("categoryFilter");
 const dashboard = document.getElementById("dashboard");
 
 const categoriesOverlay = document.getElementById("categoriesOverlay");
+const categoriesMenu = document.getElementById("categoriesMenu");
+const categoriesClose = document.getElementById("categoriesClose");
 const categoriesButton = document.getElementById("categoriesButton");
 const categoriesButtonHero = document.getElementById("categoriesButtonHero");
 const footerCategoriesButton = document.getElementById("footerCategoriesButton");
-const categoriesClose = document.getElementById("categoriesClose");
 
 const menuButton = document.getElementById("menuButton");
 const navLinks = document.getElementById("navLinks");
 const themeToggle = document.getElementById("themeToggle");
 
-
 /* =========================================================
-   HELPERS
-   ========================================================= */
+   INTENT SYSTEM
+========================================================= */
+
+const intentGroups = {
+  logo: ["logo", "logos", "brand", "branding"],
+  design: ["design", "graphic", "poster", "flyer", "banner", "thumbnail"],
+  video: ["video", "videos", "edit video", "editing", "reels", "shorts", "tiktok"],
+  writing: ["write", "writing", "essay", "grammar", "article", "content"],
+  website: ["website", "websites", "site", "web", "landing page", "blog"],
+  study: ["study", "studying", "school", "learn", "learning", "revision", "exam"],
+  math: ["math", "mathematics", "algebra", "geometry", "equation", "calculate"],
+  ai: ["ai", "artificial intelligence", "assistant", "chatbot"],
+  productivity: ["productivity", "tasks", "todo", "planning", "organize"],
+  image: ["image", "photo", "picture", "background", "compress image"],
+  audio: ["audio", "music", "song", "beat", "recording", "sound"],
+  pdf: ["pdf", "document", "documents", "merge pdf", "convert pdf"]
+};
 
 function normalizeText(text) {
   return String(text || "")
     .toLowerCase()
-    .trim()
-    .replace(/[^\w\s&.-]/g, " ");
+    .replace(/[^\w\s&.-]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
-
-function escapeHTML(text) {
-  const div = document.createElement("div");
-  div.textContent = text;
-  return div.innerHTML;
-}
-
-
-/* =========================================================
-   FAVORITES
-   ========================================================= */
-
-function getFavorites() {
-  try {
-    return JSON.parse(localStorage.getItem(FAVORITES_KEY)) || [];
-  } catch {
-    return [];
-  }
-}
-
-function saveFavorites(favorites) {
-  localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
-}
-
-function isFavorite(toolName) {
-  return getFavorites().includes(toolName);
-}
-
-function toggleFavorite(toolName) {
-  let favorites = getFavorites();
-
-  if (favorites.includes(toolName)) {
-    favorites = favorites.filter(name => name !== toolName);
-  } else {
-    favorites.push(toolName);
-  }
-
-  saveFavorites(favorites);
-
-  renderTools(currentResults);
-  renderDashboard();
-}
-
-
-/* =========================================================
-   RECENTLY USED
-   ========================================================= */
-
-function getRecentlyUsed() {
-  try {
-    return JSON.parse(localStorage.getItem(RECENT_KEY)) || [];
-  } catch {
-    return [];
-  }
-}
-
-function saveRecentlyUsed(recent) {
-  localStorage.setItem(RECENT_KEY, JSON.stringify(recent));
-}
-
-function addRecentlyVisited(toolName) {
-  let recent = getRecentlyUsed();
-
-  recent = recent.filter(name => name !== toolName);
-  recent.unshift(toolName);
-  recent = recent.slice(0, MAX_RECENT);
-
-  saveRecentlyUsed(recent);
-  renderDashboard();
-}
-
-function clearRecentlyUsed() {
-  localStorage.removeItem(RECENT_KEY);
-  renderDashboard();
-}
-
-
-/* =========================================================
-   INTENTS
-   ========================================================= */
-
-const intentGroups = {
-  logo: ["logo", "logos", "brand", "branding"],
-  design: ["design", "poster", "flyer", "graphics", "graphic", "banner"],
-  video: ["video", "videos", "edit video", "editing", "movie", "reels", "shorts", "tiktok"],
-  writing: ["write", "writing", "essay", "grammar", "spell", "paraphrase", "article"],
-  website: ["website", "web", "site", "blog", "landing page"],
-  study: ["study", "school", "learn", "learning", "exam", "homework", "revision"],
-  math: ["math", "mathematics", "calculate", "calculation", "equation", "algebra", "geometry", "graph"],
-  ai: ["ai", "artificial intelligence", "chatbot", "assistant"],
-  productivity: ["productivity", "tasks", "task", "todo", "planning", "organize", "notes"],
-  image: ["image", "images", "photo", "photos", "picture", "pictures", "background"],
-  audio: ["audio", "music", "song", "sound", "record", "recording", "beat"],
-  pdf: ["pdf", "document", "documents", "merge pdf", "compress pdf", "convert pdf"]
-};
 
 function detectIntents(query) {
   const text = normalizeText(query);
-  const detected = [];
+  const intents = [];
 
   for (const [intent, words] of Object.entries(intentGroups)) {
-    if (words.some(word => text.includes(normalizeText(word)))) {
-      detected.push(intent);
+    if (words.some(word => text.includes(word))) {
+      intents.push(intent);
     }
   }
 
-  return detected;
+  return intents;
 }
-
-
-/* =========================================================
-   SEARCH
-   ========================================================= */
 
 function scoreTool(tool, query, intents) {
   const q = normalizeText(query);
@@ -648,185 +591,508 @@ function scoreTool(tool, query, intents) {
 
   let score = 0;
 
-  const toolName = normalizeText(tool.name);
+  const name = normalizeText(tool.name);
   const description = normalizeText(tool.description);
   const keywords = tool.keywords.map(normalizeText);
 
-  if (toolName === q) score += 100;
-  if (toolName.includes(q)) score += 70;
+  if (name === q) score += 100;
+  if (name.includes(q)) score += 60;
+  if (q.includes(name)) score += 50;
 
-  q.split(/\s+/).filter(Boolean).forEach(word => {
-    if (toolName.includes(word)) score += 25;
-    if (description.includes(word)) score += 8;
+  q.split(" ").forEach(word => {
+    if (word.length < 2) return;
 
-    if (keywords.some(keyword => keyword.includes(word))) {
-      score += 20;
-    }
+    if (name.includes(word)) score += 20;
+    if (keywords.some(k => k.includes(word))) score += 12;
+    if (description.includes(word)) score += 6;
   });
+
+  const categoryIntentMap = {
+    logo: "Design",
+    design: "Design",
+    video: "Video",
+    writing: "Writing",
+    website: "Websites",
+    study: "Students",
+    math: "Students",
+    ai: "AI",
+    productivity: "Productivity",
+    image: "Images",
+    audio: "Audio",
+    pdf: "PDF & Documents"
+  };
 
   intents.forEach(intent => {
-    const categoryMap = {
-      logo: "Design",
-      design: "Design",
-      video: "Video",
-      writing: "Writing",
-      website: "Websites",
-      study: "Students",
-      math: "Students",
-      ai: "AI",
-      productivity: "Productivity",
-      image: "Images",
-      audio: "Audio",
-      pdf: "PDF & Documents"
-    };
+    if (categoryIntentMap[intent] === tool.category) {
+      score += 45;
+    }
 
-    if (tool.category === categoryMap[intent]) {
-      score += 35;
+    if (tool.keywords.some(k =>
+      intentGroups[intent]?.some(word => normalizeText(word) === k)
+    )) {
+      score += 15;
     }
   });
 
+  score += tool.rating * 2;
+
   return score;
+}
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+let currentResults = [...tools];
+
+function getFilteredTools(baseTools) {
+  let result = [...baseTools];
+
+  const category = categoryFilter?.value || "all";
+  const pricing = document.getElementById("pricingFilter")?.value || "all";
+  const rating = document.getElementById("ratingFilter")?.value || "all";
+  const sort = document.getElementById("sortFilter")?.value || "relevance";
+
+  if (category !== "all") {
+    result = result.filter(tool => tool.category === category);
+  }
+
+  if (pricing !== "all") {
+    result = result.filter(tool => tool.pricing === pricing);
+  }
+
+  if (rating !== "all") {
+    const minimum = Number(rating);
+    result = result.filter(tool => tool.rating >= minimum);
+  }
+
+  if (sort === "rating-high") {
+    result.sort((a, b) => b.rating - a.rating);
+  }
+
+  if (sort === "rating-low") {
+    result.sort((a, b) => a.rating - b.rating);
+  }
+
+  if (sort === "name") {
+    result.sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  if (sort === "category") {
+    result.sort((a, b) => a.category.localeCompare(b.category));
+  }
+
+  return result;
 }
 
 function searchTools(query) {
   const cleanQuery = normalizeText(query);
 
+  let results;
+
   if (!cleanQuery) {
-    return tools.slice();
+    results = [...tools];
+  } else {
+    const intents = detectIntents(cleanQuery);
+
+    results = tools
+      .map(tool => ({
+        tool,
+        score: scoreTool(tool, cleanQuery, intents)
+      }))
+      .filter(item => item.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .map(item => item.tool);
   }
 
-  const intents = detectIntents(cleanQuery);
-
-  return tools
-    .map(tool => ({
-      tool,
-      score: scoreTool(tool, cleanQuery, intents)
-    }))
-    .filter(item => item.score > 0)
-    .sort((a, b) => {
-      if (b.score !== a.score) return b.score - a.score;
-      return b.tool.rating - a.tool.rating;
-    })
-    .slice(0, 10)
-    .map(item => item.tool);
+  return getFilteredTools(results);
 }
 
+function performSearch(query = searchInput?.value || "") {
+  const cleanQuery = normalizeText(query);
+
+  if (searchInput && searchInput.value !== query) {
+    searchInput.value = query;
+  }
+
+  currentResults = searchTools(cleanQuery);
+
+  renderTools(currentResults.slice(0, 10));
+
+  const status = document.getElementById("searchStatus");
+
+  if (status) {
+    status.textContent = cleanQuery
+      ? `${currentResults.length} tool${currentResults.length === 1 ? "" : "s"} found`
+      : `${currentResults.length} tools available`;
+  }
+
+  hideSuggestions();
+
+  requestAnimationFrame(() => {
+    document.getElementById("tools")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  });
+}
 
 /* =========================================================
    TOOL CARDS
-   ========================================================= */
+========================================================= */
 
-function createToolCard(tool) {
-  const favorite = isFavorite(tool.name);
+function escapeHTML(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
 
-  return `
-    <article class="tool-card">
+function renderTools(list) {
+  if (!toolsGrid) return;
 
-      <button
-        class="favorite-button ${favorite ? "active" : ""}"
-        data-favorite="${escapeHTML(tool.name)}"
-        aria-label="${favorite ? "Remove from favorites" : "Add to favorites"}"
-        title="${favorite ? "Remove from favorites" : "Add to favorites"}"
-      >
-        ${favorite ? "★" : "☆"}
-      </button>
+  if (!list.length) {
+    toolsGrid.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">🔎</div>
+        <h3>No tools found</h3>
+        <p>Try changing your search or filters.</p>
+        <button class="secondary-button" data-action="clear-filters">
+          Clear Filters
+        </button>
+      </div>
+    `;
+    return;
+  }
 
-      <div class="tool-icon">
-        ${tool.icon}
+  const fragment = document.createDocumentFragment();
+
+  list.forEach((tool, index) => {
+    const card = document.createElement("article");
+
+    card.className = "tool-card reveal-card";
+    card.style.setProperty("--card-index", index);
+
+    const isFavorite = favorites.has(tool.name);
+    const isCompared = compareTools.has(tool.name);
+
+    card.innerHTML = `
+      <div class="tool-card-top">
+        <div class="tool-icon" aria-hidden="true">${escapeHTML(tool.icon)}</div>
+
+        <button
+          class="favorite-button ${isFavorite ? "active" : ""}"
+          data-favorite="${escapeHTML(tool.name)}"
+          aria-label="${isFavorite ? "Remove" : "Add"} ${escapeHTML(tool.name)} ${isFavorite ? "from" : "to"} favorites"
+          aria-pressed="${isFavorite}"
+          title="${isFavorite ? "Remove from favorites" : "Add to favorites"}"
+        >
+          ${isFavorite ? "★" : "☆"}
+        </button>
       </div>
 
-      <div class="tool-content">
-
-        <div class="tool-category">
-          ${escapeHTML(tool.category)}
-        </div>
+      <div class="tool-card-content">
+        <span class="tool-category">${escapeHTML(tool.category)}</span>
 
         <h3>${escapeHTML(tool.name)}</h3>
 
         <p>${escapeHTML(tool.description)}</p>
 
         <div class="tool-meta">
-          <span>⭐ ${tool.rating}</span>
+          <span>⭐ ${tool.rating.toFixed(1)}</span>
           <span>${escapeHTML(tool.pricing)}</span>
         </div>
+      </div>
 
+      <div class="tool-card-actions">
         <a
-          class="tool-button"
-          href="${tool.url}"
+          class="visit-button"
+          href="${escapeHTML(tool.url)}"
           target="_blank"
           rel="noopener noreferrer"
           data-visit="${escapeHTML(tool.name)}"
         >
-          Visit Tool →
+          Visit Tool ↗
         </a>
 
-      </div>
-    </article>
-  `;
-}
-
-
-/* =========================================================
-   RENDER TOOLS
-   ========================================================= */
-
-let currentResults = tools.slice();
-
-function renderTools(results) {
-  currentResults = results;
-
-  if (!toolsGrid) return;
-
-  if (!results.length) {
-    toolsGrid.innerHTML = `
-      <div class="empty-state">
-        <h3>No tools found</h3>
-        <p>Try something like "make a logo", "edit video", or "study maths".</p>
+        <button
+          class="compare-button ${isCompared ? "selected" : ""}"
+          data-compare="${escapeHTML(tool.name)}"
+          aria-pressed="${isCompared}"
+        >
+          ${isCompared ? "✓ Comparing" : "Compare"}
+        </button>
       </div>
     `;
-    return;
-  }
 
-  toolsGrid.innerHTML = results
-    .map(createToolCard)
-    .join("");
+    fragment.appendChild(card);
+  });
+
+  toolsGrid.replaceChildren(fragment);
 }
 
+/* =========================================================
+   FILTER CONTROLS
+========================================================= */
+
+function setupFilterControls() {
+  if (!categoryFilter) return;
+
+  const categories = [...new Set(tools.map(tool => tool.category))];
+
+  categoryFilter.innerHTML = `
+    <option value="all">All Categories</option>
+    ${categories
+      .map(category => `<option value="${escapeHTML(category)}">${escapeHTML(category)}</option>`)
+      .join("")}
+  `;
+
+  const existingPanel = document.querySelector(".advanced-filters");
+
+  if (!existingPanel) {
+    const panel = document.createElement("div");
+
+    panel.className = "advanced-filters";
+
+    panel.innerHTML = `
+      <div class="filter-group">
+        <label for="pricingFilter">Pricing</label>
+        <select id="pricingFilter" aria-label="Filter by pricing">
+          <option value="all">All Pricing</option>
+          <option value="Free">Free</option>
+          <option value="Freemium">Freemium</option>
+          <option value="Paid">Paid</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="ratingFilter">Rating</label>
+        <select id="ratingFilter" aria-label="Filter by minimum rating">
+          <option value="all">Any Rating</option>
+          <option value="4.8">4.8+ ⭐</option>
+          <option value="4.5">4.5+ ⭐</option>
+          <option value="4.0">4.0+ ⭐</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="sortFilter">Sort</label>
+        <select id="sortFilter" aria-label="Sort tools">
+          <option value="relevance">Relevance</option>
+          <option value="rating-high">Highest Rated</option>
+          <option value="rating-low">Lowest Rated</option>
+          <option value="name">A → Z</option>
+          <option value="category">Category</option>
+        </select>
+      </div>
+
+      <button class="clear-filter-button" data-action="clear-filters">
+        Reset
+      </button>
+    `;
+
+    const filterPanel = document.querySelector(".filter-panel");
+
+    if (filterPanel) {
+      filterPanel.appendChild(panel);
+    } else {
+      categoryFilter.parentElement?.appendChild(panel);
+    }
+  }
+}
+
+function applyFilters() {
+  currentResults = searchTools(searchInput?.value || "");
+  renderTools(currentResults.slice(0, 10));
+}
+
+/* =========================================================
+   FAVORITES
+========================================================= */
+
+function saveFavorites() {
+  writeStorage(FAVORITES_KEY, [...favorites]);
+}
+
+function toggleFavorite(name) {
+  if (favorites.has(name)) {
+    favorites.delete(name);
+    showToast("Removed from favorites");
+  } else {
+    favorites.add(name);
+    showToast("Added to favorites ⭐");
+  }
+
+  saveFavorites();
+  renderTools(currentResults.slice(0, 10));
+  renderDashboard();
+}
+
+/* =========================================================
+   RECENTLY USED
+========================================================= */
+
+function addRecentlyVisited(name) {
+  recentTools = recentTools.filter(item => item !== name);
+
+  recentTools.unshift(name);
+
+  recentTools = recentTools.slice(0, 10);
+
+  writeStorage(RECENT_KEY, recentTools);
+
+  renderDashboard();
+}
 
 /* =========================================================
    DASHBOARD
-   ========================================================= */
+========================================================= */
 
-function createDashboardToolCard(tool) {
-  return `
-    <article class="tool-card dashboard-tool-card">
+function createDashboard() {
+  if (!dashboard) return;
 
-      <div class="tool-icon">
-        ${tool.icon}
+  dashboard.innerHTML = `
+    <div class="dashboard-shell">
+
+      <div class="dashboard-header">
+        <div>
+          <span class="section-label">YOUR SPACE</span>
+          <h2>Your Dashboard</h2>
+          <p>Keep track of tools you've saved and visited.</p>
+        </div>
       </div>
 
-      <div class="tool-content">
-
-        <div class="tool-category">
-          ${escapeHTML(tool.category)}
+      <div class="dashboard-stats">
+        <div class="stat-card">
+          <span class="stat-icon">🧰</span>
+          <strong id="statTotal">0</strong>
+          <span>Total Tools</span>
         </div>
 
-        <h3>${escapeHTML(tool.name)}</h3>
+        <div class="stat-card">
+          <span class="stat-icon">⭐</span>
+          <strong id="statFavorites">0</strong>
+          <span>Favorites</span>
+        </div>
 
-        <p>${escapeHTML(tool.description)}</p>
+        <div class="stat-card">
+          <span class="stat-icon">🕘</span>
+          <strong id="statRecent">0</strong>
+          <span>Recently Used</span>
+        </div>
+
+        <div class="stat-card">
+          <span class="stat-icon">📂</span>
+          <strong id="statCategories">0</strong>
+          <span>Categories</span>
+        </div>
+      </div>
+
+      <div class="dashboard-actions">
+        <button class="dashboard-action" data-dashboard-search="logo">
+          🎨 Find Logo Tools
+        </button>
+
+        <button class="dashboard-action" data-dashboard-search="video">
+          🎬 Find Video Tools
+        </button>
+
+        <button class="dashboard-action" data-dashboard-search="study">
+          🎓 Find Study Tools
+        </button>
+
+        <button class="dashboard-action" data-dashboard-search="website">
+          🌐 Find Website Tools
+        </button>
+      </div>
+
+      <div class="dashboard-section">
+        <div class="dashboard-section-heading">
+          <div>
+            <span class="section-label">SAVED</span>
+            <h3>Favorite Tools</h3>
+          </div>
+
+          <button
+            class="text-button"
+            data-action="clear-favorites"
+          >
+            Clear all
+          </button>
+        </div>
+
+        <div id="favoritesDashboardGrid" class="dashboard-tool-grid"></div>
+      </div>
+
+      <div class="dashboard-section">
+        <div class="dashboard-section-heading">
+          <div>
+            <span class="section-label">HISTORY</span>
+            <h3>Recently Used</h3>
+          </div>
+
+          <button
+            class="text-button"
+            data-action="clear-recent"
+          >
+            Clear
+          </button>
+        </div>
+
+        <div id="recentDashboardGrid" class="dashboard-tool-grid"></div>
+      </div>
+
+    </div>
+  `;
+}
+
+function createMiniToolCard(tool) {
+  const isFavorite = favorites.has(tool.name);
+  const isCompared = compareTools.has(tool.name);
+
+  return `
+    <article class="mini-tool-card">
+
+      <div class="mini-tool-icon">${escapeHTML(tool.icon)}</div>
+
+      <div class="mini-tool-info">
+        <span>${escapeHTML(tool.category)}</span>
+        <h4>${escapeHTML(tool.name)}</h4>
+        <p>⭐ ${tool.rating.toFixed(1)} · ${escapeHTML(tool.pricing)}</p>
+      </div>
+
+      <div class="mini-tool-actions">
+
+        <button
+          class="favorite-button ${isFavorite ? "active" : ""}"
+          data-favorite="${escapeHTML(tool.name)}"
+          aria-label="${isFavorite ? "Remove" : "Add"} ${escapeHTML(tool.name)} ${isFavorite ? "from" : "to"} favorites"
+          aria-pressed="${isFavorite}"
+        >
+          ${isFavorite ? "★" : "☆"}
+        </button>
+
+        <button
+          class="compare-button ${isCompared ? "selected" : ""}"
+          data-compare="${escapeHTML(tool.name)}"
+          aria-pressed="${isCompared}"
+        >
+          ${isCompared ? "✓" : "Compare"}
+        </button>
 
         <a
-          class="tool-button"
-          href="${tool.url}"
+          class="mini-visit"
+          href="${escapeHTML(tool.url)}"
           target="_blank"
           rel="noopener noreferrer"
           data-visit="${escapeHTML(tool.name)}"
         >
-          Visit Tool →
+          Visit ↗
         </a>
 
       </div>
-
     </article>
   `;
 }
@@ -834,857 +1100,670 @@ function createDashboardToolCard(tool) {
 function renderDashboard() {
   if (!dashboard) return;
 
-  const favoriteNames = getFavorites();
-  const recentNames = getRecentlyUsed();
+  const favoriteGrid = document.getElementById("favoritesDashboardGrid");
+  const recentGrid = document.getElementById("recentDashboardGrid");
 
-  const favoriteTools = favoriteNames
+  if (!favoriteGrid || !recentGrid) return;
+
+  const favoriteList = tools.filter(tool => favorites.has(tool.name));
+
+  const recentList = recentTools
     .map(name => tools.find(tool => tool.name === name))
     .filter(Boolean);
 
-  const recentTools = recentNames
-    .map(name => tools.find(tool => tool.name === name))
-    .filter(Boolean);
+  favoriteGrid.innerHTML = favoriteList.length
+    ? favoriteList.map(createMiniToolCard).join("")
+    : `
+      <div class="dashboard-empty">
+        <span>⭐</span>
+        <p>No favorite tools yet.</p>
+        <small>Tap the star on any tool to save it here.</small>
+      </div>
+    `;
 
-  const categoryCount = new Set(tools.map(tool => tool.category)).size;
+  recentGrid.innerHTML = recentList.length
+    ? recentList.map(createMiniToolCard).join("")
+    : `
+      <div class="dashboard-empty">
+        <span>🕘</span>
+        <p>No recently used tools yet.</p>
+        <small>Visit a tool and it will appear here.</small>
+      </div>
+    `;
 
-  dashboard.innerHTML = `
-    <div class="dashboard-inner">
+  const categories = new Set(tools.map(tool => tool.category));
 
-      <div class="dashboard-header">
+  const total = document.getElementById("statTotal");
+  const fav = document.getElementById("statFavorites");
+  const recent = document.getElementById("statRecent");
+  const category = document.getElementById("statCategories");
+
+  if (total) total.textContent = tools.length;
+  if (fav) fav.textContent = favorites.size;
+  if (recent) recent.textContent = recentList.length;
+  if (category) category.textContent = categories.size;
+}
+
+/* =========================================================
+   COMPARE SYSTEM
+========================================================= */
+
+function setupCompareUI() {
+  if (document.getElementById("compareBar")) return;
+
+  const bar = document.createElement("div");
+
+  bar.id = "compareBar";
+  bar.className = "compare-bar";
+  bar.setAttribute("aria-live", "polite");
+
+  bar.innerHTML = `
+    <div class="compare-bar-content">
+      <div>
+        <strong>Compare Tools</strong>
+        <span id="compareCount">0/3 selected</span>
+      </div>
+
+      <div class="compare-bar-actions">
+        <button
+          class="secondary-button"
+          data-action="clear-compare"
+        >
+          Clear
+        </button>
+
+        <button
+          class="primary-button"
+          data-action="open-compare"
+          id="openCompareButton"
+          disabled
+        >
+          Compare
+        </button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(bar);
+
+  const modal = document.createElement("div");
+
+  modal.id = "compareModal";
+  modal.className = "modal";
+  modal.setAttribute("aria-hidden", "true");
+
+  modal.innerHTML = `
+    <div class="modal-backdrop" data-action="close-compare"></div>
+
+    <div
+      class="compare-modal-card"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="compareModalTitle"
+    >
+      <div class="modal-header">
         <div>
-          <p class="section-label">YOUR SPACE</p>
-          <h2>Dashboard</h2>
-          <p>Your personal TzTools hub.</p>
+          <span class="section-label">TOOL COMPARISON</span>
+          <h2 id="compareModalTitle">Compare Tools</h2>
         </div>
+
+        <button
+          class="modal-close"
+          data-action="close-compare"
+          aria-label="Close comparison"
+        >
+          ×
+        </button>
       </div>
 
+      <div id="compareContent"></div>
+    </div>
+  `;
 
-      <!-- STATS -->
+  document.body.appendChild(modal);
 
-      <div class="dashboard-stats">
+  updateCompareBar();
+}
 
-        <div class="dashboard-stat">
-          <div class="dashboard-stat-icon">🧰</div>
-          <div>
-            <strong>${tools.length}</strong>
-            <span>Total Tools</span>
+function toggleCompare(name) {
+  if (compareTools.has(name)) {
+    compareTools.delete(name);
+    showToast("Removed from comparison");
+  } else {
+    if (compareTools.size >= 3) {
+      showToast("You can compare up to 3 tools");
+      return;
+    }
+
+    compareTools.add(name);
+    showToast("Added to comparison ⚖️");
+  }
+
+  updateCompareBar();
+  renderTools(currentResults.slice(0, 10));
+  renderDashboard();
+}
+
+function updateCompareBar() {
+  const bar = document.getElementById("compareBar");
+  const count = document.getElementById("compareCount");
+  const openButton = document.getElementById("openCompareButton");
+
+  if (!bar || !count || !openButton) return;
+
+  count.textContent = `${compareTools.size}/3 selected`;
+  openButton.disabled = compareTools.size < 2;
+
+  bar.classList.toggle("visible", compareTools.size > 0);
+}
+
+function openCompareModal() {
+  if (compareTools.size < 2) {
+    showToast("Select at least 2 tools to compare");
+    return;
+  }
+
+  const selected = tools.filter(tool => compareTools.has(tool.name));
+  const modal = document.getElementById("compareModal");
+  const content = document.getElementById("compareContent");
+
+  if (!modal || !content) return;
+
+  content.innerHTML = `
+    <div class="comparison-grid">
+
+      ${selected.map(tool => `
+        <article class="comparison-card">
+
+          <div class="comparison-icon">
+            ${escapeHTML(tool.icon)}
           </div>
-        </div>
 
-        <div class="dashboard-stat">
-          <div class="dashboard-stat-icon">⭐</div>
-          <div>
-            <strong>${favoriteTools.length}</strong>
-            <span>Favorites</span>
+          <span class="tool-category">
+            ${escapeHTML(tool.category)}
+          </span>
+
+          <h3>${escapeHTML(tool.name)}</h3>
+
+          <p>${escapeHTML(tool.description)}</p>
+
+          <div class="comparison-details">
+            <div>
+              <span>Rating</span>
+              <strong>⭐ ${tool.rating.toFixed(1)}</strong>
+            </div>
+
+            <div>
+              <span>Pricing</span>
+              <strong>${escapeHTML(tool.pricing)}</strong>
+            </div>
+
+            <div>
+              <span>Category</span>
+              <strong>${escapeHTML(tool.category)}</strong>
+            </div>
           </div>
-        </div>
 
-        <div class="dashboard-stat">
-          <div class="dashboard-stat-icon">🕘</div>
-          <div>
-            <strong>${recentTools.length}</strong>
-            <span>Recently Used</span>
-          </div>
-        </div>
-
-        <div class="dashboard-stat">
-          <div class="dashboard-stat-icon">📂</div>
-          <div>
-            <strong>${categoryCount}</strong>
-            <span>Categories</span>
-          </div>
-        </div>
-
-      </div>
-
-
-      <!-- QUICK ACTIONS -->
-
-      <section class="dashboard-section">
-
-        <div class="dashboard-section-header">
-          <div>
-            <h3>⚡ Quick Actions</h3>
-            <p>Jump straight into what you need.</p>
-          </div>
-        </div>
-
-        <div class="dashboard-actions">
-
-          <button
-            class="dashboard-action"
-            data-dashboard-search="make a logo"
+          <a
+            class="visit-button"
+            href="${escapeHTML(tool.url)}"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-visit="${escapeHTML(tool.name)}"
           >
-            <span>🎨</span>
-            <strong>Make a Logo</strong>
-            <small>Find design tools</small>
-          </button>
+            Visit Tool ↗
+          </a>
 
-          <button
-            class="dashboard-action"
-            data-dashboard-search="edit video"
-          >
-            <span>🎬</span>
-            <strong>Edit a Video</strong>
-            <small>Find video editors</small>
-          </button>
-
-          <button
-            class="dashboard-action"
-            data-dashboard-search="study"
-          >
-            <span>🎓</span>
-            <strong>Study</strong>
-            <small>Find learning tools</small>
-          </button>
-
-          <button
-            class="dashboard-action"
-            data-dashboard-search="build a website"
-          >
-            <span>🌐</span>
-            <strong>Build a Website</strong>
-            <small>Find website builders</small>
-          </button>
-
-        </div>
-
-      </section>
-
-
-      <!-- FAVORITES -->
-
-      <section class="dashboard-section">
-
-        <div class="dashboard-section-header">
-
-          <div>
-            <h3>⭐ Favorite Tools</h3>
-            <p>Your saved tools.</p>
-          </div>
-
-          ${
-            favoriteTools.length
-              ? `<span class="dashboard-count">${favoriteTools.length}</span>`
-              : ""
-          }
-
-        </div>
-
-        ${
-          favoriteTools.length
-            ? `
-              <div class="favorites-dashboard-grid">
-                ${favoriteTools.map(createDashboardToolCard).join("")}
-              </div>
-            `
-            : `
-              <div class="dashboard-empty">
-                <div>☆</div>
-                <h4>No favorites yet</h4>
-                <p>Tap the star on any tool to save it here.</p>
-              </div>
-            `
-        }
-
-      </section>
-
-
-      <!-- RECENT -->
-
-      <section class="dashboard-section">
-
-        <div class="dashboard-section-header">
-
-          <div>
-            <h3>🕘 Recently Used</h3>
-            <p>Your latest tools.</p>
-          </div>
-
-          ${
-            recentTools.length
-              ? `<button class="clear-recent-button" id="clearRecentButton">Clear</button>`
-              : ""
-          }
-
-        </div>
-
-        ${
-          recentTools.length
-            ? `
-              <div class="recent-dashboard-grid">
-                ${recentTools.map(createDashboardToolCard).join("")}
-              </div>
-            `
-            : `
-              <div class="dashboard-empty">
-                <div>🕘</div>
-                <h4>No recently used tools</h4>
-                <p>Tools you visit will appear here.</p>
-              </div>
-            `
-        }
-
-      </section>
+        </article>
+      `).join("")}
 
     </div>
   `;
 
-  const clearButton = document.getElementById("clearRecentButton");
+  modal.classList.add("open");
+  modal.setAttribute("aria-hidden", "false");
 
-  if (clearButton) {
-    clearButton.addEventListener("click", clearRecentlyUsed);
-  }
+  document.body.classList.add("modal-open");
 
-  document.querySelectorAll("[data-dashboard-search]").forEach(button => {
-    button.addEventListener("click", () => {
-
-      const query = button.dataset.dashboardSearch;
-
-      if (searchInput) {
-        searchInput.value = query;
-      }
-
-      performSearch();
-
-    });
-  });
+  modal.querySelector(".modal-close")?.focus();
 }
 
+function closeCompareModal() {
+  const modal = document.getElementById("compareModal");
 
-/* =========================================================
-   SEARCH ACTION
-   ========================================================= */
+  if (!modal) return;
 
-function performSearch() {
-  const query = searchInput ? searchInput.value.trim() : "";
-
-  const results = searchTools(query);
-
-  renderTools(results);
-
-  if (suggestions) {
-    suggestions.innerHTML = "";
-  }
-
-  const toolsSection = document.getElementById("tools");
-
-  if (toolsSection) {
-    toolsSection.scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
-  }
+  modal.classList.remove("open");
+  modal.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("modal-open");
 }
 
+function clearCompare() {
+  compareTools.clear();
+  updateCompareBar();
+  renderTools(currentResults.slice(0, 10));
+  renderDashboard();
+}
 
 /* =========================================================
-   LIVE SUGGESTIONS
-   ========================================================= */
+   SUGGESTIONS
+========================================================= */
 
 function showSuggestions() {
-  if (!searchInput || !suggestions) return;
+  if (!suggestions || !searchInput) return;
 
-  const query = searchInput.value.trim();
+  const query = normalizeText(searchInput.value);
 
   if (!query) {
-    suggestions.innerHTML = "";
+    hideSuggestions();
     return;
   }
 
-  const results = searchTools(query).slice(0, 5);
+  const matches = tools
+    .filter(tool => {
+      const text = normalizeText(
+        `${tool.name} ${tool.category} ${tool.keywords.join(" ")}`
+      );
 
-  suggestions.innerHTML = results
+      return text.includes(query);
+    })
+    .slice(0, 5);
+
+  if (!matches.length) {
+    hideSuggestions();
+    return;
+  }
+
+  suggestions.innerHTML = matches
     .map(tool => `
       <button
         class="suggestion-item"
+        type="button"
         data-suggestion="${escapeHTML(tool.name)}"
       >
-        <span>${tool.icon}</span>
-        <span>${escapeHTML(tool.name)}</span>
-        <small>${escapeHTML(tool.category)}</small>
+        <span>${escapeHTML(tool.icon)}</span>
+        <span>
+          <strong>${escapeHTML(tool.name)}</strong>
+          <small>${escapeHTML(tool.category)}</small>
+        </span>
       </button>
     `)
     .join("");
+
+  suggestions.classList.add("visible");
 }
 
+function hideSuggestions() {
+  suggestions?.classList.remove("visible");
+}
 
 /* =========================================================
-   CATEGORY FILTER
-   ========================================================= */
+   CATEGORY MENU
+========================================================= */
 
-function populateCategoryFilter() {
-  if (!categoryFilter) return;
+function openCategories() {
+  if (!categoriesOverlay) return;
 
-  const categories = [
-    ...new Set(tools.map(tool => tool.category))
-  ];
+  categoriesOverlay.classList.add("open");
+  categoriesOverlay.setAttribute("aria-hidden", "false");
+  document.body.classList.add("modal-open");
 
-  categoryFilter.innerHTML = `
-    <option value="all">All Categories</option>
-    ${categories
-      .map(category => `
-        <option value="${escapeHTML(category)}">
-          ${escapeHTML(category)}
-        </option>
-      `)
-      .join("")}
-  `;
+  categoriesMenu?.querySelector(".category-card")?.focus();
 }
 
-function filterByCategory() {
-  if (!categoryFilter) return;
+function closeCategories() {
+  if (!categoriesOverlay) return;
 
-  const category = categoryFilter.value;
+  categoriesOverlay.classList.remove("open");
+  categoriesOverlay.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("modal-open");
+}
 
-  if (category === "all") {
-    renderTools(
-      searchInput?.value
-        ? searchTools(searchInput.value)
-        : tools.slice(0, 10)
-    );
-    return;
+function chooseCategory(category) {
+  closeCategories();
+
+  if (categoryFilter) {
+    categoryFilter.value = category;
   }
 
-  const filtered = tools.filter(tool => tool.category === category);
+  currentResults = getFilteredTools(tools);
+  renderTools(currentResults.slice(0, 10));
 
-  renderTools(filtered.slice(0, 10));
-}
-
-
-/* =========================================================
-   EVENTS
-   ========================================================= */
-
-if (searchButton) {
-  searchButton.addEventListener("click", performSearch);
-}
-
-if (searchInput) {
-
-  searchInput.addEventListener("keydown", event => {
-    if (event.key === "Enter") {
-      performSearch();
-    }
+  document.getElementById("tools")?.scrollIntoView({
+    behavior: "smooth"
   });
 
-  searchInput.addEventListener("input", showSuggestions);
+  showToast(
+    category === "all"
+      ? "Showing all tools"
+      : `${category} tools selected`
+  );
 }
-
-if (categoryFilter) {
-  categoryFilter.addEventListener("change", filterByCategory);
-}
-
 
 /* =========================================================
-   GLOBAL CLICK HANDLER
-   ========================================================= */
+   TOAST
+========================================================= */
+
+function showToast(message) {
+  let toast = document.getElementById("tzToast");
+
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.id = "tzToast";
+    toast.className = "toast";
+    toast.setAttribute("role", "status");
+    toast.setAttribute("aria-live", "polite");
+
+    document.body.appendChild(toast);
+  }
+
+  toast.textContent = message;
+  toast.classList.add("show");
+
+  clearTimeout(showToast.timeout);
+
+  showToast.timeout = setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2200);
+}
+
+/* =========================================================
+   CLEAR ACTIONS
+========================================================= */
+
+function clearFilters() {
+  if (categoryFilter) categoryFilter.value = "all";
+
+  const pricing = document.getElementById("pricingFilter");
+  const rating = document.getElementById("ratingFilter");
+  const sort = document.getElementById("sortFilter");
+
+  if (pricing) pricing.value = "all";
+  if (rating) rating.value = "all";
+  if (sort) sort.value = "relevance";
+
+  currentResults = searchTools(searchInput?.value || "");
+  renderTools(currentResults.slice(0, 10));
+
+  showToast("Filters reset");
+}
+
+function clearFavorites() {
+  favorites.clear();
+  saveFavorites();
+  renderTools(currentResults.slice(0, 10));
+  renderDashboard();
+  showToast("Favorites cleared");
+}
+
+function clearRecent() {
+  recentTools = [];
+  writeStorage(RECENT_KEY, []);
+  renderDashboard();
+  showToast("Recently used cleared");
+}
+
+/* =========================================================
+   THEME
+========================================================= */
+
+function setupTheme() {
+  const savedTheme = localStorage.getItem("tztools_theme");
+
+  if (savedTheme === "dark") {
+    document.body.classList.add("dark-mode");
+  }
+
+  updateThemeButton();
+}
+
+function toggleTheme() {
+  document.body.classList.toggle("dark-mode");
+
+  const isDark = document.body.classList.contains("dark-mode");
+
+  localStorage.setItem(
+    "tztools_theme",
+    isDark ? "dark" : "light"
+  );
+
+  updateThemeButton();
+}
+
+function updateThemeButton() {
+  if (!themeToggle) return;
+
+  const isDark = document.body.classList.contains("dark-mode");
+
+  themeToggle.textContent = isDark ? "☀️" : "🌙";
+  themeToggle.setAttribute(
+    "aria-label",
+    isDark ? "Switch to light mode" : "Switch to dark mode"
+  );
+}
+
+/* =========================================================
+   MOBILE NAV
+========================================================= */
+
+function toggleMobileNav() {
+  if (!navLinks) return;
+
+  navLinks.classList.toggle("mobile-open");
+}
+
+/* =========================================================
+   DELEGATED EVENTS
+========================================================= */
 
 document.addEventListener("click", event => {
-
   const favoriteButton = event.target.closest("[data-favorite]");
 
   if (favoriteButton) {
-
     event.preventDefault();
-    event.stopPropagation();
-
     toggleFavorite(favoriteButton.dataset.favorite);
-
     return;
   }
 
+  const compareButton = event.target.closest("[data-compare]");
+
+  if (compareButton) {
+    event.preventDefault();
+    toggleCompare(compareButton.dataset.compare);
+    return;
+  }
 
   const visitLink = event.target.closest("[data-visit]");
 
   if (visitLink) {
-
     addRecentlyVisited(visitLink.dataset.visit);
-
     return;
   }
-
 
   const suggestion = event.target.closest("[data-suggestion]");
 
   if (suggestion) {
+    const name = suggestion.dataset.suggestion;
 
-    const toolName = suggestion.dataset.suggestion;
-    const tool = tools.find(item => item.name === toolName);
-
-    if (tool && searchInput) {
-      searchInput.value = tool.name;
-      performSearch();
+    if (searchInput) {
+      searchInput.value = name;
     }
+
+    performSearch(name);
+    return;
+  }
+
+  const categoryCard = event.target.closest(".category-card");
+
+  if (categoryCard) {
+    chooseCategory(categoryCard.dataset.category || "all");
+    return;
+  }
+
+  const action = event.target.closest("[data-action]");
+
+  if (action) {
+    const actionName = action.dataset.action;
+
+    if (actionName === "clear-filters") clearFilters();
+    if (actionName === "clear-favorites") clearFavorites();
+    if (actionName === "clear-recent") clearRecent();
+    if (actionName === "clear-compare") clearCompare();
+    if (actionName === "open-compare") openCompareModal();
+    if (actionName === "close-compare") closeCompareModal();
 
     return;
   }
 
-});
+  const dashboardSearch = event.target.closest("[data-dashboard-search]");
 
-
-/* =========================================================
-   QUICK SEARCH
-   ========================================================= */
-
-document.querySelectorAll(".quick-search").forEach(button => {
-
-  button.addEventListener("click", () => {
-
-    const query =
-      button.dataset.query ||
-      button.dataset.search ||
-      "";
+  if (dashboardSearch) {
+    const query = dashboardSearch.dataset.dashboardSearch;
 
     if (searchInput) {
       searchInput.value = query;
     }
 
+    performSearch(query);
+    return;
+  }
+
+  const quickSearch = event.target.closest(".quick-search");
+
+  if (quickSearch) {
+    const query =
+      quickSearch.dataset.query ||
+      quickSearch.dataset.search ||
+      quickSearch.textContent;
+
+    if (searchInput) {
+      searchInput.value = query;
+    }
+
+    performSearch(query);
+    return;
+  }
+});
+
+/* =========================================================
+   EVENT LISTENERS
+========================================================= */
+
+searchButton?.addEventListener("click", () => {
+  performSearch();
+});
+
+searchInput?.addEventListener("input", () => {
+  showSuggestions();
+});
+
+searchInput?.addEventListener("keydown", event => {
+  if (event.key === "Enter") {
+    event.preventDefault();
     performSearch();
-
-  });
-
-});
-
-
-/* =========================================================
-   CATEGORIES MENU
-   ========================================================= */
-
-function openCategories() {
-
-  if (!categoriesOverlay) return;
-
-  categoriesOverlay.classList.add("active");
-  categoriesOverlay.setAttribute("aria-hidden", "false");
-
-  document.body.classList.add("modal-open");
-}
-
-function closeCategories() {
-
-  if (!categoriesOverlay) return;
-
-  categoriesOverlay.classList.remove("active");
-  categoriesOverlay.setAttribute("aria-hidden", "true");
-
-  document.body.classList.remove("modal-open");
-}
-
-[
-  categoriesButton,
-  categoriesButtonHero,
-  footerCategoriesButton
-].forEach(button => {
-
-  if (button) {
-    button.addEventListener("click", openCategories);
   }
-
-});
-
-if (categoriesClose) {
-  categoriesClose.addEventListener("click", closeCategories);
-}
-
-if (categoriesOverlay) {
-
-  categoriesOverlay.addEventListener("click", event => {
-
-    if (event.target === categoriesOverlay) {
-      closeCategories();
-    }
-
-  });
-
-}
-
-document.querySelectorAll(".category-card").forEach(button => {
-
-  button.addEventListener("click", () => {
-
-    const category = button.dataset.category;
-
-    closeCategories();
-
-    if (category === "all") {
-
-      if (categoryFilter) {
-        categoryFilter.value = "all";
-      }
-
-      renderTools(tools.slice(0, 10));
-
-      return;
-    }
-
-    if (categoryFilter) {
-      categoryFilter.value = category;
-    }
-
-    const filtered = tools.filter(
-      tool => tool.category === category
-    );
-
-    renderTools(filtered.slice(0, 10));
-
-    const toolsSection = document.getElementById("tools");
-
-    if (toolsSection) {
-      toolsSection.scrollIntoView({
-        behavior: "smooth"
-      });
-    }
-
-  });
-
-});
-
-
-/* =========================================================
-   MOBILE NAV
-   ========================================================= */
-
-if (menuButton && navLinks) {
-
-  menuButton.addEventListener("click", () => {
-
-    navLinks.classList.toggle("active");
-
-    menuButton.setAttribute(
-      "aria-expanded",
-      navLinks.classList.contains("active")
-    );
-
-  });
-
-}
-
-
-/* =========================================================
-   THEME
-   ========================================================= */
-
-function applyTheme(theme) {
-
-  if (theme === "dark") {
-    document.body.classList.add("dark-mode");
-  } else {
-    document.body.classList.remove("dark-mode");
-  }
-
-}
-
-const savedTheme = localStorage.getItem("tztools_theme");
-
-if (savedTheme) {
-  applyTheme(savedTheme);
-}
-
-if (themeToggle) {
-
-  themeToggle.addEventListener("click", () => {
-
-    const dark =
-      document.body.classList.toggle("dark-mode");
-
-    localStorage.setItem(
-      "tztools_theme",
-      dark ? "dark" : "light"
-    );
-
-  });
-
-}
-
-
-/* =========================================================
-   ESCAPE
-   ========================================================= */
-
-document.addEventListener("keydown", event => {
 
   if (event.key === "Escape") {
-    closeCategories();
+    hideSuggestions();
   }
-
 });
 
+document.addEventListener("click", event => {
+  if (
+    suggestions &&
+    !suggestions.contains(event.target) &&
+    event.target !== searchInput
+  ) {
+    hideSuggestions();
+  }
+});
+
+categoryFilter?.addEventListener("change", applyFilters);
+
+document.addEventListener("change", event => {
+  if (
+    event.target.id === "pricingFilter" ||
+    event.target.id === "ratingFilter" ||
+    event.target.id === "sortFilter"
+  ) {
+    applyFilters();
+  }
+});
+
+categoriesButton?.addEventListener("click", openCategories);
+categoriesButtonHero?.addEventListener("click", openCategories);
+footerCategoriesButton?.addEventListener("click", openCategories);
+
+categoriesClose?.addEventListener("click", closeCategories);
+
+categoriesOverlay?.addEventListener("click", event => {
+  if (event.target === categoriesOverlay) {
+    closeCategories();
+  }
+});
+
+themeToggle?.addEventListener("click", toggleTheme);
+menuButton?.addEventListener("click", toggleMobileNav);
 
 /* =========================================================
-   V6.5 DASHBOARD STYLES
-   ========================================================= */
-
-const v65Styles = document.createElement("style");
-
-v65Styles.textContent = `
-
-.dashboard-inner {
-  width: 100%;
-}
-
-.dashboard-header {
-  margin-bottom: 30px;
-}
-
-.dashboard-header h2 {
-  margin-bottom: 8px;
-}
-
-.dashboard-header p {
-  opacity: 0.7;
-}
-
-
-/* STATS */
-
-.dashboard-stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  margin-bottom: 45px;
-}
-
-.dashboard-stat {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 20px;
-  border-radius: 18px;
-  background: rgba(127, 127, 127, 0.08);
-  border: 1px solid rgba(127, 127, 127, 0.12);
-}
-
-.dashboard-stat-icon {
-  font-size: 28px;
-}
-
-.dashboard-stat strong {
-  display: block;
-  font-size: 25px;
-  line-height: 1.1;
-}
-
-.dashboard-stat span {
-  display: block;
-  margin-top: 5px;
-  font-size: 13px;
-  opacity: 0.65;
-}
-
-
-/* SECTIONS */
-
-.dashboard-section {
-  margin-bottom: 48px;
-}
-
-.dashboard-section-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  margin-bottom: 20px;
-}
-
-.dashboard-section-header h3 {
-  margin: 0 0 5px;
-}
-
-.dashboard-section-header p {
-  margin: 0;
-  opacity: 0.65;
-}
-
-.dashboard-count {
-  padding: 7px 12px;
-  border-radius: 999px;
-  background: rgba(127, 127, 127, 0.12);
-  font-size: 13px;
-  font-weight: 700;
-}
-
-
-/* QUICK ACTIONS */
-
-.dashboard-actions {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 15px;
-}
-
-.dashboard-action {
-  text-align: left;
-  border: 1px solid rgba(127, 127, 127, 0.14);
-  background: rgba(127, 127, 127, 0.07);
-  border-radius: 18px;
-  padding: 20px;
-  cursor: pointer;
-  transition: transform 0.2s ease, background 0.2s ease;
-}
-
-.dashboard-action:hover {
-  transform: translateY(-3px);
-  background: rgba(127, 127, 127, 0.13);
-}
-
-.dashboard-action span {
-  display: block;
-  font-size: 28px;
-  margin-bottom: 13px;
-}
-
-.dashboard-action strong {
-  display: block;
-  font-size: 15px;
-}
-
-.dashboard-action small {
-  display: block;
-  margin-top: 5px;
-  opacity: 0.6;
-}
-
-
-/* TOOL GRIDS */
-
-.favorites-dashboard-grid,
-.recent-dashboard-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 20px;
-}
-
-.dashboard-tool-card {
-  position: relative;
-}
-
-
-/* EMPTY */
-
-.dashboard-empty {
-  padding: 45px 25px;
-  text-align: center;
-  border: 1px dashed rgba(127, 127, 127, 0.35);
-  border-radius: 20px;
-}
-
-.dashboard-empty > div {
-  font-size: 40px;
-  margin-bottom: 10px;
-}
-
-.dashboard-empty h4 {
-  margin: 0 0 8px;
-  font-size: 20px;
-}
-
-.dashboard-empty p {
-  margin: 0;
-  opacity: 0.65;
-}
-
-
-/* FAVORITES */
-
-.favorite-button {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  width: 38px;
-  height: 38px;
-  border: 0;
-  border-radius: 50%;
-  background: rgba(127, 127, 127, 0.12);
-  cursor: pointer;
-  font-size: 22px;
-  line-height: 1;
-  z-index: 5;
-  transition: transform 0.2s ease;
-}
-
-.favorite-button:hover {
-  transform: scale(1.1);
-}
-
-.favorite-button.active {
-  background: rgba(255, 190, 0, 0.16);
-}
-
-
-/* CLEAR */
-
-.clear-recent-button {
-  border: 0;
-  background: rgba(127, 127, 127, 0.12);
-  padding: 9px 15px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: 600;
-}
-
-.clear-recent-button:hover {
-  background: rgba(127, 127, 127, 0.2);
-}
-
-
-/* EMPTY SEARCH */
-
-.empty-state {
-  width: 100%;
-  text-align: center;
-  padding: 50px 20px;
-}
-
-
-/* MOBILE */
-
-@media (max-width: 850px) {
-
-  .dashboard-stats {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .dashboard-actions {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-}
-
-@media (max-width: 550px) {
-
-  .dashboard-stats {
-    grid-template-columns: 1fr;
-  }
-
-  .dashboard-actions {
-    grid-template-columns: 1fr;
-  }
-
-  .favorites-dashboard-grid,
-  .recent-dashboard-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .dashboard-section-header {
-    align-items: flex-start;
-  }
-
-}
-
-`;
-
-document.head.appendChild(v65Styles);
-
+   KEYBOARD ACCESSIBILITY
+========================================================= */
+
+document.addEventListener("keydown", event => {
+  if (event.key !== "Escape") return;
+
+  closeCategories();
+  closeCompareModal();
+  hideSuggestions();
+});
 
 /* =========================================================
-   INITIALIZE
-   ========================================================= */
+   REVEAL ANIMATION
+========================================================= */
 
-populateCategoryFilter();
+function setupRevealObserver() {
+  if (
+    !("IntersectionObserver" in window) ||
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  ) {
+    return;
+  }
 
-renderTools(tools.slice(0, 10));
+  const observer = new IntersectionObserver(
+    entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    {
+      threshold: 0.08
+    }
+  );
 
-renderDashboard();
+  document
+    .querySelectorAll(".section, .category-card, .stat-card")
+    .forEach(element => observer.observe(element));
+}
 
-console.log("TzTools V6.5 loaded successfully 🚀");
+/* =========================================================
+   INITIALIZATION
+========================================================= */
+
+function initialize() {
+  setupFilterControls();
+  setupCompareUI();
+  createDashboard();
+  setupTheme();
+
+  currentResults = getFilteredTools(tools);
+
+  renderTools(currentResults.slice(0, 10));
+  renderDashboard();
+
+  setupRevealObserver();
+}
+
+initialize();
