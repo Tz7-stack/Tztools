@@ -914,13 +914,28 @@ function searchTools(query) {
 
 /* ================= TOOL CARD ================= */
 
-function createToolCard(tool) {
-  const tags = tool.tags || tool.keywords || [];
-  const link = tool.link || tool.url || "#";
-  const favorite =
-    typeof isFavorite === "function" && isFavorite(tool.id);
+function renderRecentlyUsed() {
+  const container = document.getElementById("recentlyUsedContainer");
 
-  return `
+  if (!container) return;
+
+  const recentTools = recentlyUsed
+    .map(id => tools.find(tool => tool.id === id))
+    .filter(Boolean);
+
+  if (recentTools.length === 0) {
+    container.innerHTML = `
+      <p class="empty-state">
+        You haven't used any tools yet.
+      </p>
+    `;
+    return;
+  }
+
+  container.innerHTML = recentTools
+    .map(tool => createToolCard(tool))
+    .join("");
+}
     <div class="tool-card">
 
       <div class="tool-icon">
