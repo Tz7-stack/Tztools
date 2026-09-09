@@ -649,7 +649,7 @@ let favourites =
 let comparisons =
   JSON.parse(localStorage.getItem("tztools-comparisons")) || [];
 
-function renderRecentlyUsed() {
+let recentlyUsed = [];
   const container = document.getElementById("recentlyUsedContainer");
 
   if (!container) return;
