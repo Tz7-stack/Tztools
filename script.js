@@ -650,7 +650,6 @@ let comparisons =
   JSON.parse(localStorage.getItem("tztools-comparisons")) || [];
 
 let recentlyUsed =
-  JSON.parse(localStorage.getItem("tztools-recent")) || [];
 function trackRecentlyUsed(toolId) {
   if (!toolId) return;
 
@@ -664,7 +663,15 @@ function trackRecentlyUsed(toolId) {
   recentlyUsed = recentlyUsed.slice(0, 10);
 
   // Save the updated list
-  localStorage.setItem("tztools-recent", JSON.stringify(recentlyUsed));
+  localStorage.setItem(
+    "tztools-recent",
+    JSON.stringify(recentlyUsed)
+  );
+
+  // Refresh Recently Used on the Dashboard
+  if (typeof renderRecentlyUsed === "function") {
+    renderRecentlyUsed();
+  }
 }
 
 /* ================= ELEMENTS ================= */
