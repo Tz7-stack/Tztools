@@ -1,1346 +1,1249 @@
 /* =========================================================
-   TZTOOLS V6
-   Smart Tool Finder
+   TZTOOLS V6.1
+   Smart Recommendation Engine
    ========================================================= */
 
-document.addEventListener("DOMContentLoaded", () => {
-
-  /* =========================================================
-     TOOL DATABASE
-     ========================================================= */
-
-  const tools = [
-
-    // ================= AI =================
-
-    {
-      name: "ChatGPT",
-      category: "AI",
-      icon: "🤖",
-      description: "AI assistant for writing, brainstorming, learning, coding and more.",
-      pricing: "Freemium",
-      rating: 4.8,
-      url: "https://chatgpt.com/",
-      keywords: [
-        "ai", "chat", "assistant", "study", "writing",
-        "coding", "brainstorm", "research", "questions"
-      ]
-    },
-
-    {
-      name: "Google Gemini",
-      category: "AI",
-      icon: "✨",
-      description: "Google's AI assistant for answering questions, writing, research and ideas.",
-      pricing: "Free",
-      rating: 4.7,
-      url: "https://gemini.google.com/",
-      keywords: [
-        "ai", "assistant", "google", "study", "research",
-        "writing", "questions"
-      ]
-    },
-
-    {
-      name: "Claude",
-      category: "AI",
-      icon: "🧠",
-      description: "AI assistant useful for writing, analysis, coding and long documents.",
-      pricing: "Freemium",
-      rating: 4.7,
-      url: "https://claude.ai/",
-      keywords: [
-        "ai", "writing", "coding", "research",
-        "analysis", "documents"
-      ]
-    },
-
-    {
-      name: "Microsoft Copilot",
-      category: "AI",
-      icon: "🪄",
-      description: "AI assistant for answers, ideas, writing and productivity.",
-      pricing: "Free",
-      rating: 4.6,
-      url: "https://copilot.microsoft.com/",
-      keywords: [
-        "ai", "assistant", "writing", "research",
-        "ideas", "productivity"
-      ]
-    },
-
-    {
-      name: "Perplexity",
-      category: "AI",
-      icon: "🔎",
-      description: "AI-powered search and research assistant for finding answers.",
-      pricing: "Freemium",
-      rating: 4.7,
-      url: "https://www.perplexity.ai/",
-      keywords: [
-        "ai", "research", "search", "questions",
-        "study", "information"
-      ]
-    },
-
-
-    // ================= DESIGN =================
-
-    {
-      name: "Canva",
-      category: "Design",
-      icon: "🎨",
-      description: "Create logos, posters, presentations, social posts and graphics.",
-      pricing: "Freemium",
-      rating: 4.8,
-      url: "https://www.canva.com/",
-      keywords: [
-        "design", "logo", "poster", "graphics",
-        "presentation", "social media", "thumbnail"
-      ]
-    },
-
-    {
-      name: "Adobe Express",
-      category: "Design",
-      icon: "🖌️",
-      description: "Quickly create graphics, social posts, flyers and other visual content.",
-      pricing: "Freemium",
-      rating: 4.6,
-      url: "https://www.adobe.com/express/",
-      keywords: [
-        "design", "logo", "graphics", "poster",
-        "flyer", "social media"
-      ]
-    },
-
-    {
-      name: "Figma",
-      category: "Design",
-      icon: "🔷",
-      description: "Professional collaborative design and interface design platform.",
-      pricing: "Freemium",
-      rating: 4.8,
-      url: "https://www.figma.com/",
-      keywords: [
-        "design", "ui", "ux", "website",
-        "app", "interface", "prototype"
-      ]
-    },
-
-    {
-      name: "Photopea",
-      category: "Design",
-      icon: "🖼️",
-      description: "Browser-based image editor with powerful Photoshop-style features.",
-      pricing: "Free",
-      rating: 4.7,
-      url: "https://www.photopea.com/",
-      keywords: [
-        "design", "photo", "image", "edit",
-        "photoshop", "graphics"
-      ]
-    },
-
-    {
-      name: "Pixlr",
-      category: "Design",
-      icon: "🌈",
-      description: "Online photo and graphic editor for quick creative projects.",
-      pricing: "Freemium",
-      rating: 4.5,
-      url: "https://pixlr.com/",
-      keywords: [
-        "design", "photo", "image", "edit",
-        "graphics"
-      ]
-    },
-
-
-    // ================= VIDEO =================
-
-    {
-      name: "CapCut",
-      category: "Video",
-      icon: "🎬",
-      description: "Easy video editor for social media, short videos and creative projects.",
-      pricing: "Freemium",
-      rating: 4.7,
-      url: "https://www.capcut.com/",
-      keywords: [
-        "video", "edit", "editing", "reels",
-        "shorts", "tiktok", "youtube"
-      ]
-    },
-
-    {
-      name: "DaVinci Resolve",
-      category: "Video",
-      icon: "🎞️",
-      description: "Professional video editing, color grading, effects and audio tools.",
-      pricing: "Free",
-      rating: 4.8,
-      url: "https://www.blackmagicdesign.com/products/davinciresolve",
-      keywords: [
-        "video", "editing", "professional",
-        "film", "color", "effects"
-      ]
-    },
-
-    {
-      name: "VEED",
-      category: "Video",
-      icon: "📹",
-      description: "Browser-based video editor with captions, effects and social tools.",
-      pricing: "Freemium",
-      rating: 4.5,
-      url: "https://www.veed.io/",
-      keywords: [
-        "video", "edit", "captions",
-        "subtitles", "social media"
-      ]
-    },
-
-    {
-      name: "Clipchamp",
-      category: "Video",
-      icon: "✂️",
-      description: "Simple browser video editor for creating and editing videos.",
-      pricing: "Freemium",
-      rating: 4.5,
-      url: "https://clipchamp.com/",
-      keywords: [
-        "video", "editing", "edit",
-        "youtube", "social media"
-      ]
-    },
-
-    {
-      name: "InVideo",
-      category: "Video",
-      icon: "🎥",
-      description: "Online video creation platform with templates and AI features.",
-      pricing: "Freemium",
-      rating: 4.5,
-      url: "https://invideo.io/",
-      keywords: [
-        "video", "ai video", "editing",
-        "youtube", "content"
-      ]
-    },
-
-
-    // ================= WRITING =================
-
-    {
-      name: "Grammarly",
-      category: "Writing",
-      icon: "✍️",
-      description: "Writing assistant for grammar, spelling, clarity and tone.",
-      pricing: "Freemium",
-      rating: 4.7,
-      url: "https://www.grammarly.com/",
-      keywords: [
-        "writing", "grammar", "essay",
-        "school", "proofreading"
-      ]
-    },
-
-    {
-      name: "QuillBot",
-      category: "Writing",
-      icon: "📝",
-      description: "Writing assistant with paraphrasing, grammar and summarizing tools.",
-      pricing: "Freemium",
-      rating: 4.6,
-      url: "https://quillbot.com/",
-      keywords: [
-        "writing", "paraphrase", "rewrite",
-        "essay", "summarize"
-      ]
-    },
-
-    {
-      name: "Google Docs",
-      category: "Writing",
-      icon: "📄",
-      description: "Online document editor for writing, editing and collaboration.",
-      pricing: "Free",
-      rating: 4.8,
-      url: "https://docs.google.com/",
-      keywords: [
-        "writing", "document", "essay",
-        "school", "notes", "collaboration"
-      ]
-    },
-
-    {
-      name: "LanguageTool",
-      category: "Writing",
-      icon: "🔤",
-      description: "Grammar and spelling checker supporting many languages.",
-      pricing: "Freemium",
-      rating: 4.6,
-      url: "https://languagetool.org/",
-      keywords: [
-        "writing", "grammar", "spelling",
-        "proofreading", "essay"
-      ]
-    },
-
-    {
-      name: "Hemingway Editor",
-      category: "Writing",
-      icon: "📚",
-      description: "Helps make writing clearer, simpler and easier to read.",
-      pricing: "Free",
-      rating: 4.4,
-      url: "https://hemingwayapp.com/",
-      keywords: [
-        "writing", "essay", "grammar",
-        "clarity", "school"
-      ]
-    },
-
-
-    // ================= WEBSITES =================
-
-    {
-      name: "WordPress",
-      category: "Websites",
-      icon: "🌐",
-      description: "Build websites and blogs using one of the world's biggest platforms.",
-      pricing: "Freemium",
-      rating: 4.6,
-      url: "https://wordpress.com/",
-      keywords: [
-        "website", "blog", "web",
-        "business", "site"
-      ]
-    },
-
-    {
-      name: "Wix",
-      category: "Websites",
-      icon: "🧩",
-      description: "Website builder with templates and drag-and-drop tools.",
-      pricing: "Freemium",
-      rating: 4.6,
-      url: "https://www.wix.com/",
-      keywords: [
-        "website", "web", "business",
-        "portfolio", "site"
-      ]
-    },
-
-    {
-      name: "Framer",
-      category: "Websites",
-      icon: "⚡",
-      description: "Modern website builder for creating fast, polished websites.",
-      pricing: "Freemium",
-      rating: 4.7,
-      url: "https://www.framer.com/",
-      keywords: [
-        "website", "web", "design",
-        "portfolio", "landing page"
-      ]
-    },
-
-    {
-      name: "Webflow",
-      category: "Websites",
-      icon: "🔵",
-      description: "Visual website builder for advanced responsive websites.",
-      pricing: "Freemium",
-      rating: 4.6,
-      url: "https://webflow.com/",
-      keywords: [
-        "website", "web", "design",
-        "business", "portfolio"
-      ]
-    },
-
-    {
-      name: "Carrd",
-      category: "Websites",
-      icon: "💻",
-      description: "Simple platform for creating one-page websites.",
-      pricing: "Freemium",
-      rating: 4.6,
-      url: "https://carrd.co/",
-      keywords: [
-        "website", "landing page",
-        "portfolio", "one page"
-      ]
-    },
-
-    {
-      name: "GitHub Pages",
-      category: "Websites",
-      icon: "🐙",
-      description: "Free static website hosting directly from GitHub repositories.",
-      pricing: "Free",
-      rating: 4.7,
-      url: "https://pages.github.com/",
-      keywords: [
-        "website", "hosting", "developer",
-        "coding", "html", "github"
-      ]
-    },
-
-
-    // ================= STUDENTS =================
-
-    {
-      name: "Khan Academy",
-      category: "Students",
-      icon: "🎓",
-      description: "Free lessons and practice across many school subjects.",
-      pricing: "Free",
-      rating: 4.8,
-      url: "https://www.khanacademy.org/",
-      keywords: [
-        "study", "school", "math",
-        "science", "learning", "students"
-      ]
-    },
-
-    {
-      name: "WolframAlpha",
-      category: "Students",
-      icon: "🧮",
-      description: "Computational engine useful for mathematics, science and facts.",
-      pricing: "Freemium",
-      rating: 4.7,
-      url: "https://www.wolframalpha.com/",
-      keywords: [
-        "study", "math", "science",
-        "calculation", "homework"
-      ]
-    },
-
-    {
-      name: "Quizlet",
-      category: "Students",
-      icon: "🃏",
-      description: "Study with flashcards, quizzes and learning activities.",
-      pricing: "Freemium",
-      rating: 4.6,
-      url: "https://quizlet.com/",
-      keywords: [
-        "study", "school", "flashcards",
-        "quiz", "revision", "students"
-      ]
-    },
-
-    {
-      name: "Desmos",
-      category: "Students",
-      icon: "📈",
-      description: "Powerful online graphing and mathematics tools.",
-      pricing: "Free",
-      rating: 4.8,
-      url: "https://www.desmos.com/",
-      keywords: [
-        "math", "graph", "algebra",
-        "geometry", "students"
-      ]
-    },
-
-    {
-      name: "GeoGebra",
-      category: "Students",
-      icon: "📐",
-      description: "Interactive mathematics tools for geometry, algebra and graphs.",
-      pricing: "Free",
-      rating: 4.7,
-      url: "https://www.geogebra.org/",
-      keywords: [
-        "math", "geometry", "algebra",
-        "graph", "students"
-      ]
-    },
-
-    {
-      name: "Google Scholar",
-      category: "Students",
-      icon: "🎓",
-      description: "Search engine for academic papers and scholarly research.",
-      pricing: "Free",
-      rating: 4.7,
-      url: "https://scholar.google.com/",
-      keywords: [
-        "study", "research", "school",
-        "academic", "papers"
-      ]
-    },
-
-
-    // ================= PRODUCTIVITY =================
-
-    {
-      name: "Notion",
-      category: "Productivity",
-      icon: "📓",
-      description: "Workspace for notes, planning, databases and projects.",
-      pricing: "Freemium",
-      rating: 4.7,
-      url: "https://www.notion.com/",
-      keywords: [
-        "productivity", "notes", "planning",
-        "tasks", "organization", "school"
-      ]
-    },
-
-    {
-      name: "Trello",
-      category: "Productivity",
-      icon: "📋",
-      description: "Visual boards for managing tasks and projects.",
-      pricing: "Freemium",
-      rating: 4.6,
-      url: "https://trello.com/",
-      keywords: [
-        "productivity", "tasks", "projects",
-        "planning", "organization"
-      ]
-    },
-
-    {
-      name: "Todoist",
-      category: "Productivity",
-      icon: "✅",
-      description: "Task manager for organizing daily tasks and projects.",
-      pricing: "Freemium",
-      rating: 4.6,
-      url: "https://todoist.com/",
-      keywords: [
-        "productivity", "tasks", "todo",
-        "planning", "organization"
-      ]
-    },
-
-    {
-      name: "Asana",
-      category: "Productivity",
-      icon: "📊",
-      description: "Project and task management platform for organizing work.",
-      pricing: "Freemium",
-      rating: 4.5,
-      url: "https://asana.com/",
-      keywords: [
-        "productivity", "tasks", "projects",
-        "team", "planning"
-      ]
-    },
-
-    {
-      name: "Google Keep",
-      category: "Productivity",
-      icon: "💡",
-      description: "Simple note-taking and reminder tool from Google.",
-      pricing: "Free",
-      rating: 4.6,
-      url: "https://keep.google.com/",
-      keywords: [
-        "productivity", "notes", "reminders",
-        "school", "organization"
-      ]
-    },
-
-
-    // ================= IMAGES =================
-
-    {
-      name: "Remove.bg",
-      category: "Images",
-      icon: "✂️",
-      description: "Automatically remove backgrounds from images.",
-      pricing: "Freemium",
-      rating: 4.7,
-      url: "https://www.remove.bg/",
-      keywords: [
-        "image", "photo", "background",
-        "remove background", "edit"
-      ]
-    },
-
-    {
-      name: "TinyPNG",
-      category: "Images",
-      icon: "🗜️",
-      description: "Compress PNG and JPEG images while reducing file size.",
-      pricing: "Freemium",
-      rating: 4.6,
-      url: "https://tinypng.com/",
-      keywords: [
-        "image", "compress", "photo",
-        "file size", "optimize"
-      ]
-    },
-
-    {
-      name: "Unsplash",
-      category: "Images",
-      icon: "📸",
-      description: "Find high-quality free images for creative projects.",
-      pricing: "Free",
-      rating: 4.8,
-      url: "https://unsplash.com/",
-      keywords: [
-        "image", "photos", "pictures",
-        "background", "design"
-      ]
-    },
-
-    {
-      name: "Pexels",
-      category: "Images",
-      icon: "🌄",
-      description: "Free stock photos and videos for creative projects.",
-      pricing: "Free",
-      rating: 4.8,
-      url: "https://www.pexels.com/",
-      keywords: [
-        "image", "photos", "videos",
-        "stock", "background", "design"
-      ]
-    },
-
-
-    // ================= AUDIO =================
-
-    {
-      name: "Audacity",
-      category: "Audio",
-      icon: "🎧",
-      description: "Free audio recording and editing software.",
-      pricing: "Free",
-      rating: 4.7,
-      url: "https://www.audacityteam.org/",
-      keywords: [
-        "audio", "music", "record",
-        "edit", "sound"
-      ]
-    },
-
-    {
-      name: "BandLab",
-      category: "Audio",
-      icon: "🎵",
-      description: "Online music creation and collaboration platform.",
-      pricing: "Free",
-      rating: 4.6,
-      url: "https://www.bandlab.com/",
-      keywords: [
-        "audio", "music", "beat",
-        "record", "song"
-      ]
-    },
-
-
-    // ================= PDF =================
-
-    {
-      name: "Smallpdf",
-      category: "PDF & Documents",
-      icon: "📕",
-      description: "Online tools for editing, compressing and converting PDFs.",
-      pricing: "Freemium",
-      rating: 4.6,
-      url: "https://smallpdf.com/",
-      keywords: [
-        "pdf", "document", "convert",
-        "compress", "merge"
-      ]
-    },
-
-    {
-      name: "iLovePDF",
-      category: "PDF & Documents",
-      icon: "📑",
-      description: "Collection of online PDF editing and conversion tools.",
-      pricing: "Freemium",
-      rating: 4.7,
-      url: "https://www.ilovepdf.com/",
-      keywords: [
-        "pdf", "document", "merge",
-        "convert", "compress"
-      ]
-    },
-
-    {
-      name: "PDF24",
-      category: "PDF & Documents",
-      icon: "📄",
-      description: "Free online PDF tools for merging, converting and editing documents.",
-      pricing: "Free",
-      rating: 4.6,
-      url: "https://tools.pdf24.org/",
-      keywords: [
-        "pdf", "document", "convert",
-        "merge", "compress"
-      ]
-    }
-
-  ];
-
-
-  /* =========================================================
-     ELEMENTS
-     ========================================================= */
-
-  const searchInput = document.getElementById("searchInput");
-  const searchButton = document.getElementById("searchButton");
-  const suggestions = document.getElementById("suggestions");
-
-  const toolsGrid = document.getElementById("toolsGrid");
-  const categoryFilter = document.getElementById("categoryFilter");
-
-  const categoriesOverlay = document.getElementById("categoriesOverlay");
-  const categoriesClose = document.getElementById("categoriesClose");
-  const categoriesButton = document.getElementById("categoriesButton");
-  const categoriesButtonHero = document.getElementById("categoriesButtonHero");
-  const footerCategoriesButton =
-    document.getElementById("footerCategoriesButton");
-
-  const menuButton = document.getElementById("menuButton");
-  const navLinks = document.getElementById("navLinks");
-
-  const themeToggle = document.getElementById("themeToggle");
-
-
-  /* =========================================================
-     SEARCH INTENT
-     ========================================================= */
-
-  const intentGroups = {
-
-    logo: [
+/* -----------------------------
+   TOOL DATABASE
+----------------------------- */
+
+const tools = [
+
+  // AI
+  {
+    name: "ChatGPT",
+    category: "AI",
+    icon: "🤖",
+    description: "AI assistant for writing, studying, brainstorming, coding and more.",
+    rating: 4.8,
+    pricing: "Freemium",
+    url: "https://chatgpt.com/",
+    keywords: ["ai", "chatbot", "assistant", "study", "writing", "coding", "ideas"]
+  },
+
+  {
+    name: "Google Gemini",
+    category: "AI",
+    icon: "✨",
+    description: "Google's AI assistant for research, writing, learning and creative tasks.",
+    rating: 4.7,
+    pricing: "Freemium",
+    url: "https://gemini.google.com/",
+    keywords: ["ai", "assistant", "research", "study", "writing"]
+  },
+
+  {
+    name: "Claude",
+    category: "AI",
+    icon: "🧠",
+    description: "AI assistant useful for writing, analysis, coding and long-form work.",
+    rating: 4.7,
+    pricing: "Freemium",
+    url: "https://claude.ai/",
+    keywords: ["ai", "writing", "analysis", "coding", "research"]
+  },
+
+  {
+    name: "Microsoft Copilot",
+    category: "AI",
+    icon: "💡",
+    description: "AI assistant for questions, research, writing and everyday productivity.",
+    rating: 4.6,
+    pricing: "Freemium",
+    url: "https://copilot.microsoft.com/",
+    keywords: ["ai", "assistant", "research", "writing", "productivity"]
+  },
+
+  {
+    name: "Perplexity",
+    category: "AI",
+    icon: "🔎",
+    description: "AI-powered search and research assistant for finding information.",
+    rating: 4.7,
+    pricing: "Freemium",
+    url: "https://www.perplexity.ai/",
+    keywords: ["ai", "research", "search", "questions", "information"]
+  },
+
+
+  // DESIGN
+  {
+    name: "Canva",
+    category: "Design",
+    icon: "🎨",
+    description: "Easy design platform for logos, posters, flyers, presentations and graphics.",
+    rating: 4.8,
+    pricing: "Freemium",
+    url: "https://www.canva.com/",
+    keywords: [
+      "logo", "logo maker", "branding", "poster", "flyer",
+      "thumbnail", "graphics", "social media", "presentation"
+    ]
+  },
+
+  {
+    name: "Adobe Express",
+    category: "Design",
+    icon: "🖌️",
+    description: "Quick design and content creation for graphics, logos, social posts and more.",
+    rating: 4.7,
+    pricing: "Freemium",
+    url: "https://www.adobe.com/express/",
+    keywords: [
+      "logo", "branding", "poster", "flyer",
+      "graphic", "social media", "design"
+    ]
+  },
+
+  {
+    name: "Figma",
+    category: "Design",
+    icon: "🔷",
+    description: "Professional collaborative design tool for interfaces, graphics and prototypes.",
+    rating: 4.7,
+    pricing: "Freemium",
+    url: "https://www.figma.com/",
+    keywords: [
+      "logo", "branding", "design", "ui", "interface",
+      "prototype", "graphics"
+    ]
+  },
+
+  {
+    name: "Photopea",
+    category: "Design",
+    icon: "🖼️",
+    description: "Browser-based image editor with powerful Photoshop-style features.",
+    rating: 4.6,
+    pricing: "Free",
+    url: "https://www.photopea.com/",
+    keywords: [
+      "logo", "photo", "image", "graphics",
+      "poster", "flyer", "editing"
+    ]
+  },
+
+  {
+    name: "Pixlr",
+    category: "Design",
+    icon: "🌈",
+    description: "Online photo and graphic editor for quick creative projects.",
+    rating: 4.5,
+    pricing: "Freemium",
+    url: "https://pixlr.com/",
+    keywords: [
+      "logo", "photo", "image", "design",
+      "graphics", "poster", "editing"
+    ]
+  },
+
+
+  // VIDEO
+  {
+    name: "CapCut",
+    category: "Video",
+    icon: "🎬",
+    description: "Popular video editor for short videos, social media, effects and more.",
+    rating: 4.8,
+    pricing: "Freemium",
+    url: "https://www.capcut.com/",
+    keywords: [
+      "video", "video editing", "youtube",
+      "reels", "shorts", "tiktok", "effects"
+    ]
+  },
+
+  {
+    name: "DaVinci Resolve",
+    category: "Video",
+    icon: "🎞️",
+    description: "Professional video editing, color grading, effects and audio production.",
+    rating: 4.8,
+    pricing: "Free",
+    url: "https://www.blackmagicdesign.com/products/davinciresolve",
+    keywords: [
+      "video", "editing", "film", "movie",
+      "color grading", "professional"
+    ]
+  },
+
+  {
+    name: "VEED",
+    category: "Video",
+    icon: "📹",
+    description: "Online video editor for social media, subtitles, clips and content.",
+    rating: 4.6,
+    pricing: "Freemium",
+    url: "https://www.veed.io/",
+    keywords: [
+      "video", "editing", "subtitles",
+      "youtube", "social media", "reels"
+    ]
+  },
+
+  {
+    name: "Clipchamp",
+    category: "Video",
+    icon: "✂️",
+    description: "Simple browser-based video editor for everyday content creation.",
+    rating: 4.5,
+    pricing: "Freemium",
+    url: "https://clipchamp.com/",
+    keywords: [
+      "video", "editing", "youtube",
+      "social media", "clips"
+    ]
+  },
+
+  {
+    name: "InVideo",
+    category: "Video",
+    icon: "🎥",
+    description: "Online video creation platform with templates and AI-powered features.",
+    rating: 4.5,
+    pricing: "Freemium",
+    url: "https://invideo.io/",
+    keywords: [
+      "video", "ai video", "youtube",
+      "social media", "content"
+    ]
+  },
+
+
+  // WRITING
+  {
+    name: "Grammarly",
+    category: "Writing",
+    icon: "✍️",
+    description: "Writing assistant for grammar, spelling, clarity and tone.",
+    rating: 4.7,
+    pricing: "Freemium",
+    url: "https://www.grammarly.com/",
+    keywords: [
+      "writing", "grammar", "essay",
+      "proofread", "school", "correction"
+    ]
+  },
+
+  {
+    name: "QuillBot",
+    category: "Writing",
+    icon: "📝",
+    description: "Writing assistant with paraphrasing, summarizing and grammar tools.",
+    rating: 4.6,
+    pricing: "Freemium",
+    url: "https://quillbot.com/",
+    keywords: [
+      "writing", "paraphrase", "rewrite",
+      "essay", "summarize", "school"
+    ]
+  },
+
+  {
+    name: "Google Docs",
+    category: "Writing",
+    icon: "📄",
+    description: "Online document editor for writing, collaboration and school work.",
+    rating: 4.7,
+    pricing: "Free",
+    url: "https://docs.google.com/",
+    keywords: [
+      "writing", "essay", "document",
+      "school", "notes", "assignment"
+    ]
+  },
+
+  {
+    name: "LanguageTool",
+    category: "Writing",
+    icon: "🔤",
+    description: "Grammar and spelling checker for improving written work.",
+    rating: 4.6,
+    pricing: "Freemium",
+    url: "https://languagetool.org/",
+    keywords: [
+      "grammar", "writing", "proofread",
+      "spelling", "essay"
+    ]
+  },
+
+  {
+    name: "Hemingway Editor",
+    category: "Writing",
+    icon: "📚",
+    description: "Writing tool that helps make text clearer and easier to read.",
+    rating: 4.5,
+    pricing: "Free",
+    url: "https://hemingwayapp.com/",
+    keywords: [
+      "writing", "essay", "clarity",
+      "article", "school"
+    ]
+  },
+
+
+  // WEBSITES
+  {
+    name: "WordPress",
+    category: "Websites",
+    icon: "🌐",
+    description: "Website and blog platform for creating and managing websites.",
+    rating: 4.7,
+    pricing: "Freemium",
+    url: "https://wordpress.com/",
+    keywords: [
+      "website", "blog", "web", "site",
+      "business website"
+    ]
+  },
+
+  {
+    name: "Wix",
+    category: "Websites",
+    icon: "🧩",
+    description: "Website builder for creating websites without needing to code.",
+    rating: 4.6,
+    pricing: "Freemium",
+    url: "https://www.wix.com/",
+    keywords: [
+      "website", "web", "site",
+      "business", "portfolio"
+    ]
+  },
+
+  {
+    name: "Framer",
+    category: "Websites",
+    icon: "⚡",
+    description: "Modern website builder for creating polished websites visually.",
+    rating: 4.7,
+    pricing: "Freemium",
+    url: "https://www.framer.com/",
+    keywords: [
+      "website", "web", "landing page",
+      "portfolio", "design"
+    ]
+  },
+
+  {
+    name: "Webflow",
+    category: "Websites",
+    icon: "🔵",
+    description: "Powerful visual website builder with advanced design control.",
+    rating: 4.7,
+    pricing: "Freemium",
+    url: "https://webflow.com/",
+    keywords: [
+      "website", "web", "site",
+      "design", "business"
+    ]
+  },
+
+  {
+    name: "Carrd",
+    category: "Websites",
+    icon: "🪪",
+    description: "Simple platform for creating clean one-page websites.",
+    rating: 4.6,
+    pricing: "Freemium",
+    url: "https://carrd.co/",
+    keywords: [
+      "website", "one page",
+      "landing page", "portfolio"
+    ]
+  },
+
+  {
+    name: "GitHub Pages",
+    category: "Websites",
+    icon: "🐙",
+    description: "Free static website hosting directly from GitHub repositories.",
+    rating: 4.6,
+    pricing: "Free",
+    url: "https://pages.github.com/",
+    keywords: [
+      "website", "hosting", "web",
+      "html", "css", "coding"
+    ]
+  },
+
+
+  // STUDENTS
+  {
+    name: "Khan Academy",
+    category: "Students",
+    icon: "🎓",
+    description: "Free learning platform covering maths, science and many school subjects.",
+    rating: 4.8,
+    pricing: "Free",
+    url: "https://www.khanacademy.org/",
+    keywords: [
+      "study", "school", "math",
+      "science", "learning", "exam"
+    ]
+  },
+
+  {
+    name: "WolframAlpha",
+    category: "Students",
+    icon: "🧮",
+    description: "Computational knowledge engine for maths, science and calculations.",
+    rating: 4.7,
+    pricing: "Freemium",
+    url: "https://www.wolframalpha.com/",
+    keywords: [
+      "math", "mathematics", "equation",
+      "calculation", "science", "homework"
+    ]
+  },
+
+  {
+    name: "Quizlet",
+    category: "Students",
+    icon: "🃏",
+    description: "Study platform with flashcards, quizzes and learning activities.",
+    rating: 4.7,
+    pricing: "Freemium",
+    url: "https://quizlet.com/",
+    keywords: [
+      "study", "revision", "flashcards",
+      "quiz", "exam", "school"
+    ]
+  },
+
+  {
+    name: "Desmos",
+    category: "Students",
+    icon: "📈",
+    description: "Interactive graphing and mathematical tools for students.",
+    rating: 4.7,
+    pricing: "Free",
+    url: "https://www.desmos.com/",
+    keywords: [
+      "math", "graph", "algebra",
+      "equation", "geometry"
+    ]
+  },
+
+  {
+    name: "GeoGebra",
+    category: "Students",
+    icon: "📐",
+    description: "Interactive mathematics software for geometry, algebra and graphs.",
+    rating: 4.7,
+    pricing: "Free",
+    url: "https://www.geogebra.org/",
+    keywords: [
+      "math", "geometry", "algebra",
+      "graph", "school"
+    ]
+  },
+
+  {
+    name: "Google Scholar",
+    category: "Students",
+    icon: "🔬",
+    description: "Search engine for academic papers and scholarly research.",
+    rating: 4.6,
+    pricing: "Free",
+    url: "https://scholar.google.com/",
+    keywords: [
+      "research", "study", "academic",
+      "school", "papers"
+    ]
+  },
+
+
+  // PRODUCTIVITY
+  {
+    name: "Notion",
+    category: "Productivity",
+    icon: "📓",
+    description: "Workspace for notes, planning, projects and organizing information.",
+    rating: 4.7,
+    pricing: "Freemium",
+    url: "https://www.notion.com/",
+    keywords: [
+      "notes", "productivity", "planning",
+      "tasks", "organize", "projects"
+    ]
+  },
+
+  {
+    name: "Trello",
+    category: "Productivity",
+    icon: "📋",
+    description: "Visual task and project management platform.",
+    rating: 4.6,
+    pricing: "Freemium",
+    url: "https://trello.com/",
+    keywords: [
+      "tasks", "productivity", "projects",
+      "planning", "organize"
+    ]
+  },
+
+  {
+    name: "Todoist",
+    category: "Productivity",
+    icon: "✅",
+    description: "Task management app for organizing daily work and responsibilities.",
+    rating: 4.6,
+    pricing: "Freemium",
+    url: "https://todoist.com/",
+    keywords: [
+      "todo", "tasks", "productivity",
+      "planning", "organize"
+    ]
+  },
+
+  {
+    name: "Asana",
+    category: "Productivity",
+    icon: "📊",
+    description: "Project and task management platform for organizing work.",
+    rating: 4.6,
+    pricing: "Freemium",
+    url: "https://asana.com/",
+    keywords: [
+      "tasks", "projects", "productivity",
+      "planning", "team"
+    ]
+  },
+
+  {
+    name: "Google Keep",
+    category: "Productivity",
+    icon: "💛",
+    description: "Simple note-taking and list app for keeping ideas organized.",
+    rating: 4.5,
+    pricing: "Free",
+    url: "https://keep.google.com/",
+    keywords: [
+      "notes", "todo", "lists",
+      "productivity", "organize"
+    ]
+  },
+
+
+  // IMAGES
+  {
+    name: "Remove.bg",
+    category: "Images",
+    icon: "✂️",
+    description: "Automatically remove backgrounds from images.",
+    rating: 4.7,
+    pricing: "Freemium",
+    url: "https://www.remove.bg/",
+    keywords: [
+      "image", "photo", "background",
+      "remove background", "picture"
+    ]
+  },
+
+  {
+    name: "TinyPNG",
+    category: "Images",
+    icon: "🗜️",
+    description: "Compress PNG and JPEG images while keeping good quality.",
+    rating: 4.6,
+    pricing: "Freemium",
+    url: "https://tinypng.com/",
+    keywords: [
+      "image", "compress", "photo",
+      "picture", "resize"
+    ]
+  },
+
+  {
+    name: "Unsplash",
+    category: "Images",
+    icon: "📷",
+    description: "Large library of high-quality images for creative projects.",
+    rating: 4.8,
+    pricing: "Free",
+    url: "https://unsplash.com/",
+    keywords: [
+      "images", "photos", "pictures",
+      "stock photos", "background"
+    ]
+  },
+
+  {
+    name: "Pexels",
+    category: "Images",
+    icon: "📸",
+    description: "Free stock photos and videos for creative projects.",
+    rating: 4.8,
+    pricing: "Free",
+    url: "https://www.pexels.com/",
+    keywords: [
+      "images", "photos", "pictures",
+      "stock photos", "videos"
+    ]
+  },
+
+
+  // AUDIO
+  {
+    name: "Audacity",
+    category: "Audio",
+    icon: "🎙️",
+    description: "Free audio recording and editing software.",
+    rating: 4.7,
+    pricing: "Free",
+    url: "https://www.audacityteam.org/",
+    keywords: [
+      "audio", "music", "recording",
+      "podcast", "sound", "editing"
+    ]
+  },
+
+  {
+    name: "BandLab",
+    category: "Audio",
+    icon: "🎵",
+    description: "Online music creation, recording and collaboration platform.",
+    rating: 4.6,
+    pricing: "Free",
+    url: "https://www.bandlab.com/",
+    keywords: [
+      "audio", "music", "recording",
+      "song", "beats", "sound"
+    ]
+  },
+
+
+  // PDF
+  {
+    name: "Smallpdf",
+    category: "PDF & Documents",
+    icon: "📕",
+    description: "Online PDF tools for merging, compressing, converting and editing.",
+    rating: 4.7,
+    pricing: "Freemium",
+    url: "https://smallpdf.com/",
+    keywords: [
+      "pdf", "document", "merge pdf",
+      "compress pdf", "convert pdf"
+    ]
+  },
+
+  {
+    name: "iLovePDF",
+    category: "PDF & Documents",
+    icon: "❤️",
+    description: "Collection of online tools for working with PDF documents.",
+    rating: 4.7,
+    pricing: "Freemium",
+    url: "https://www.ilovepdf.com/",
+    keywords: [
+      "pdf", "document", "merge pdf",
+      "split pdf", "compress pdf"
+    ]
+  },
+
+  {
+    name: "PDF24",
+    category: "PDF & Documents",
+    icon: "📑",
+    description: "Free online PDF tools for editing, converting and managing documents.",
+    rating: 4.7,
+    pricing: "Free",
+    url: "https://tools.pdf24.org/",
+    keywords: [
+      "pdf", "document", "convert pdf",
+      "merge pdf", "compress pdf"
+    ]
+  }
+
+];
+
+
+/* -----------------------------
+   SEARCH INTENTS
+----------------------------- */
+
+const intentGroups = {
+
+  logo: {
+    categories: ["Design"],
+    keywords: [
       "logo",
-      "logos",
+      "logo maker",
       "brand logo",
       "business logo",
-      "make a logo",
-      "create a logo",
-      "logo maker"
-    ],
+      "company logo",
+      "branding"
+    ]
+  },
 
-    design: [
+  design: {
+    categories: ["Design"],
+    keywords: [
       "design",
-      "graphic",
-      "graphics",
       "poster",
       "flyer",
+      "banner",
       "thumbnail",
-      "banner"
-    ],
+      "graphic",
+      "graphics"
+    ]
+  },
 
-    video: [
+  video: {
+    categories: ["Video"],
+    keywords: [
       "video",
       "edit video",
       "video editing",
       "youtube video",
       "reels",
       "shorts",
-      "tiktok"
-    ],
+      "movie"
+    ]
+  },
 
-    writing: [
+  writing: {
+    categories: ["Writing"],
+    keywords: [
       "write",
       "writing",
       "essay",
       "article",
       "grammar",
-      "proofread",
+      "rewrite",
       "paraphrase",
-      "rewrite"
-    ],
+      "proofread"
+    ]
+  },
 
-    website: [
+  website: {
+    categories: ["Websites"],
+    keywords: [
       "website",
       "web site",
       "webpage",
       "web page",
       "build a site",
-      "create a website",
-      "make a website",
-      "landing page"
-    ],
+      "make a site",
+      "create a website"
+    ]
+  },
 
-    study: [
+  study: {
+    categories: ["Students"],
+    keywords: [
       "study",
       "school",
       "learn",
       "homework",
       "revision",
       "exam",
-      "student"
-    ],
+      "student",
+      "lesson"
+    ]
+  },
 
-    math: [
+  math: {
+    categories: ["Students"],
+    keywords: [
       "math",
       "mathematics",
-      "algebra",
-      "geometry",
       "equation",
+      "algebra",
       "calculation",
+      "calculate",
+      "geometry",
       "graph"
-    ],
+    ]
+  },
 
-    ai: [
+  ai: {
+    categories: ["AI"],
+    keywords: [
       "ai",
       "artificial intelligence",
-      "ai tool",
       "chatbot",
-      "assistant"
-    ],
+      "ai assistant"
+    ]
+  },
 
-    productivity: [
+  productivity: {
+    categories: ["Productivity"],
+    keywords: [
       "productivity",
       "organize",
       "tasks",
-      "planning",
       "todo",
+      "planning",
       "notes",
-      "project"
-    ],
+      "project management"
+    ]
+  },
 
-    image: [
+  image: {
+    categories: ["Images"],
+    keywords: [
       "image",
       "photo",
       "picture",
-      "background",
       "remove background",
-      "compress image"
-    ],
+      "compress image",
+      "resize image",
+      "stock photos"
+    ]
+  },
 
-    audio: [
+  audio: {
+    categories: ["Audio"],
+    keywords: [
       "audio",
       "music",
-      "song",
-      "record",
+      "recording",
       "sound",
-      "beat"
-    ],
-
-    pdf: [
-      "pdf",
-      "document",
-      "merge pdf",
-      "compress pdf",
-      "convert pdf"
+      "podcast",
+      "edit audio"
     ]
+  },
 
-  };
+  pdf: {
+    categories: ["PDF & Documents"],
+    keywords: [
+      "pdf",
+      "merge pdf",
+      "split pdf",
+      "convert pdf",
+      "compress pdf",
+      "document"
+    ]
+  }
+
+};
 
 
-  /* =========================================================
-     HELPERS
-     ========================================================= */
+/* -----------------------------
+   HELPERS
+----------------------------- */
 
-  function normalizeText(text) {
-    return String(text || "")
-      .toLowerCase()
-      .replace(/[^\w\s&.-]/g, " ")
-      .replace(/\s+/g, " ")
-      .trim();
+function normalizeText(text) {
+  return String(text || "")
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+
+/* -----------------------------
+   DETECT USER INTENT
+----------------------------- */
+
+function detectIntents(query) {
+
+  const text = normalizeText(query);
+
+  const detected = [];
+
+  Object.entries(intentGroups).forEach(([intent, data]) => {
+
+    const matched = data.keywords.some(keyword =>
+      text.includes(normalizeText(keyword))
+    );
+
+    if (matched) {
+      detected.push(intent);
+    }
+
+  });
+
+  return detected;
+}
+
+
+/* -----------------------------
+   SCORE TOOLS
+----------------------------- */
+
+function scoreTool(tool, query, intents) {
+
+  const text = normalizeText(query);
+
+  const name = normalizeText(tool.name);
+  const description = normalizeText(tool.description);
+  const category = normalizeText(tool.category);
+
+  const keywords = (tool.keywords || [])
+    .map(keyword => normalizeText(keyword));
+
+  let score = 0;
+
+
+  // Exact tool search
+  if (text === name) {
+    score += 150;
   }
 
 
-  function detectIntents(query) {
-
-    const normalized = normalizeText(query);
-    const found = [];
-
-    for (const [intent, phrases] of Object.entries(intentGroups)) {
-
-      for (const phrase of phrases) {
-
-        if (normalized.includes(normalizeText(phrase))) {
-          found.push(intent);
-          break;
-        }
-
-      }
-
-    }
-
-    return [...new Set(found)];
+  // Tool name contains full query
+  if (text.length > 2 && name.includes(text)) {
+    score += 80;
   }
 
 
-  /* =========================================================
-     TOOL SCORING
-     ========================================================= */
+  // Query words
+  const words = text
+    .split(" ")
+    .filter(word => word.length > 2);
 
-  function scoreTool(tool, query, intents) {
+  words.forEach(word => {
 
-    const normalizedQuery = normalizeText(query);
-
-    if (!normalizedQuery) {
-      return 0;
+    if (name.includes(word)) {
+      score += 25;
     }
 
-    let score = 0;
-
-    const toolName = normalizeText(tool.name);
-    const description = normalizeText(tool.description);
-    const category = normalizeText(tool.category);
-
-    // Exact tool name
-    if (normalizedQuery === toolName) {
-      score += 100;
+    if (keywords.some(keyword => keyword.includes(word))) {
+      score += 18;
     }
 
-    // Tool name contains query
-    if (toolName.includes(normalizedQuery)) {
-      score += 60;
+    if (description.includes(word)) {
+      score += 7;
     }
 
-    // Query contains tool name
-    if (normalizedQuery.includes(toolName)) {
-      score += 70;
+  });
+
+
+  // Intent/category matching
+  intents.forEach(intent => {
+
+    const group = intentGroups[intent];
+
+    if (!group) return;
+
+
+    if (
+      group.categories.some(
+        categoryName =>
+          normalizeText(categoryName) === category
+      )
+    ) {
+      score += 55;
     }
 
-    // Category relevance
-    if (category.includes(normalizedQuery)) {
-      score += 35;
-    }
 
-    // Keyword matching
-    tool.keywords.forEach(keyword => {
+    group.keywords.forEach(keyword => {
 
       const normalizedKeyword = normalizeText(keyword);
 
-      if (!normalizedKeyword) return;
+      if (text.includes(normalizedKeyword)) {
 
-      if (normalizedQuery.includes(normalizedKeyword)) {
-        score += 18;
+        if (keywords.includes(normalizedKeyword)) {
+          score += 35;
+        } else {
+          score += 12;
+        }
+
       }
 
     });
 
-    // Description matching
-    normalizedQuery
-      .split(" ")
-      .filter(word => word.length > 2)
-      .forEach(word => {
-
-        if (description.includes(word)) {
-          score += 5;
-        }
-
-      });
+  });
 
 
-    // Intent matching
+  return score;
+}
+
+
+/* -----------------------------
+   SEARCH TOOLS
+----------------------------- */
+
+function searchTools(query) {
+
+  const cleanQuery = normalizeText(query);
+
+  if (!cleanQuery) {
+    return tools.slice(0, 10);
+  }
+
+
+  const intents = detectIntents(cleanQuery);
+
+
+  let results = tools
+    .map(tool => ({
+      ...tool,
+      score: scoreTool(tool, cleanQuery, intents)
+    }))
+    .filter(tool => tool.score > 0)
+    .sort((a, b) => b.score - a.score);
+
+
+  /*
+    If the search has a recognized intent,
+    make sure we don't show completely unrelated tools.
+  */
+
+  if (intents.length > 0) {
+
+    const intentCategories = new Set();
+
     intents.forEach(intent => {
 
-      const matches = {
-
-        logo: ["Design"],
-        design: ["Design"],
-        video: ["Video"],
-        writing: ["Writing"],
-        website: ["Websites"],
-        study: ["Students"],
-        math: ["Students"],
-        ai: ["AI"],
-        productivity: ["Productivity"],
-        image: ["Images", "Design"],
-        audio: ["Audio"],
-        pdf: ["PDF & Documents"]
-
-      };
-
-      if (matches[intent]?.includes(tool.category)) {
-        score += 35;
-      }
-
-    });
-
-    return score;
-  }
-
-
-  /* =========================================================
-     SEARCH TOOLS
-     ========================================================= */
-
-  function searchTools(query) {
-
-    const normalizedQuery = normalizeText(query);
-
-    if (!normalizedQuery) {
-      return tools;
-    }
-
-    const intents = detectIntents(normalizedQuery);
-
-    const scoredTools = tools
-      .map(tool => ({
-        tool,
-        score: scoreTool(tool, normalizedQuery, intents)
-      }))
-      .filter(item => item.score > 0)
-      .sort((a, b) => {
-
-        if (b.score !== a.score) {
-          return b.score - a.score;
-        }
-
-        return b.tool.rating - a.tool.rating;
+      intentGroups[intent].categories.forEach(category => {
+        intentCategories.add(category);
       });
 
-
-    // If intent was detected but the search was broad,
-    // return the most relevant tools.
-    if (scoredTools.length > 0) {
-      return scoredTools
-        .slice(0, 10)
-        .map(item => item.tool);
-    }
-
-
-    // Fallback: show tools whose names/descriptions
-    // loosely match individual words.
-    const fallback = tools.filter(tool => {
-
-      const searchable = normalizeText(
-        `${tool.name} ${tool.description} ${tool.category} ${tool.keywords.join(" ")}`
-      );
-
-      return normalizedQuery
-        .split(" ")
-        .some(word => word.length > 2 && searchable.includes(word));
-
     });
 
-    return fallback.slice(0, 10);
-  }
 
-
-  /* =========================================================
-     TOOL CARD
-     ========================================================= */
-
-  function createToolCard(tool) {
-
-    const card = document.createElement("article");
-    card.className = "tool-card";
-
-    card.innerHTML = `
-      <div class="tool-icon">
-        ${tool.icon}
-      </div>
-
-      <div class="tool-card-content">
-
-        <div class="tool-card-top">
-
-          <div>
-            <h3>${tool.name}</h3>
-
-            <span class="tool-category">
-              ${tool.category}
-            </span>
-          </div>
-
-          <span class="tool-rating">
-            ⭐ ${tool.rating}
-          </span>
-
-        </div>
-
-        <p class="tool-description">
-          ${tool.description}
-        </p>
-
-        <div class="tool-card-bottom">
-
-          <span class="tool-pricing">
-            ${tool.pricing}
-          </span>
-
-          <a
-            class="visit-tool"
-            href="${tool.url}"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Visit Tool →
-          </a>
-
-        </div>
-
-      </div>
-    `;
-
-    return card;
-  }
-
-
-  /* =========================================================
-     RENDER TOOLS
-     ========================================================= */
-
-  function renderTools(toolList, heading = null) {
-
-    if (!toolsGrid) return;
-
-    toolsGrid.innerHTML = "";
-
-    if (heading) {
-
-      const resultHeading = document.createElement("div");
-
-      resultHeading.className = "search-result-heading";
-
-      resultHeading.innerHTML = `
-        <h2>${heading}</h2>
-        <p>${toolList.length} useful tool${toolList.length === 1 ? "" : "s"} found</p>
-      `;
-
-      toolsGrid.appendChild(resultHeading);
-    }
-
-
-    if (!toolList.length) {
-
-      const emptyState = document.createElement("div");
-
-      emptyState.className = "empty-state";
-
-      emptyState.innerHTML = `
-        <div class="empty-icon">🔎</div>
-
-        <h3>No matching tools yet</h3>
-
-        <p>
-          Try something like
-          <strong>"make a logo"</strong>,
-          <strong>"edit a video"</strong>,
-          <strong>"study math"</strong>,
-          or
-          <strong>"build a website"</strong>.
-        </p>
-      `;
-
-      toolsGrid.appendChild(emptyState);
-
-      return;
-    }
-
-
-    toolList.forEach(tool => {
-
-      toolsGrid.appendChild(
-        createToolCard(tool)
-      );
-
-    });
-
-  }
-
-
-  /* =========================================================
-     PERFORM SEARCH
-     ========================================================= */
-
-  function performSearch(query) {
-
-    const cleanQuery = String(query || "").trim();
-
-    if (!cleanQuery) {
-
-      renderTools(
-        tools,
-        "Explore useful tools"
-      );
-
-      return;
-    }
-
-
-    const results = searchTools(cleanQuery);
-
-    renderTools(
-      results,
-      `Tools for "${cleanQuery}"`
+    const relevantResults = results.filter(tool =>
+      intentCategories.has(tool.category)
     );
 
 
-    const toolsSection = document.getElementById("tools");
-
-    if (toolsSection) {
-
-      setTimeout(() => {
-
-        toolsSection.scrollIntoView({
-          behavior: "smooth",
-          block: "start"
-        });
-
-      }, 80);
-
+    if (relevantResults.length >= 3) {
+      results = relevantResults;
     }
 
   }
 
 
-  /* =========================================================
-     SEARCH BUTTON
-     ========================================================= */
+  return results.slice(0, 10);
+}
 
-  if (searchButton) {
 
-    searchButton.addEventListener("click", () => {
+/* -----------------------------
+   RENDER TOOLS
+----------------------------- */
 
-      performSearch(
-        searchInput?.value
-      );
+function renderTools(toolList, title = "") {
 
-      if (suggestions) {
+  const grid = document.getElementById("toolsGrid");
+
+  if (!grid) return;
+
+
+  if (!toolList.length) {
+
+    grid.innerHTML = `
+      <div class="empty-state">
+        <h3>No matching tools found</h3>
+        <p>Try searching for something like "make a logo", "edit videos", or "build a website".</p>
+      </div>
+    `;
+
+    return;
+  }
+
+
+  const heading = title
+    ? `
+      <div class="search-result-heading">
+        <h2>${title}</h2>
+        <p>${toolList.length} relevant tools found</p>
+      </div>
+    `
+    : "";
+
+
+  grid.innerHTML = heading + toolList.map(tool => `
+
+    <article class="tool-card">
+
+      <div class="tool-card-top">
+
+        <div class="tool-icon">
+          ${tool.icon}
+        </div>
+
+        <div class="tool-info">
+
+          <h3>${tool.name}</h3>
+
+          <span class="tool-category">
+            ${tool.category}
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <p class="tool-description">
+        ${tool.description}
+      </p>
+
+
+      <div class="tool-meta">
+
+        <span>⭐ ${tool.rating}</span>
+
+        <span>${tool.pricing}</span>
+
+      </div>
+
+
+      <a
+        class="tool-button"
+        href="${tool.url}"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Visit Tool →
+      </a>
+
+    </article>
+
+  `).join("");
+
+}
+
+
+/* -----------------------------
+   SEARCH
+----------------------------- */
+
+function performSearch(query) {
+
+  const cleanQuery = query.trim();
+
+  if (!cleanQuery) {
+    renderTools(tools.slice(0, 10), "Popular Tools");
+    return;
+  }
+
+
+  const results = searchTools(cleanQuery);
+
+  renderTools(
+    results,
+    `Tools for "${cleanQuery}"`
+  );
+
+}
+
+
+/* -----------------------------
+   SUGGESTIONS
+----------------------------- */
+
+function showSuggestions(query) {
+
+  const suggestions = document.getElementById("suggestions");
+
+  if (!suggestions) return;
+
+
+  const text = normalizeText(query);
+
+  if (!text) {
+
+    suggestions.innerHTML = "";
+
+    return;
+  }
+
+
+  const suggestionList = [
+    "Make a logo",
+    "Edit videos",
+    "Build a website",
+    "Help me study",
+    "Solve a math problem",
+    "Improve my writing",
+    "Find AI tools",
+    "Edit an image",
+    "Work with PDF files",
+    "Create music"
+  ];
+
+
+  const matches = suggestionList
+    .filter(item =>
+      normalizeText(item).includes(text)
+    )
+    .slice(0, 5);
+
+
+  suggestions.innerHTML = matches.map(item => `
+    <button
+      class="suggestion-item"
+      type="button"
+      data-suggestion="${item}"
+    >
+      🔎 ${item}
+    </button>
+  `).join("");
+
+
+  suggestions
+    .querySelectorAll(".suggestion-item")
+    .forEach(button => {
+
+      button.addEventListener("click", () => {
+
+        const input = document.getElementById("searchInput");
+
+        if (!input) return;
+
+        input.value = button.dataset.suggestion;
+
         suggestions.innerHTML = "";
-      }
 
-    });
-
-  }
-
-
-  /* =========================================================
-     ENTER KEY
-     ========================================================= */
-
-  if (searchInput) {
-
-    searchInput.addEventListener("keydown", event => {
-
-      if (event.key === "Enter") {
-
-        event.preventDefault();
-
-        performSearch(
-          searchInput.value
-        );
-
-        if (suggestions) {
-          suggestions.innerHTML = "";
-        }
-
-      }
-
-    });
-
-  }
-
-
-  /* =========================================================
-     LIVE SEARCH SUGGESTIONS
-     ========================================================= */
-
-  if (searchInput && suggestions) {
-
-    searchInput.addEventListener("input", () => {
-
-      const value = searchInput.value.trim();
-
-      suggestions.innerHTML = "";
-
-      if (value.length < 2) {
-        return;
-      }
-
-
-      const query = normalizeText(value);
-
-      const matches = tools
-        .filter(tool => {
-
-          const searchable = normalizeText(
-            `${tool.name} ${tool.category} ${tool.keywords.join(" ")}`
-          );
-
-          return searchable.includes(query);
-
-        })
-        .slice(0, 5);
-
-
-      matches.forEach(tool => {
-
-        const suggestion = document.createElement("button");
-
-        suggestion.type = "button";
-        suggestion.className = "suggestion-item";
-
-        suggestion.innerHTML = `
-          <span>${tool.icon}</span>
-          <span>${tool.name}</span>
-          <small>${tool.category}</small>
-        `;
-
-        suggestion.addEventListener("click", () => {
-
-          searchInput.value = tool.name;
-
-          suggestions.innerHTML = "";
-
-          performSearch(tool.name);
-
-        });
-
-        suggestions.appendChild(suggestion);
+        performSearch(input.value);
 
       });
 
     });
 
-  }
+}
 
 
-  /* =========================================================
-     CATEGORY FILTER
-     ========================================================= */
+/* -----------------------------
+   CATEGORY FILTER
+----------------------------- */
 
-  if (categoryFilter) {
+function setupCategoryFilter() {
 
-    categoryFilter.addEventListener("change", () => {
+  const filter = document.getElementById("categoryFilter");
 
-      const selectedCategory = categoryFilter.value;
-
-      if (selectedCategory === "all") {
-
-        renderTools(
-          tools,
-          "Explore useful tools"
-        );
-
-        return;
-      }
+  if (!filter) return;
 
 
-      const filtered = tools.filter(
-        tool => tool.category === selectedCategory
-      );
+  filter.addEventListener("change", () => {
+
+    const selected = filter.value;
 
 
-      renderTools(
-        filtered,
-        `${selectedCategory} tools`
-      );
+    if (selected === "all") {
 
-    });
+      renderTools(tools.slice(0, 10), "Popular Tools");
 
-  }
+      return;
+    }
 
 
-  /* =========================================================
-     QUICK SEARCH BUTTONS
-     ========================================================= */
+    const filtered = tools.filter(tool =>
+      tool.category === selected
+    );
+
+
+    renderTools(
+      filtered.slice(0, 10),
+      selected
+    );
+
+  });
+
+}
+
+
+/* -----------------------------
+   QUICK SEARCH BUTTONS
+----------------------------- */
+
+function setupQuickSearch() {
 
   document
     .querySelectorAll(".quick-search")
@@ -1350,31 +1253,104 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const query =
           button.dataset.query ||
-          button.dataset.search ||
           button.textContent.trim();
 
+        const input =
+          document.getElementById("searchInput");
 
-        if (searchInput) {
-          searchInput.value = query;
-        }
+        if (!input) return;
 
+        input.value = query;
 
         performSearch(query);
+
+        window.scrollTo({
+          top: document.getElementById("tools")?.offsetTop || 0,
+          behavior: "smooth"
+        });
 
       });
 
     });
 
+}
 
-  /* =========================================================
-     CATEGORY POPUP
-     ========================================================= */
+
+/* -----------------------------
+   SEARCH EVENTS
+----------------------------- */
+
+function setupSearch() {
+
+  const input =
+    document.getElementById("searchInput");
+
+  const searchButton =
+    document.getElementById("searchButton");
+
+
+  if (!input) return;
+
+
+  input.addEventListener("input", () => {
+    showSuggestions(input.value);
+  });
+
+
+  input.addEventListener("keydown", event => {
+
+    if (event.key === "Enter") {
+
+      event.preventDefault();
+
+      showSuggestions("");
+
+      performSearch(input.value);
+
+    }
+
+  });
+
+
+  if (searchButton) {
+
+    searchButton.addEventListener("click", () => {
+
+      showSuggestions("");
+
+      performSearch(input.value);
+
+    });
+
+  }
+
+}
+
+
+/* -----------------------------
+   CATEGORIES POPUP
+----------------------------- */
+
+function setupCategories() {
+
+  const overlay =
+    document.getElementById("categoriesOverlay");
+
+  const closeButton =
+    document.getElementById("categoriesClose");
+
+  const openButtons = [
+    document.getElementById("categoriesButton"),
+    document.getElementById("categoriesButtonHero"),
+    document.getElementById("footerCategoriesButton")
+  ].filter(Boolean);
+
 
   function openCategories() {
 
-    if (!categoriesOverlay) return;
+    if (!overlay) return;
 
-    categoriesOverlay.classList.add("active");
+    overlay.classList.add("active");
 
     document.body.classList.add("modal-open");
 
@@ -1383,52 +1359,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function closeCategories() {
 
-    if (!categoriesOverlay) return;
+    if (!overlay) return;
 
-    categoriesOverlay.classList.remove("active");
+    overlay.classList.remove("active");
 
     document.body.classList.remove("modal-open");
 
   }
 
 
-  if (categoriesButton) {
-    categoriesButton.addEventListener(
-      "click",
-      openCategories
-    );
+  openButtons.forEach(button => {
+    button.addEventListener("click", openCategories);
+  });
+
+
+  if (closeButton) {
+    closeButton.addEventListener("click", closeCategories);
   }
 
 
-  if (categoriesButtonHero) {
-    categoriesButtonHero.addEventListener(
-      "click",
-      openCategories
-    );
-  }
+  if (overlay) {
 
+    overlay.addEventListener("click", event => {
 
-  if (footerCategoriesButton) {
-    footerCategoriesButton.addEventListener(
-      "click",
-      openCategories
-    );
-  }
-
-
-  if (categoriesClose) {
-    categoriesClose.addEventListener(
-      "click",
-      closeCategories
-    );
-  }
-
-
-  if (categoriesOverlay) {
-
-    categoriesOverlay.addEventListener("click", event => {
-
-      if (event.target === categoriesOverlay) {
+      if (event.target === overlay) {
         closeCategories();
       }
 
@@ -1436,10 +1390,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   }
 
-
-  /* =========================================================
-     CATEGORY MENU BUTTONS
-     ========================================================= */
 
   document
     .querySelectorAll(".category-card")
@@ -1450,177 +1400,177 @@ document.addEventListener("DOMContentLoaded", () => {
         const category =
           button.dataset.category;
 
+        const filter =
+          document.getElementById("categoryFilter");
+
+
+        if (filter && category) {
+
+          if (
+            [...filter.options]
+              .some(option => option.value === category)
+          ) {
+            filter.value = category;
+          }
+
+        }
+
+
+        const filtered = tools.filter(tool =>
+          category === "all"
+            ? true
+            : tool.category === category
+        );
+
+
+        renderTools(
+          filtered.slice(0, 10),
+          category === "all"
+            ? "Popular Tools"
+            : category
+        );
+
 
         closeCategories();
 
 
-        if (category === "all") {
-
-          if (categoryFilter) {
-            categoryFilter.value = "all";
-          }
-
-          renderTools(
-            tools,
-            "Explore useful tools"
-          );
-
-          return;
-        }
-
-
-        const filtered = tools.filter(
-          tool => tool.category === category
-        );
-
-
-        if (categoryFilter) {
-
-          const optionExists =
-            [...categoryFilter.options]
-              .some(option => option.value === category);
-
-          if (optionExists) {
-            categoryFilter.value = category;
-          }
-
-        }
-
-
-        renderTools(
-          filtered,
-          `${category} tools`
-        );
-
-
-        const toolsSection =
-          document.getElementById("tools");
-
-
-        if (toolsSection) {
-
-          setTimeout(() => {
-
-            toolsSection.scrollIntoView({
-              behavior: "smooth",
-              block: "start"
-            });
-
-          }, 100);
-
-        }
+        document
+          .getElementById("tools")
+          ?.scrollIntoView({
+            behavior: "smooth"
+          });
 
       });
 
     });
 
-
-  /* =========================================================
-     MOBILE NAVIGATION
-     ========================================================= */
-
-  if (menuButton && navLinks) {
-
-    menuButton.addEventListener("click", () => {
-
-      navLinks.classList.toggle("active");
-
-      menuButton.classList.toggle("active");
-
-    });
+}
 
 
-    navLinks
-      .querySelectorAll("a, button")
-      .forEach(item => {
+/* -----------------------------
+   MOBILE NAV
+----------------------------- */
 
-        item.addEventListener("click", () => {
+function setupMobileMenu() {
 
-          navLinks.classList.remove("active");
+  const menuButton =
+    document.getElementById("menuButton");
 
-          menuButton.classList.remove("active");
-
-        });
-
-      });
-
-  }
+  const navLinks =
+    document.getElementById("navLinks");
 
 
-  /* =========================================================
-     THEME TOGGLE
-     ========================================================= */
-
-  function applySavedTheme() {
-
-    const savedTheme =
-      localStorage.getItem("tztools-theme");
+  if (!menuButton || !navLinks) return;
 
 
-    if (savedTheme === "dark") {
+  menuButton.addEventListener("click", () => {
 
-      document.body.classList.add("dark-mode");
-
-    } else {
-
-      document.body.classList.remove("dark-mode");
-
-    }
-
-  }
-
-
-  applySavedTheme();
-
-
-  if (themeToggle) {
-
-    themeToggle.addEventListener("click", () => {
-
-      document.body.classList.toggle("dark-mode");
-
-
-      const isDark =
-        document.body.classList.contains("dark-mode");
-
-
-      localStorage.setItem(
-        "tztools-theme",
-        isDark ? "dark" : "light"
-      );
-
-    });
-
-  }
-
-
-  /* =========================================================
-     ESCAPE KEY
-     ========================================================= */
-
-  document.addEventListener("keydown", event => {
-
-    if (event.key === "Escape") {
-
-      closeCategories();
-
-    }
+    navLinks.classList.toggle("active");
 
   });
 
 
-  /* =========================================================
-     INITIAL RENDER
-     ========================================================= */
+  navLinks
+    .querySelectorAll("a")
+    .forEach(link => {
+
+      link.addEventListener("click", () => {
+        navLinks.classList.remove("active");
+      });
+
+    });
+
+}
+
+
+/* -----------------------------
+   THEME
+----------------------------- */
+
+function setupTheme() {
+
+  const themeToggle =
+    document.getElementById("themeToggle");
+
+  if (!themeToggle) return;
+
+
+  const savedTheme =
+    localStorage.getItem("tztools-theme");
+
+
+  if (savedTheme === "dark") {
+    document.body.classList.add("dark-mode");
+  }
+
+
+  themeToggle.addEventListener("click", () => {
+
+    document.body.classList.toggle("dark-mode");
+
+
+    localStorage.setItem(
+      "tztools-theme",
+      document.body.classList.contains("dark-mode")
+        ? "dark"
+        : "light"
+    );
+
+  });
+
+}
+
+
+/* -----------------------------
+   ESCAPE KEY
+----------------------------- */
+
+function setupEscapeKey() {
+
+  document.addEventListener("keydown", event => {
+
+    if (event.key !== "Escape") return;
+
+
+    const overlay =
+      document.getElementById("categoriesOverlay");
+
+    if (overlay) {
+      overlay.classList.remove("active");
+    }
+
+
+    document.body.classList.remove("modal-open");
+
+  });
+
+}
+
+
+/* -----------------------------
+   INITIALIZE
+----------------------------- */
+
+document.addEventListener("DOMContentLoaded", () => {
 
   renderTools(
-    tools,
-    "Explore useful tools"
+    tools.slice(0, 10),
+    "Popular Tools"
   );
 
 
-  console.log(
-    `TzTools V6 loaded successfully — ${tools.length} tools available.`
-  );
+  setupSearch();
+
+  setupQuickSearch();
+
+  setupCategoryFilter();
+
+  setupCategories();
+
+  setupMobileMenu();
+
+  setupTheme();
+
+  setupEscapeKey();
 
 });
