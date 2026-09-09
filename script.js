@@ -1903,3 +1903,44 @@ updateCounts();
 console.log(
   `TzTools V4.5 loaded successfully — ${tools.length} tools`
 );
+/* ================= RECENTLY USED ================= */
+
+function trackRecentlyUsed(toolId) {
+  if (!toolId) return;
+
+  recentlyUsed = recentlyUsed.filter(id => id !== toolId);
+
+  recentlyUsed.unshift(toolId);
+
+  recentlyUsed = recentlyUsed.slice(0, 10);
+
+  localStorage.setItem(
+    "tztools-recent",
+    JSON.stringify(recentlyUsed)
+  );
+
+  renderRecentlyUsed();
+}
+
+function renderRecentlyUsed() {
+  const container = document.getElementById("recentlyUsedContainer");
+
+  if (!container) return;
+
+  const recentTools = recentlyUsed
+    .map(id => getTool(id))
+    .filter(Boolean);
+
+  if (recentTools.length === 0) {
+    container.innerHTML = `
+      <p class="empty-state">
+        You haven't used any tools yet.
+      </p>
+    `;
+    return;
+  }
+
+  container.innerHTML = recentTools
+    .map(tool => createToolCard(tool))
+    .join("");
+}
