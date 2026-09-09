@@ -1,471 +1,539 @@
 /* =========================================================
-   TZTOOLS — MAIN JAVASCRIPT
-   V5 FOUNDATION
-   ========================================================= */
+   TZTOOLS — V6 JAVASCRIPT FOUNDATION
+   Search → Match → Recommend → Visit
+========================================================= */
 
-"use strict";
 
 /* =========================================================
    TOOL DATABASE
-   ========================================================= */
+========================================================= */
 
 const tools = [
-  {
-    id: "canva",
-    name: "Canva",
-    category: "Design",
-    description: "Create logos, graphics, presentations, posters and more.",
-    pricing: "Freemium",
-    rating: 4.8,
-    icon: "🎨",
-    url: "https://www.canva.com/",
-    keywords: [
-      "logo",
-      "design",
-      "poster",
-      "graphics",
-      "presentation",
-      "social media"
-    ]
-  },
 
-  {
-    id: "adobe-express",
-    name: "Adobe Express",
-    category: "Design",
-    description: "Create graphics, social posts, videos and branded content.",
-    pricing: "Freemium",
-    rating: 4.7,
-    icon: "✨",
-    url: "https://www.adobe.com/express/",
-    keywords: [
-      "logo",
-      "design",
-      "graphics",
-      "poster",
-      "social media",
-      "video"
-    ]
-  },
-
-  {
-    id: "figma",
-    name: "Figma",
-    category: "Design",
-    description: "Design interfaces, websites, apps and digital products.",
-    pricing: "Freemium",
-    rating: 4.8,
-    icon: "🖌️",
-    url: "https://www.figma.com/",
-    keywords: [
-      "ui",
-      "ux",
-      "website",
-      "app",
-      "design",
-      "prototype"
-    ]
-  },
-
-  {
-    id: "capcut",
-    name: "CapCut",
-    category: "Video",
-    description: "Edit videos with effects, captions, transitions and more.",
-    pricing: "Freemium",
-    rating: 4.7,
-    icon: "🎬",
-    url: "https://www.capcut.com/",
-    keywords: [
-      "video",
-      "editing",
-      "edit video",
-      "tiktok",
-      "reels",
-      "shorts"
-    ]
-  },
-
-  {
-    id: "davinci-resolve",
-    name: "DaVinci Resolve",
-    category: "Video",
-    description: "Professional video editing, color grading and visual effects.",
-    pricing: "Free",
-    rating: 4.9,
-    icon: "🎥",
-    url: "https://www.blackmagicdesign.com/products/davinciresolve",
-    keywords: [
-      "video",
-      "editing",
-      "professional",
-      "film",
-      "color grading"
-    ]
-  },
-
-  {
-    id: "veed",
-    name: "VEED",
-    category: "Video",
-    description: "Simple online video editing with captions and AI tools.",
-    pricing: "Freemium",
-    rating: 4.6,
-    icon: "📹",
-    url: "https://www.veed.io/",
-    keywords: [
-      "video",
-      "editing",
-      "captions",
-      "subtitles",
-      "ai video"
-    ]
-  },
+  // ================= AI =================
 
   {
     id: "chatgpt",
     name: "ChatGPT",
+    icon: "🤖",
+    description: "AI assistant for writing, studying, brainstorming, coding and more.",
     category: "AI",
-    description: "AI assistant for writing, studying, brainstorming and more.",
     pricing: "Freemium",
     rating: 4.9,
-    icon: "🤖",
     url: "https://chatgpt.com/",
-    keywords: [
-      "ai",
-      "writing",
-      "study",
-      "homework",
-      "research",
-      "ideas"
-    ]
+    tags: ["ai", "chat", "writing", "study", "coding", "assistant"]
   },
 
   {
     id: "gemini",
     name: "Google Gemini",
-    category: "AI",
-    description: "Google's AI assistant for research, writing and everyday tasks.",
-    pricing: "Freemium",
-    rating: 4.7,
     icon: "✨",
+    description: "Google's AI assistant for research, writing, ideas and everyday tasks.",
+    category: "AI",
+    pricing: "Free",
+    rating: 4.8,
     url: "https://gemini.google.com/",
-    keywords: [
-      "ai",
-      "research",
-      "writing",
-      "study",
-      "homework"
-    ]
+    tags: ["ai", "google", "research", "writing", "study", "assistant"]
   },
 
   {
     id: "claude",
     name: "Claude",
+    icon: "🧠",
+    description: "AI assistant useful for writing, analysis, coding and long documents.",
     category: "AI",
-    description: "AI assistant for writing, analysis, coding and research.",
     pricing: "Freemium",
     rating: 4.8,
-    icon: "🧠",
     url: "https://claude.ai/",
-    keywords: [
-      "ai",
-      "writing",
-      "coding",
-      "research",
-      "analysis"
-    ]
+    tags: ["ai", "writing", "coding", "research", "documents"]
   },
+
+
+  // ================= DESIGN =================
+
+  {
+    id: "canva",
+    name: "Canva",
+    icon: "🎨",
+    description: "Create logos, posters, presentations, social graphics and more.",
+    category: "Design",
+    pricing: "Freemium",
+    rating: 4.9,
+    url: "https://www.canva.com/",
+    tags: ["design", "logo", "logos", "poster", "graphics", "presentation", "social media"]
+  },
+
+  {
+    id: "adobe-express",
+    name: "Adobe Express",
+    icon: "🖌️",
+    description: "Quickly create graphics, social posts, flyers and visual content.",
+    category: "Design",
+    pricing: "Freemium",
+    rating: 4.7,
+    url: "https://www.adobe.com/express/",
+    tags: ["design", "logo", "graphics", "poster", "flyer", "social media"]
+  },
+
+  {
+    id: "figma",
+    name: "Figma",
+    icon: "🧩",
+    description: "Design websites, apps, interfaces and collaborative prototypes.",
+    category: "Design",
+    pricing: "Freemium",
+    rating: 4.8,
+    url: "https://www.figma.com/",
+    tags: ["design", "ui", "ux", "website", "app", "prototype"]
+  },
+
+
+  // ================= VIDEO =================
+
+  {
+    id: "capcut",
+    name: "CapCut",
+    icon: "🎬",
+    description: "Easy video editor for social media, short videos and creative projects.",
+    category: "Video",
+    pricing: "Freemium",
+    rating: 4.8,
+    url: "https://www.capcut.com/",
+    tags: ["video", "editing", "edit", "tiktok", "youtube", "shorts", "reels"]
+  },
+
+  {
+    id: "davinci",
+    name: "DaVinci Resolve",
+    icon: "🎞️",
+    description: "Professional video editing, color grading, effects and audio production.",
+    category: "Video",
+    pricing: "Free",
+    rating: 4.9,
+    url: "https://www.blackmagicdesign.com/products/davinciresolve",
+    tags: ["video", "editing", "edit", "professional", "color", "audio"]
+  },
+
+  {
+    id: "veed",
+    name: "VEED",
+    icon: "📹",
+    description: "Browser-based video editor for social media and online content.",
+    category: "Video",
+    pricing: "Freemium",
+    rating: 4.6,
+    url: "https://www.veed.io/",
+    tags: ["video", "editing", "edit", "social media", "subtitles"]
+  },
+
+
+  // ================= WRITING =================
 
   {
     id: "grammarly",
     name: "Grammarly",
+    icon: "✍️",
+    description: "Improve grammar, spelling, clarity and writing quality.",
     category: "Writing",
-    description: "Improve grammar, spelling, clarity and writing style.",
     pricing: "Freemium",
     rating: 4.7,
-    icon: "✍️",
     url: "https://www.grammarly.com/",
-    keywords: [
-      "writing",
-      "grammar",
-      "essay",
-      "school",
-      "proofreading"
-    ]
+    tags: ["writing", "grammar", "essay", "school", "proofreading"]
   },
 
   {
     id: "quillbot",
     name: "QuillBot",
-    category: "Writing",
+    icon: "📝",
     description: "Paraphrase, summarize and improve your writing.",
+    category: "Writing",
     pricing: "Freemium",
     rating: 4.6,
-    icon: "📝",
     url: "https://quillbot.com/",
-    keywords: [
-      "writing",
-      "paraphrase",
-      "rewrite",
-      "essay",
-      "summary"
-    ]
+    tags: ["writing", "paraphrase", "summarize", "essay", "school"]
   },
 
   {
     id: "google-docs",
     name: "Google Docs",
+    icon: "📄",
+    description: "Create, edit and collaborate on documents online.",
     category: "Writing",
-    description: "Create and collaborate on documents online.",
     pricing: "Free",
     rating: 4.8,
-    icon: "📄",
     url: "https://docs.google.com/",
-    keywords: [
-      "writing",
-      "document",
-      "essay",
-      "school",
-      "notes"
-    ]
+    tags: ["writing", "documents", "essay", "school", "collaboration"]
   },
+
+
+  // ================= WEBSITES =================
 
   {
     id: "wordpress",
     name: "WordPress",
-    category: "Websites",
-    description: "Build websites and blogs with powerful customization.",
-    pricing: "Free",
-    rating: 4.6,
     icon: "🌐",
+    description: "Create websites, blogs and online publications.",
+    category: "Websites",
+    pricing: "Freemium",
+    rating: 4.7,
     url: "https://wordpress.com/",
-    keywords: [
-      "website",
-      "blog",
-      "web",
-      "site"
-    ]
+    tags: ["website", "websites", "blog", "blogging", "site"]
   },
 
   {
     id: "wix",
     name: "Wix",
-    category: "Websites",
+    icon: "🏗️",
     description: "Build websites using an easy visual website builder.",
+    category: "Websites",
     pricing: "Freemium",
     rating: 4.6,
-    icon: "🌎",
     url: "https://www.wix.com/",
-    keywords: [
-      "website",
-      "web",
-      "business",
-      "portfolio"
-    ]
+    tags: ["website", "websites", "site", "business", "builder"]
   },
 
   {
     id: "framer",
     name: "Framer",
+    icon: "⚡",
+    description: "Design and publish modern websites with a visual builder.",
     category: "Websites",
-    description: "Create modern websites with powerful visual design tools.",
     pricing: "Freemium",
     rating: 4.7,
-    icon: "⚡",
     url: "https://www.framer.com/",
-    keywords: [
-      "website",
-      "web design",
-      "portfolio",
-      "landing page"
-    ]
+    tags: ["website", "websites", "design", "site", "builder"]
   },
+
+
+  // ================= STUDENTS =================
 
   {
     id: "khan-academy",
     name: "Khan Academy",
+    icon: "🎓",
+    description: "Free lessons and practice for maths, science and other subjects.",
     category: "Students",
-    description: "Learn maths, science and other subjects for free.",
     pricing: "Free",
     rating: 4.9,
-    icon: "📚",
     url: "https://www.khanacademy.org/",
-    keywords: [
-      "study",
-      "school",
-      "math",
-      "science",
-      "learning"
-    ]
+    tags: ["study", "student", "students", "school", "maths", "science", "learning"]
   },
 
   {
     id: "wolframalpha",
     name: "WolframAlpha",
-    category: "Students",
-    description: "Compute answers and explore maths, science and data.",
-    pricing: "Freemium",
-    rating: 4.7,
     icon: "🔢",
+    description: "Computational knowledge engine for maths, science and more.",
+    category: "Students",
+    pricing: "Freemium",
+    rating: 4.8,
     url: "https://www.wolframalpha.com/",
-    keywords: [
-      "math",
-      "calculation",
-      "science",
-      "homework",
-      "study"
-    ]
+    tags: ["study", "student", "students", "math", "maths", "science", "calculation"]
   },
 
   {
     id: "quizlet",
     name: "Quizlet",
+    icon: "📚",
+    description: "Study with flashcards, practice tests and learning activities.",
     category: "Students",
-    description: "Study using flashcards, quizzes and learning activities.",
     pricing: "Freemium",
     rating: 4.7,
-    icon: "🎓",
     url: "https://quizlet.com/",
-    keywords: [
-      "study",
-      "flashcards",
-      "quiz",
-      "school",
-      "revision"
-    ]
+    tags: ["study", "student", "students", "school", "flashcards", "learning"]
   },
+
+
+  // ================= PRODUCTIVITY =================
 
   {
     id: "notion",
     name: "Notion",
+    icon: "📓",
+    description: "Organize notes, projects, tasks and personal knowledge.",
     category: "Productivity",
-    description: "Organize notes, projects, tasks and personal information.",
     pricing: "Freemium",
     rating: 4.8,
-    icon: "📓",
     url: "https://www.notion.so/",
-    keywords: [
-      "notes",
-      "productivity",
-      "tasks",
-      "planning",
-      "school"
-    ]
+    tags: ["productivity", "notes", "tasks", "planning", "organization"]
   },
 
   {
     id: "trello",
     name: "Trello",
+    icon: "📋",
+    description: "Organize projects and tasks using flexible boards.",
     category: "Productivity",
-    description: "Organize projects and tasks using visual boards.",
     pricing: "Freemium",
     rating: 4.6,
-    icon: "📋",
     url: "https://trello.com/",
-    keywords: [
-      "tasks",
-      "productivity",
-      "planning",
-      "projects"
-    ]
+    tags: ["productivity", "tasks", "planning", "projects", "organization"]
   },
+
+
+  // ================= IMAGES =================
 
   {
     id: "remove-bg",
     name: "Remove.bg",
+    icon: "🪄",
+    description: "Automatically remove backgrounds from images.",
     category: "Images",
-    description: "Remove image backgrounds automatically.",
     pricing: "Freemium",
     rating: 4.7,
-    icon: "🖼️",
     url: "https://www.remove.bg/",
-    keywords: [
-      "background",
-      "remove background",
-      "image",
-      "photo"
-    ]
+    tags: ["image", "images", "photo", "background", "remove background", "editing"]
   },
 
   {
     id: "pixlr",
     name: "Pixlr",
+    icon: "🖼️",
+    description: "Online photo editor for quick image editing and designs.",
     category: "Images",
-    description: "Edit photos and create graphics directly in your browser.",
     pricing: "Freemium",
     rating: 4.5,
-    icon: "🌈",
     url: "https://pixlr.com/",
-    keywords: [
-      "photo",
-      "image",
-      "editing",
-      "graphics"
-    ]
+    tags: ["image", "images", "photo", "editing", "design"]
   }
+
 ];
+
 
 /* =========================================================
    DOM ELEMENTS
-   ========================================================= */
+========================================================= */
 
 const searchInput = document.getElementById("searchInput");
 const toolsGrid = document.getElementById("toolsGrid");
+const searchButton = document.getElementById("searchButton");
+
 
 /* =========================================================
-   TOOL SEARCH
-   ========================================================= */
+   SEARCH INTENT
+========================================================= */
 
-function searchTools(query = "") {
-  const cleanQuery = query.trim().toLowerCase();
+const intentGroups = {
 
-  if (!cleanQuery) {
-    return tools;
+  logo: [
+    "logo",
+    "logos",
+    "brand logo",
+    "make a logo",
+    "create a logo",
+    "design a logo"
+  ],
+
+  design: [
+    "design",
+    "graphic",
+    "graphics",
+    "poster",
+    "flyer",
+    "banner"
+  ],
+
+  video: [
+    "video",
+    "videos",
+    "edit video",
+    "video editing",
+    "youtube video",
+    "tiktok",
+    "reels",
+    "shorts"
+  ],
+
+  writing: [
+    "write",
+    "writing",
+    "essay",
+    "article",
+    "grammar",
+    "proofread",
+    "paraphrase"
+  ],
+
+  website: [
+    "website",
+    "websites",
+    "web",
+    "site",
+    "make a website",
+    "build a website"
+  ],
+
+  study: [
+    "study",
+    "studying",
+    "student",
+    "school",
+    "homework",
+    "learn",
+    "learning",
+    "math",
+    "maths",
+    "science"
+  ],
+
+  ai: [
+    "ai",
+    "artificial intelligence",
+    "chatbot",
+    "assistant"
+  ],
+
+  productivity: [
+    "productivity",
+    "organize",
+    "organization",
+    "tasks",
+    "planning",
+    "notes"
+  ],
+
+  image: [
+    "image",
+    "images",
+    "photo",
+    "photos",
+    "picture",
+    "background"
+  ]
+
+};
+
+
+/* =========================================================
+   DETECT USER INTENT
+========================================================= */
+
+function detectIntent(query) {
+
+  const text = query.toLowerCase();
+
+  for (const [intent, keywords] of Object.entries(intentGroups)) {
+
+    for (const keyword of keywords) {
+
+      if (text.includes(keyword)) {
+        return intent;
+      }
+
+    }
+
   }
 
-  const words = cleanQuery.split(/\s+/);
+  return null;
+}
+
+
+/* =========================================================
+   SCORE TOOLS
+========================================================= */
+
+function scoreTool(tool, query) {
+
+  const text = query.toLowerCase();
+
+  if (!text.trim()) {
+    return 0;
+  }
+
+  let score = 0;
+
+  const intent = detectIntent(text);
+
+  const tags = tool.tags || [];
+
+  /* Exact name match */
+  if (tool.name.toLowerCase() === text) {
+    score += 100;
+  }
+
+  /* Name contains query */
+  if (tool.name.toLowerCase().includes(text)) {
+    score += 40;
+  }
+
+  /* Tag matching */
+  tags.forEach(tag => {
+
+    if (text.includes(tag.toLowerCase())) {
+      score += 20;
+    }
+
+    if (tag.toLowerCase().includes(text)) {
+      score += 10;
+    }
+
+  });
+
+
+  /* Intent matching */
+
+  const intentCategoryMap = {
+
+    logo: ["Design"],
+    design: ["Design"],
+    video: ["Video"],
+    writing: ["Writing"],
+    website: ["Websites"],
+    study: ["Students"],
+    ai: ["AI"],
+    productivity: ["Productivity"],
+    image: ["Images"]
+
+  };
+
+  if (
+    intent &&
+    intentCategoryMap[intent] &&
+    intentCategoryMap[intent].includes(tool.category)
+  ) {
+    score += 50;
+  }
+
+
+  /* Small rating bonus */
+
+  score += tool.rating * 2;
+
+
+  return score;
+}
+
+
+/* =========================================================
+   SEARCH TOOLS
+========================================================= */
+
+function searchTools(query) {
+
+  const text = query.trim();
+
+  if (!text) {
+    return tools.slice();
+  }
 
   return tools
-    .map(tool => {
-      let score = 0;
-
-      words.forEach(word => {
-        if (tool.name.toLowerCase().includes(word)) {
-          score += 10;
-        }
-
-        if (tool.category.toLowerCase().includes(word)) {
-          score += 6;
-        }
-
-        if (tool.description.toLowerCase().includes(word)) {
-          score += 4;
-        }
-
-        tool.keywords.forEach(keyword => {
-          if (keyword.toLowerCase().includes(word)) {
-            score += 8;
-          }
-        });
-      });
-
-      return {
-        tool,
-        score
-      };
-    })
+    .map(tool => ({
+      tool,
+      score: scoreTool(tool, text)
+    }))
     .filter(result => result.score > 0)
     .sort((a, b) => b.score - a.score)
     .map(result => result.tool)
     .slice(0, 10);
 }
 
+
 /* =========================================================
-   TOOL CARD
-   ========================================================= */
+   CREATE TOOL CARD
+========================================================= */
 
 function createToolCard(tool) {
+
   return `
     <article class="tool-card">
 
@@ -476,17 +544,29 @@ function createToolCard(tool) {
       <div class="tool-info">
 
         <div class="tool-title-row">
+
           <h3>${tool.name}</h3>
+
           <span class="tool-rating">
             ⭐ ${tool.rating}
           </span>
+
         </div>
 
-        <p>${tool.description}</p>
+        <p>
+          ${tool.description}
+        </p>
 
         <div class="tool-meta">
-          <span>${tool.category}</span>
-          <span>${tool.pricing}</span>
+
+          <span>
+            ${tool.category}
+          </span>
+
+          <span>
+            ${tool.pricing}
+          </span>
+
         </div>
 
         <a
@@ -503,47 +583,108 @@ function createToolCard(tool) {
   `;
 }
 
+
 /* =========================================================
    RENDER TOOLS
-   ========================================================= */
+========================================================= */
 
-function renderTools(results = tools) {
-  if (!toolsGrid) return;
+function renderTools(container, toolList) {
 
-  if (results.length === 0) {
-    toolsGrid.innerHTML = `
-      <div class="empty-state">
-        <h3>No tools found</h3>
-        <p>Try searching for something else.</p>
+  if (!container) return;
+
+  if (!toolList || toolList.length === 0) {
+
+    container.innerHTML = `
+      <div class="empty">
+        <h3>No matching tools found</h3>
+        <p>
+          Try something like "make a logo",
+          "edit videos", or "study maths".
+        </p>
       </div>
     `;
 
     return;
   }
 
-  toolsGrid.innerHTML = results
+  container.innerHTML = toolList
     .map(tool => createToolCard(tool))
     .join("");
 }
 
+
+/* =========================================================
+   PERFORM SEARCH
+========================================================= */
+
+function performSearch() {
+
+  const query = searchInput
+    ? searchInput.value.trim()
+    : "";
+
+  const results = searchTools(query);
+
+  renderTools(toolsGrid, results);
+
+}
+
+
 /* =========================================================
    SEARCH EVENTS
-   ========================================================= */
+========================================================= */
+
+if (searchButton) {
+
+  searchButton.addEventListener(
+    "click",
+    performSearch
+  );
+
+}
 
 if (searchInput) {
-  searchInput.addEventListener("input", () => {
-    const results = searchTools(searchInput.value);
 
-    renderTools(results);
-  });
+  searchInput.addEventListener(
+    "keydown",
+    event => {
+
+      if (event.key === "Enter") {
+        performSearch();
+      }
+
+    }
+  );
+
+  searchInput.addEventListener(
+    "input",
+    () => {
+
+      if (!searchInput.value.trim()) {
+
+        renderTools(
+          toolsGrid,
+          tools
+        );
+
+      }
+
+    }
+  );
+
 }
+
 
 /* =========================================================
    INITIAL LOAD
-   ========================================================= */
+========================================================= */
 
-renderTools();
+renderTools(
+  toolsGrid,
+  tools
+);
+
 
 console.log(
-  `TzTools loaded successfully — ${tools.length} tools`
+  `TzTools V6 loaded successfully — ${tools.length} tools`
 );
