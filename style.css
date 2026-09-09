@@ -1,1294 +1,2267 @@
 /* =========================================================
-   TZTOOLS V6.6 → V6.9
-========================================================= */
+   TzTools V7 — CLEAN JAVASCRIPT
+   ========================================================= */
 
-:root {
-  --bg: #f7f8fc;
-  --surface: #ffffff;
-  --surface-2: #f0f2f7;
-  --text: #151821;
-  --muted: #697080;
-  --border: #e2e5ec;
-  --primary: #635bff;
-  --primary-dark: #5047e8;
-  --shadow: 0 12px 35px rgba(20, 24, 40, 0.08);
-  --shadow-hover: 0 20px 50px rgba(20, 24, 40, 0.14);
-  --radius: 18px;
-  --radius-small: 12px;
-  --transition: 180ms ease;
-}
-
-body.dark-mode {
-  --bg: #0c0e14;
-  --surface: #151820;
-  --surface-2: #1d212c;
-  --text: #f5f7fb;
-  --muted: #a3a9b8;
-  --border: #2b303d;
-  --primary: #817aff;
-  --primary-dark: #6d65f5;
-  --shadow: 0 12px 35px rgba(0, 0, 0, 0.28);
-  --shadow-hover: 0 20px 50px rgba(0, 0, 0, 0.4);
-}
+"use strict";
 
 /* =========================================================
-   RESET
-========================================================= */
+   SUPABASE
+   ========================================================= */
 
-* {
-  box-sizing: border-box;
-}
+const SUPABASE_URL = "https://nslaakklgidpzwlymrhf.supabase.co";
 
-html {
-  scroll-behavior: smooth;
-}
+// ⚠️ KEEP YOUR EXISTING sb_publishable_... KEY HERE
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_XoDQsJkHs_7PA8wQAoutHA_glygnyxK";
 
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family:
-    Inter,
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
-  line-height: 1.6;
-  transition:
-    background var(--transition),
-    color var(--transition);
-}
+let supabaseClient = null;
+let currentUser = null;
 
-body.modal-open {
-  overflow: hidden;
-}
-
-button,
-input,
-select {
-  font: inherit;
-}
-
-button,
-a {
-  -webkit-tap-highlight-color: transparent;
-}
-
-button {
-  cursor: pointer;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-::selection {
-  background: var(--primary);
-  color: white;
-}
 
 /* =========================================================
-   ACCESSIBILITY
-========================================================= */
+   TOOL DATABASE
+   ========================================================= */
 
-:focus-visible {
-  outline: 3px solid var(--primary);
-  outline-offset: 3px;
-}
+const tools = [
 
-.skip-link {
-  position: fixed;
-  top: -100px;
-  left: 20px;
-  z-index: 9999;
-  padding: 10px 15px;
-  background: var(--primary);
-  color: white;
-  border-radius: 8px;
-}
+  // DESIGN
+  {
+    id: "canva",
+    name: "Canva",
+    category: "Design",
+    pricing: "Freemium",
+    rating: 4.8,
+    icon: "🎨",
+    description: "Create logos, posters, presentations, social posts and graphics.",
+    keywords: ["logo", "design", "poster", "flyer", "graphic", "thumbnail", "branding"],
+    url: "https://www.canva.com/"
+  },
 
-.skip-link:focus {
-  top: 20px;
-}
+  {
+    id: "adobe-express",
+    name: "Adobe Express",
+    category: "Design",
+    pricing: "Freemium",
+    rating: 4.7,
+    icon: "✨",
+    description: "Quickly create graphics, logos, flyers, videos and social content.",
+    keywords: ["logo", "design", "flyer", "poster", "graphics", "social"],
+    url: "https://www.adobe.com/express/"
+  },
+
+  {
+    id: "figma",
+    name: "Figma",
+    category: "Design",
+    pricing: "Freemium",
+    rating: 4.8,
+    icon: "🧩",
+    description: "Design interfaces, websites, apps and digital products.",
+    keywords: ["design", "ui", "ux", "website", "app", "prototype"],
+    url: "https://www.figma.com/"
+  },
+
+  {
+    id: "looka",
+    name: "Looka",
+    category: "Design",
+    pricing: "Paid",
+    rating: 4.6,
+    icon: "🔷",
+    description: "Generate professional-looking logo and brand designs.",
+    keywords: ["logo", "branding", "brand", "business"],
+    url: "https://looka.com/"
+  },
+
+  {
+    id: "pixlr",
+    name: "Pixlr",
+    category: "Images",
+    pricing: "Freemium",
+    rating: 4.5,
+    icon: "🖼️",
+    description: "Edit photos and create graphics directly in your browser.",
+    keywords: ["photo", "image", "edit", "graphics", "background"],
+    url: "https://pixlr.com/"
+  },
+
+  // VIDEO
+  {
+    id: "capcut",
+    name: "CapCut",
+    category: "Video",
+    pricing: "Freemium",
+    rating: 4.7,
+    icon: "🎬",
+    description: "Edit videos, add effects, captions, music and transitions.",
+    keywords: ["video", "editing", "tiktok", "reels", "youtube", "shorts"],
+    url: "https://www.capcut.com/"
+  },
+
+  {
+    id: "veed",
+    name: "VEED",
+    category: "Video",
+    pricing: "Freemium",
+    rating: 4.6,
+    icon: "🎥",
+    description: "Browser-based video editing with captions and social tools.",
+    keywords: ["video", "edit", "caption", "youtube", "reels"],
+    url: "https://www.veed.io/"
+  },
+
+  {
+    id: "invideo",
+    name: "InVideo",
+    category: "Video",
+    pricing: "Freemium",
+    rating: 4.5,
+    icon: "📹",
+    description: "Create and edit videos using templates and AI features.",
+    keywords: ["video", "ai", "youtube", "editing", "social"],
+    url: "https://invideo.io/"
+  },
+
+  // WRITING
+  {
+    id: "grammarly",
+    name: "Grammarly",
+    category: "Writing",
+    pricing: "Freemium",
+    rating: 4.7,
+    icon: "✍️",
+    description: "Improve grammar, spelling, clarity and writing style.",
+    keywords: ["grammar", "writing", "essay", "spell", "school"],
+    url: "https://www.grammarly.com/"
+  },
+
+  {
+    id: "quillbot",
+    name: "QuillBot",
+    category: "Writing",
+    pricing: "Freemium",
+    rating: 4.6,
+    icon: "🪶",
+    description: "Paraphrase, summarize and improve written text.",
+    keywords: ["writing", "paraphrase", "rewrite", "essay", "summarize"],
+    url: "https://quillbot.com/"
+  },
+
+  {
+    id: "notion",
+    name: "Notion",
+    category: "Productivity",
+    pricing: "Freemium",
+    rating: 4.8,
+    icon: "📝",
+    description: "Organize notes, projects, tasks and personal information.",
+    keywords: ["notes", "planning", "tasks", "projects", "school", "organize"],
+    url: "https://www.notion.com/"
+  },
+
+  // AI
+  {
+    id: "chatgpt",
+    name: "ChatGPT",
+    category: "AI",
+    pricing: "Freemium",
+    rating: 4.9,
+    icon: "🤖",
+    description: "Ask questions, brainstorm ideas, learn and work with AI.",
+    keywords: ["ai", "chat", "study", "questions", "research", "writing"],
+    url: "https://chatgpt.com/"
+  },
+
+  {
+    id: "gemini",
+    name: "Google Gemini",
+    category: "AI",
+    pricing: "Freemium",
+    rating: 4.7,
+    icon: "✨",
+    description: "Google's AI assistant for questions, research and creative tasks.",
+    keywords: ["ai", "chat", "research", "questions", "writing"],
+    url: "https://gemini.google.com/"
+  },
+
+  {
+    id: "perplexity",
+    name: "Perplexity",
+    category: "AI",
+    pricing: "Freemium",
+    rating: 4.7,
+    icon: "🔎",
+    description: "AI-powered search and research assistant.",
+    keywords: ["ai", "research", "search", "questions", "school"],
+    url: "https://www.perplexity.ai/"
+  },
+
+  // WEBSITES
+  {
+    id: "wix",
+    name: "Wix",
+    category: "Websites",
+    pricing: "Freemium",
+    rating: 4.6,
+    icon: "🌐",
+    description: "Build websites using templates and visual editing tools.",
+    keywords: ["website", "web", "site", "blog", "business", "store"],
+    url: "https://www.wix.com/"
+  },
+
+  {
+    id: "wordpress",
+    name: "WordPress",
+    category: "Websites",
+    pricing: "Freemium",
+    rating: 4.7,
+    icon: "📰",
+    description: "Create websites, blogs and online content.",
+    keywords: ["website", "blog", "web", "site", "business"],
+    url: "https://wordpress.com/"
+  },
+
+  {
+    id: "webflow",
+    name: "Webflow",
+    category: "Websites",
+    pricing: "Freemium",
+    rating: 4.7,
+    icon: "💻",
+    description: "Build and publish advanced websites visually.",
+    keywords: ["website", "web", "landing", "site", "design"],
+    url: "https://webflow.com/"
+  },
+
+  // STUDENTS
+  {
+    id: "khan-academy",
+    name: "Khan Academy",
+    category: "Students",
+    pricing: "Free",
+    rating: 4.9,
+    icon: "🎓",
+    description: "Learn maths, science and many other school subjects.",
+    keywords: ["study", "school", "math", "science", "student", "learning"],
+    url: "https://www.khanacademy.org/"
+  },
+
+  {
+    id: "photomath",
+    name: "Photomath",
+    category: "Students",
+    pricing: "Freemium",
+    rating: 4.7,
+    icon: "🧮",
+    description: "Get step-by-step help understanding maths problems.",
+    keywords: ["math", "mathematics", "homework", "study", "student"],
+    url: "https://photomath.com/"
+  },
+
+  {
+    id: "quizlet",
+    name: "Quizlet",
+    category: "Students",
+    pricing: "Freemium",
+    rating: 4.7,
+    icon: "📚",
+    description: "Study with flashcards, practice tests and learning activities.",
+    keywords: ["study", "flashcards", "quiz", "school", "revision"],
+    url: "https://quizlet.com/"
+  },
+
+  // PRODUCTIVITY
+  {
+    id: "trello",
+    name: "Trello",
+    category: "Productivity",
+    pricing: "Freemium",
+    rating: 4.6,
+    icon: "📋",
+    description: "Organize projects and tasks using boards and cards.",
+    keywords: ["tasks", "projects", "planning", "organize", "productivity"],
+    url: "https://trello.com/"
+  },
+
+  {
+    id: "todoist",
+    name: "Todoist",
+    category: "Productivity",
+    pricing: "Freemium",
+    rating: 4.7,
+    icon: "✅",
+    description: "Manage tasks, reminders and daily plans.",
+    keywords: ["tasks", "todo", "planning", "productivity", "organize"],
+    url: "https://todoist.com/"
+  },
+
+  // PDF / DOCUMENTS
+  {
+    id: "ilovepdf",
+    name: "iLovePDF",
+    category: "PDF",
+    pricing: "Freemium",
+    rating: 4.7,
+    icon: "📄",
+    description: "Merge, split, compress, convert and edit PDF files.",
+    keywords: ["pdf", "document", "merge", "compress", "convert"],
+    url: "https://www.ilovepdf.com/"
+  },
+
+  {
+    id: "smallpdf",
+    name: "Smallpdf",
+    category: "PDF",
+    pricing: "Freemium",
+    rating: 4.6,
+    icon: "📑",
+    description: "Easy online PDF tools for everyday document work.",
+    keywords: ["pdf", "document", "convert", "compress"],
+    url: "https://smallpdf.com/"
+  },
+
+  // AUDIO
+  {
+    id: "elevenlabs",
+    name: "ElevenLabs",
+    category: "Audio",
+    pricing: "Freemium",
+    rating: 4.7,
+    icon: "🔊",
+    description: "Create realistic AI-generated voices and audio.",
+    keywords: ["audio", "voice", "ai", "sound", "text to speech"],
+    url: "https://elevenlabs.io/"
+  },
+
+  {
+    id: "suno",
+    name: "Suno",
+    category: "Audio",
+    pricing: "Freemium",
+    rating: 4.6,
+    icon: "🎵",
+    description: "Create music and songs using AI.",
+    keywords: ["music", "song", "audio", "ai"],
+    url: "https://suno.com/"
+  }
+
+];
+
 
 /* =========================================================
-   NAVBAR
-========================================================= */
+   STATE
+   ========================================================= */
 
-.navbar {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  border-bottom: 1px solid var(--border);
-  background: color-mix(in srgb, var(--surface) 90%, transparent);
-  backdrop-filter: blur(16px);
-}
+let currentResults = [...tools];
+let favorites = JSON.parse(
+  localStorage.getItem("tztools-favorites") || "[]"
+);
+let recentlyUsed = JSON.parse(
+  localStorage.getItem("tztools-recent") || "[]"
+);
+let comparison = JSON.parse(
+  localStorage.getItem("tztools-comparison") || "[]"
+);
 
-.navbar-inner {
-  width: min(1180px, calc(100% - 32px));
-  min-height: 72px;
-  margin: auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 25px;
-}
-
-.logo,
-.brand {
-  font-weight: 900;
-  font-size: 1.35rem;
-  letter-spacing: -0.04em;
-}
-
-.logo span,
-.brand span {
-  color: var(--primary);
-}
-
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.nav-links a,
-.nav-links button {
-  border: 0;
-  background: transparent;
-  color: var(--muted);
-  padding: 9px 12px;
-  border-radius: 9px;
-  font-weight: 600;
-  transition: var(--transition);
-}
-
-.nav-links a:hover,
-.nav-links button:hover {
-  color: var(--text);
-  background: var(--surface-2);
-}
-
-.theme-toggle,
-.menu-button {
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--text);
-  border-radius: 10px;
-  width: 42px;
-  height: 42px;
-}
 
 /* =========================================================
-   HERO
-========================================================= */
+   HELPERS
+   ========================================================= */
 
-.hero {
-  position: relative;
-  padding: 100px 20px 75px;
-  text-align: center;
-  overflow: hidden;
+const $ = selector => document.querySelector(selector);
+const $$ = selector => document.querySelectorAll(selector);
+
+function normalize(text) {
+  return String(text || "")
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "");
 }
 
-.hero::before {
-  content: "";
-  position: absolute;
-  width: 450px;
-  height: 450px;
-  left: 50%;
-  top: 20px;
-  transform: translateX(-50%);
-  background: var(--primary);
-  opacity: 0.08;
-  filter: blur(100px);
-  border-radius: 50%;
-  pointer-events: none;
+function saveLocalData() {
+  localStorage.setItem(
+    "tztools-favorites",
+    JSON.stringify(favorites)
+  );
+
+  localStorage.setItem(
+    "tztools-recent",
+    JSON.stringify(recentlyUsed)
+  );
+
+  localStorage.setItem(
+    "tztools-comparison",
+    JSON.stringify(comparison)
+  );
 }
 
-.hero > * {
-  position: relative;
+function getTool(id) {
+  return tools.find(tool => tool.id === id);
 }
 
-.hero h1 {
-  max-width: 850px;
-  margin: 0 auto 20px;
-  font-size: clamp(2.5rem, 7vw, 5rem);
-  line-height: 1;
-  letter-spacing: -0.065em;
+
+/* =========================================================
+   ELEMENTS
+   ========================================================= */
+
+const searchInput = $("#searchInput");
+const searchButton = $("#searchButton");
+const suggestions = $("#suggestions");
+const toolsGrid = $("#toolsGrid");
+const categoryFilter = $("#categoryFilter");
+const themeToggle = $("#themeToggle");
+const menuButton = $("#menuButton");
+const navLinks = $("#navLinks");
+const categoriesButton = $("#categoriesButton");
+const categoriesButtonHero = $("#categoriesButtonHero");
+const footerCategoriesButton = $("#footerCategoriesButton");
+const categoriesOverlay = $("#categoriesOverlay");
+const categoriesClose = $("#categoriesClose");
+
+
+/* =========================================================
+   CATEGORY FILTER
+   ========================================================= */
+
+function populateCategoryFilter() {
+
+  if (!categoryFilter) return;
+
+  const categories = [
+    ...new Set(tools.map(tool => tool.category))
+  ];
+
+  categoryFilter.innerHTML = `
+    <option value="all">All Categories</option>
+    ${categories
+      .sort()
+      .map(category =>
+        `<option value="${category}">${category}</option>`
+      )
+      .join("")}
+  `;
 }
 
-.hero p {
-  max-width: 680px;
-  margin: 0 auto 30px;
-  color: var(--muted);
-  font-size: 1.1rem;
+
+/* =========================================================
+   SMART INTENT SYSTEM
+   ========================================================= */
+
+const intentGroups = {
+
+  design: [
+    "logo",
+    "logos",
+    "branding",
+    "brand",
+    "flyer",
+    "poster",
+    "graphic",
+    "graphics",
+    "thumbnail",
+    "banner",
+    "design"
+  ],
+
+  video: [
+    "video",
+    "videos",
+    "edit",
+    "editing",
+    "youtube",
+    "tiktok",
+    "reel",
+    "reels",
+    "shorts",
+    "film",
+    "movie"
+  ],
+
+  website: [
+    "website",
+    "web",
+    "site",
+    "blog",
+    "landing",
+    "store",
+    "shop",
+    "portfolio"
+  ],
+
+  student: [
+    "study",
+    "studying",
+    "school",
+    "student",
+    "homework",
+    "math",
+    "mathematics",
+    "science",
+    "learn",
+    "learning",
+    "quiz",
+    "flashcards",
+    "revision"
+  ],
+
+  writing: [
+    "write",
+    "writing",
+    "essay",
+    "grammar",
+    "spell",
+    "spelling",
+    "rewrite",
+    "paraphrase",
+    "letter"
+  ],
+
+  ai: [
+    "ai",
+    "artificial",
+    "intelligence",
+    "chat",
+    "assistant",
+    "research"
+  ],
+
+  image: [
+    "image",
+    "images",
+    "photo",
+    "photos",
+    "picture",
+    "pictures",
+    "background"
+  ],
+
+  productivity: [
+    "productivity",
+    "organize",
+    "organization",
+    "planning",
+    "plan",
+    "tasks",
+    "task",
+    "notes",
+    "projects"
+  ],
+
+  pdf: [
+    "pdf",
+    "document",
+    "documents",
+    "merge",
+    "compress",
+    "convert"
+  ],
+
+  audio: [
+    "audio",
+    "music",
+    "song",
+    "voice",
+    "sound"
+  ]
+
+};
+
+
+function detectIntents(query) {
+
+  const q = normalize(query);
+  const detected = [];
+
+  for (const intent in intentGroups) {
+
+    if (
+      intentGroups[intent].some(word =>
+        q.includes(word)
+      )
+    ) {
+      detected.push(intent);
+    }
+
+  }
+
+  return detected;
 }
 
-.section-label {
-  display: inline-block;
-  color: var(--primary);
-  font-size: 0.75rem;
-  font-weight: 800;
-  letter-spacing: 0.12em;
-  margin-bottom: 8px;
+
+/* =========================================================
+   TOOL SCORING
+   ========================================================= */
+
+function scoreTool(tool, query) {
+
+  const q = normalize(query);
+
+  if (!q) return 0;
+
+  const words = q
+    .split(/\s+/)
+    .filter(Boolean);
+
+  const intents = detectIntents(q);
+
+  let score = 0;
+
+  const name = normalize(tool.name);
+  const description = normalize(tool.description);
+  const keywords = tool.keywords.map(normalize);
+
+  // Exact tool name
+  if (name === q) {
+    score += 100;
+  }
+
+  // Keyword matching
+  words.forEach(word => {
+
+    if (name.includes(word)) {
+      score += 15;
+    }
+
+    if (description.includes(word)) {
+      score += 4;
+    }
+
+    keywords.forEach(keyword => {
+
+      if (keyword === word) {
+        score += 20;
+      }
+
+      else if (
+        keyword.includes(word) ||
+        word.includes(keyword)
+      ) {
+        score += 8;
+      }
+
+    });
+
+  });
+
+  // Intent/category matching
+  intents.forEach(intent => {
+
+    const category = tool.category.toLowerCase();
+
+    if (
+      intent === "design" &&
+      category === "design"
+    ) {
+      score += 45;
+    }
+
+    if (
+      intent === "video" &&
+      category === "video"
+    ) {
+      score += 45;
+    }
+
+    if (
+      intent === "website" &&
+      category === "websites"
+    ) {
+      score += 45;
+    }
+
+    if (
+      intent === "student" &&
+      category === "students"
+    ) {
+      score += 45;
+    }
+
+    if (
+      intent === "writing" &&
+      category === "writing"
+    ) {
+      score += 45;
+    }
+
+    if (
+      intent === "ai" &&
+      category === "ai"
+    ) {
+      score += 45;
+    }
+
+    if (
+      intent === "image" &&
+      category === "images"
+    ) {
+      score += 45;
+    }
+
+    if (
+      intent === "productivity" &&
+      category === "productivity"
+    ) {
+      score += 45;
+    }
+
+    if (
+      intent === "pdf" &&
+      category === "pdf"
+    ) {
+      score += 45;
+    }
+
+    if (
+      intent === "audio" &&
+      category === "audio"
+    ) {
+      score += 45;
+    }
+
+  });
+
+  return score;
 }
+
+
+/* =========================================================
+   SMART SEARCH
+   ========================================================= */
+
+function searchTools(query) {
+
+  const q = normalize(query);
+
+  if (!q) {
+    return [...tools];
+  }
+
+  const ranked = tools
+    .map(tool => ({
+      tool,
+      score: scoreTool(tool, q)
+    }))
+    .filter(item => item.score > 0)
+    .sort((a, b) => {
+
+      if (b.score !== a.score) {
+        return b.score - a.score;
+      }
+
+      return b.tool.rating - a.tool.rating;
+
+    });
+
+  return ranked
+    .slice(0, 10)
+    .map(item => item.tool);
+}
+
+
+/* =========================================================
+   FAVORITES
+   ========================================================= */
+
+function isFavorite(id) {
+  return favorites.includes(id);
+}
+
+function toggleFavorite(id) {
+
+  if (isFavorite(id)) {
+
+    favorites = favorites.filter(
+      item => item !== id
+    );
+
+  } else {
+
+    favorites.push(id);
+
+  }
+
+  saveLocalData();
+  renderTools(currentResults);
+}
+
+
+/* =========================================================
+   RECENTLY USED
+   ========================================================= */
+
+function addRecentlyUsed(id) {
+
+  recentlyUsed = [
+    id,
+    ...recentlyUsed.filter(item => item !== id)
+  ].slice(0, 10);
+
+  saveLocalData();
+}
+
+
+/* =========================================================
+   COMPARISON
+   ========================================================= */
+
+function isCompared(id) {
+  return comparison.includes(id);
+}
+
+function toggleCompare(id) {
+
+  if (isCompared(id)) {
+
+    comparison = comparison.filter(
+      item => item !== id
+    );
+
+  } else {
+
+    if (comparison.length >= 3) {
+      showToast("You can compare up to 3 tools.");
+      return;
+    }
+
+    comparison.push(id);
+
+  }
+
+  saveLocalData();
+  renderTools(currentResults);
+  renderCompareBar();
+}
+
+
+/* =========================================================
+   TOOL CARD
+   ========================================================= */
+
+function createToolCard(tool) {
+
+  const favorite = isFavorite(tool.id);
+  const compared = isCompared(tool.id);
+
+  return `
+    <article class="tool-card">
+
+      <div class="tool-card-top">
+
+        <div class="tool-icon">
+          ${tool.icon}
+        </div>
+
+        <button
+          class="favorite-button ${favorite ? "active" : ""}"
+          data-favorite="${tool.id}"
+          aria-label="Favorite ${tool.name}"
+        >
+          ${favorite ? "♥" : "♡"}
+        </button>
+
+      </div>
+
+      <div class="tool-info">
+
+        <div class="tool-title-row">
+
+          <h3>${tool.name}</h3>
+
+          <span class="tool-category">
+            ${tool.category}
+          </span>
+
+        </div>
+
+        <p>
+          ${tool.description}
+        </p>
+
+        <div class="tool-meta">
+
+          <span>
+            ${tool.pricing}
+          </span>
+
+          <span>
+            ⭐ ${tool.rating}
+          </span>
+
+        </div>
+
+        <div class="tool-actions">
+
+          <a
+            class="visit-button"
+            href="${tool.url}"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-visit="${tool.id}"
+          >
+            Visit Tool →
+          </a>
+
+          <button
+            class="compare-button ${compared ? "active" : ""}"
+            data-compare="${tool.id}"
+          >
+            ${compared ? "✓ Compared" : "Compare"}
+          </button>
+
+        </div>
+
+      </div>
+
+    </article>
+  `;
+}
+
+
+/* =========================================================
+   RENDER TOOLS
+   ========================================================= */
+
+function renderTools(toolList) {
+
+  if (!toolsGrid) return;
+
+  currentResults = [...toolList];
+
+  if (!toolList.length) {
+
+    toolsGrid.innerHTML = `
+      <div class="empty-state">
+
+        <div class="empty-icon">🔎</div>
+
+        <h3>No matching tools found</h3>
+
+        <p>
+          Try something like
+          "make a logo",
+          "edit a video",
+          "build a website",
+          or "help me study".
+        </p>
+
+      </div>
+    `;
+
+    return;
+  }
+
+  toolsGrid.innerHTML = toolList
+    .map(createToolCard)
+    .join("");
+}
+
 
 /* =========================================================
    SEARCH
-========================================================= */
+   ========================================================= */
 
-.search-wrapper {
-  width: min(760px, 100%);
-  margin: 0 auto;
-  position: relative;
+function performSearch(query = "") {
+
+  const value =
+    typeof query === "string"
+      ? query.trim()
+      : "";
+
+  if (searchInput) {
+    searchInput.value = value;
+  }
+
+  if (!value) {
+
+    renderTools(tools);
+
+    return;
+  }
+
+  const results = searchTools(value);
+
+  renderTools(results);
+
+  const toolsSection = $("#tools");
+
+  if (toolsSection) {
+    toolsSection.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }
 }
 
-.search-box {
-  display: flex;
-  gap: 10px;
-  padding: 8px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  box-shadow: var(--shadow);
-}
-
-.search-box input,
-#searchInput {
-  min-width: 0;
-  flex: 1;
-  border: 0;
-  outline: 0;
-  background: transparent;
-  color: var(--text);
-  padding: 13px;
-  font-size: 1rem;
-}
-
-.search-box button,
-#searchButton {
-  border: 0;
-  border-radius: 11px;
-  padding: 0 22px;
-  background: var(--primary);
-  color: white;
-  font-weight: 800;
-  transition: var(--transition);
-}
-
-.search-box button:hover,
-#searchButton:hover {
-  background: var(--primary-dark);
-  transform: translateY(-1px);
-}
 
 /* =========================================================
-   SUGGESTIONS
-========================================================= */
+   SEARCH SUGGESTIONS
+   ========================================================= */
 
-#suggestions {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: calc(100% + 8px);
-  z-index: 50;
-  display: none;
-  padding: 8px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  box-shadow: var(--shadow);
-  text-align: left;
+function renderSuggestions(value) {
+
+  if (!suggestions) return;
+
+  const query = normalize(value);
+
+  if (!query) {
+
+    suggestions.innerHTML = "";
+    suggestions.classList.remove("open");
+
+    return;
+  }
+
+  const suggestionsList = [
+    "make a logo",
+    "edit a video",
+    "build a website",
+    "help me study",
+    "write an essay",
+    "edit a photo",
+    "find an AI tool",
+    "organize my tasks",
+    "work with a PDF",
+    "create music"
+  ];
+
+  const matches = suggestionsList
+    .filter(item =>
+      normalize(item).includes(query)
+    )
+    .slice(0, 5);
+
+  if (!matches.length) {
+
+    suggestions.classList.remove("open");
+    return;
+
+  }
+
+  suggestions.innerHTML = matches
+    .map(item => `
+      <button
+        class="suggestion-item"
+        data-suggestion="${item}"
+      >
+        🔎 ${item}
+      </button>
+    `)
+    .join("");
+
+  suggestions.classList.add("open");
 }
 
-#suggestions.visible {
-  display: block;
-  animation: fadeDown 160ms ease;
-}
-
-.suggestion-item {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  border: 0;
-  background: transparent;
-  color: var(--text);
-  padding: 11px;
-  border-radius: 10px;
-  text-align: left;
-}
-
-.suggestion-item:hover {
-  background: var(--surface-2);
-}
-
-.suggestion-item span:first-child {
-  font-size: 1.35rem;
-}
-
-.suggestion-item span:nth-child(2) {
-  display: flex;
-  flex-direction: column;
-}
-
-.suggestion-item small {
-  color: var(--muted);
-}
 
 /* =========================================================
-   QUICK SEARCH
-========================================================= */
+   QUICK SEARCHES
+   ========================================================= */
 
-.quick-searches {
-  width: min(900px, 100%);
-  margin: 25px auto 0;
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 9px;
+function initializeQuickSearches() {
+
+  $$(".quick-search").forEach(button => {
+
+    button.addEventListener("click", () => {
+
+      const query =
+        button.dataset.search ||
+        button.textContent.trim();
+
+      performSearch(query);
+
+    });
+
+  });
+
 }
 
-.quick-search {
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--muted);
-  padding: 8px 13px;
-  border-radius: 999px;
-  font-weight: 600;
-  transition: var(--transition);
-}
-
-.quick-search:hover {
-  color: var(--text);
-  border-color: var(--primary);
-  transform: translateY(-2px);
-}
 
 /* =========================================================
-   SECTIONS
-========================================================= */
+   CATEGORY MENU
+   ========================================================= */
 
-.section {
-  width: min(1180px, calc(100% - 32px));
-  margin: 0 auto;
-  padding: 75px 0;
+function openCategories() {
+
+  if (!categoriesOverlay) return;
+
+  categoriesOverlay.classList.add("open");
+
 }
 
-.section-header {
-  margin-bottom: 25px;
+function closeCategories() {
+
+  if (!categoriesOverlay) return;
+
+  categoriesOverlay.classList.remove("open");
+
 }
 
-.section-header h2,
-.dashboard-header h2 {
-  margin: 0;
-  font-size: clamp(1.8rem, 4vw, 2.6rem);
-  line-height: 1.1;
-  letter-spacing: -0.04em;
-}
-
-.section-header p {
-  color: var(--muted);
-}
 
 /* =========================================================
-   FILTER PANEL
-========================================================= */
+   MOBILE NAV
+   ========================================================= */
 
-.filter-panel {
-  margin-bottom: 28px;
+function initializeMobileNav() {
+
+  if (!menuButton || !navLinks) return;
+
+  menuButton.addEventListener("click", () => {
+
+    navLinks.classList.toggle("open");
+
+    menuButton.setAttribute(
+      "aria-expanded",
+      navLinks.classList.contains("open")
+    );
+
+  });
+
+  navLinks.addEventListener("click", event => {
+
+    if (
+      event.target.closest("a") ||
+      event.target.closest("button")
+    ) {
+      navLinks.classList.remove("open");
+
+      menuButton.setAttribute(
+        "aria-expanded",
+        "false"
+      );
+    }
+
+  });
+
 }
 
-.filter-panel > select,
-#categoryFilter {
-  min-width: 210px;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--text);
-  padding: 11px 13px;
-  border-radius: 11px;
-  outline: 0;
-}
-
-.advanced-filters {
-  margin-top: 14px;
-  display: flex;
-  align-items: end;
-  flex-wrap: wrap;
-  gap: 12px;
-  padding: 15px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-small);
-  background: var(--surface);
-}
-
-.filter-group {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  min-width: 155px;
-}
-
-.filter-group label {
-  font-size: 0.75rem;
-  color: var(--muted);
-  font-weight: 700;
-}
-
-.filter-group select {
-  border: 1px solid var(--border);
-  background: var(--surface-2);
-  color: var(--text);
-  padding: 9px 11px;
-  border-radius: 9px;
-}
-
-.clear-filter-button,
-.text-button {
-  border: 0;
-  background: transparent;
-  color: var(--primary);
-  font-weight: 800;
-  padding: 10px;
-}
-
-.clear-filter-button:hover,
-.text-button:hover {
-  text-decoration: underline;
-}
 
 /* =========================================================
-   TOOL GRID
-========================================================= */
+   DARK MODE
+   ========================================================= */
 
-.tools-grid,
-#toolsGrid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
+function initializeTheme() {
+
+  const savedTheme =
+    localStorage.getItem("tztools-theme");
+
+  if (savedTheme === "dark") {
+    document.body.classList.add("dark-mode");
+  }
+
+  updateThemeIcon();
+
+  themeToggle?.addEventListener(
+    "click",
+    toggleTheme
+  );
+
 }
 
-.tool-card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  min-height: 320px;
-  padding: 21px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  transition:
-    transform 220ms ease,
-    box-shadow 220ms ease,
-    border-color 220ms ease;
+function toggleTheme() {
+
+  document.body.classList.toggle(
+    "dark-mode"
+  );
+
+  const isDark =
+    document.body.classList.contains(
+      "dark-mode"
+    );
+
+  localStorage.setItem(
+    "tztools-theme",
+    isDark ? "dark" : "light"
+  );
+
+  updateThemeIcon();
+
 }
 
-.tool-card:hover {
-  transform: translateY(-6px);
-  box-shadow: var(--shadow-hover);
-  border-color: color-mix(in srgb, var(--primary) 35%, var(--border));
+function updateThemeIcon() {
+
+  if (!themeToggle) return;
+
+  const isDark =
+    document.body.classList.contains(
+      "dark-mode"
+    );
+
+  themeToggle.textContent =
+    isDark ? "☀️" : "🌙";
+
 }
 
-.tool-card-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.tool-icon {
-  width: 52px;
-  height: 52px;
-  display: grid;
-  place-items: center;
-  border-radius: 14px;
-  background: var(--surface-2);
-  font-size: 1.65rem;
-}
-
-.favorite-button {
-  width: 40px;
-  height: 40px;
-  border: 0;
-  background: var(--surface-2);
-  color: var(--muted);
-  border-radius: 10px;
-  font-size: 1.25rem;
-  transition: var(--transition);
-}
-
-.favorite-button:hover,
-.favorite-button.active {
-  color: #f3b400;
-  transform: scale(1.06);
-}
-
-.tool-card-content {
-  flex: 1;
-  padding-top: 17px;
-}
-
-.tool-category {
-  display: inline-block;
-  color: var(--primary);
-  font-size: 0.72rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-}
-
-.tool-card h3 {
-  margin: 6px 0;
-  font-size: 1.3rem;
-}
-
-.tool-card p {
-  color: var(--muted);
-  font-size: 0.92rem;
-  margin: 0;
-}
-
-.tool-meta {
-  display: flex;
-  gap: 12px;
-  margin-top: 15px;
-  color: var(--muted);
-  font-size: 0.82rem;
-}
-
-.tool-card-actions {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 8px;
-  margin-top: 20px;
-}
-
-.visit-button,
-.mini-visit {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 10px;
-  padding: 10px 13px;
-  background: var(--primary);
-  color: white;
-  font-weight: 800;
-  transition: var(--transition);
-}
-
-.visit-button:hover,
-.mini-visit:hover {
-  background: var(--primary-dark);
-  transform: translateY(-1px);
-}
-
-.compare-button {
-  border: 1px solid var(--border);
-  background: var(--surface-2);
-  color: var(--text);
-  border-radius: 10px;
-  padding: 9px 11px;
-  font-weight: 700;
-  transition: var(--transition);
-}
-
-.compare-button:hover,
-.compare-button.selected {
-  border-color: var(--primary);
-  color: var(--primary);
-}
-
-.empty-state {
-  grid-column: 1 / -1;
-  padding: 60px 20px;
-  text-align: center;
-  border: 1px dashed var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
-}
-
-.empty-icon {
-  font-size: 2.5rem;
-}
-
-.empty-state h3 {
-  margin: 8px 0;
-}
-
-.empty-state p {
-  color: var(--muted);
-}
-
-.primary-button,
-.secondary-button {
-  border: 0;
-  border-radius: 10px;
-  padding: 10px 14px;
-  font-weight: 800;
-}
-
-.primary-button {
-  background: var(--primary);
-  color: white;
-}
-
-.primary-button:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
-}
-
-.secondary-button {
-  background: var(--surface-2);
-  color: var(--text);
-}
-
-/* =========================================================
-   CATEGORY POPUP
-========================================================= */
-
-.categories-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 500;
-  display: grid;
-  place-items: center;
-  padding: 20px;
-  background: rgba(5, 7, 12, 0.68);
-  backdrop-filter: blur(8px);
-  opacity: 0;
-  visibility: hidden;
-  transition: var(--transition);
-}
-
-.categories-overlay.open {
-  opacity: 1;
-  visibility: visible;
-}
-
-.categories-menu {
-  width: min(850px, 100%);
-  max-height: min(700px, 90vh);
-  overflow: auto;
-  padding: 25px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 22px;
-  box-shadow: var(--shadow-hover);
-  transform: translateY(15px) scale(0.98);
-  transition: var(--transition);
-}
-
-.categories-overlay.open .categories-menu {
-  transform: translateY(0) scale(1);
-}
-
-.category-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-}
-
-.category-card {
-  border: 1px solid var(--border);
-  background: var(--surface-2);
-  color: var(--text);
-  padding: 20px 10px;
-  border-radius: 14px;
-  font-weight: 800;
-  transition: var(--transition);
-}
-
-.category-card:hover {
-  transform: translateY(-3px);
-  border-color: var(--primary);
-  color: var(--primary);
-}
-
-.categories-close,
-.modal-close {
-  border: 0;
-  background: var(--surface-2);
-  color: var(--text);
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  font-size: 1.4rem;
-}
 
 /* =========================================================
    DASHBOARD
-========================================================= */
+   ========================================================= */
 
-.dashboard-shell {
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
+function createDashboard() {
+
+  const dashboard = $("#dashboard");
+
+  if (!dashboard) return;
+
+  dashboard.innerHTML = `
+
+    <div class="container">
+
+      <div class="section-heading">
+
+        <span class="section-label">
+          YOUR SPACE
+        </span>
+
+        <h2>
+          Dashboard
+        </h2>
+
+        <p>
+          Your favorites, recently used tools
+          and comparisons will appear here.
+        </p>
+
+      </div>
+
+      <div class="dashboard-grid">
+
+        <div class="dashboard-card">
+          <span>❤️</span>
+          <strong id="favoriteCount">0</strong>
+          <p>Favorites</p>
+        </div>
+
+        <div class="dashboard-card">
+          <span>🕘</span>
+          <strong id="recentCount">0</strong>
+          <p>Recently Used</p>
+        </div>
+
+        <div class="dashboard-card">
+          <span>⚖️</span>
+          <strong id="comparisonCount">0</strong>
+          <p>Comparing</p>
+        </div>
+
+      </div>
+
+      <div class="dashboard-content">
+
+        <div>
+          <h3>Favorite Tools</h3>
+          <div id="dashboardFavorites"></div>
+        </div>
+
+        <div>
+          <h3>Recently Used</h3>
+          <div id="dashboardRecent"></div>
+        </div>
+
+      </div>
+
+    </div>
+  `;
+
+  renderDashboard();
+
 }
 
-.dashboard-header {
-  display: flex;
-  justify-content: space-between;
+
+function renderDashboard() {
+
+  const favoriteCount =
+    $("#favoriteCount");
+
+  const recentCount =
+    $("#recentCount");
+
+  const comparisonCount =
+    $("#comparisonCount");
+
+  if (favoriteCount) {
+    favoriteCount.textContent =
+      favorites.length;
+  }
+
+  if (recentCount) {
+    recentCount.textContent =
+      recentlyUsed.length;
+  }
+
+  if (comparisonCount) {
+    comparisonCount.textContent =
+      comparison.length;
+  }
+
+  const favoriteBox =
+    $("#dashboardFavorites");
+
+  if (favoriteBox) {
+
+    const favTools =
+      favorites
+        .map(getTool)
+        .filter(Boolean);
+
+    favoriteBox.innerHTML =
+      favTools.length
+        ? favTools.map(createMiniTool).join("")
+        : `<p class="muted">No favorites yet.</p>`;
+
+  }
+
+  const recentBox =
+    $("#dashboardRecent");
+
+  if (recentBox) {
+
+    const recentTools =
+      recentlyUsed
+        .map(getTool)
+        .filter(Boolean);
+
+    recentBox.innerHTML =
+      recentTools.length
+        ? recentTools.map(createMiniTool).join("")
+        : `<p class="muted">Nothing used yet.</p>`;
+
+  }
+
 }
 
-.dashboard-stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
+
+function createMiniTool(tool) {
+
+  return `
+    <div class="mini-tool">
+
+      <span class="mini-tool-icon">
+        ${tool.icon}
+      </span>
+
+      <div>
+        <strong>${tool.name}</strong>
+        <small>${tool.category}</small>
+      </div>
+
+      <a
+        href="${tool.url}"
+        target="_blank"
+        rel="noopener noreferrer"
+        data-visit="${tool.id}"
+      >
+        Open
+      </a>
+
+    </div>
+  `;
+
 }
 
-.stat-card {
-  padding: 20px;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-}
-
-.stat-card span:last-child {
-  display: block;
-  color: var(--muted);
-  font-size: 0.85rem;
-}
-
-.stat-card strong {
-  display: block;
-  margin: 5px 0;
-  font-size: 1.8rem;
-}
-
-.stat-icon {
-  font-size: 1.5rem;
-}
-
-.dashboard-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 9px;
-}
-
-.dashboard-action {
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--text);
-  padding: 10px 14px;
-  border-radius: 11px;
-  font-weight: 700;
-  transition: var(--transition);
-}
-
-.dashboard-action:hover {
-  border-color: var(--primary);
-  transform: translateY(-2px);
-}
-
-.dashboard-section {
-  padding: 24px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-}
-
-.dashboard-section-heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 17px;
-}
-
-.dashboard-section-heading h3 {
-  margin: 0;
-  font-size: 1.35rem;
-}
-
-.dashboard-tool-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.mini-tool-card {
-  display: flex;
-  align-items: center;
-  gap: 13px;
-  padding: 13px;
-  border: 1px solid var(--border);
-  border-radius: 13px;
-  background: var(--surface-2);
-}
-
-.mini-tool-icon {
-  width: 45px;
-  height: 45px;
-  flex-shrink: 0;
-  display: grid;
-  place-items: center;
-  background: var(--surface);
-  border-radius: 10px;
-  font-size: 1.35rem;
-}
-
-.mini-tool-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.mini-tool-info span {
-  color: var(--primary);
-  font-size: 0.7rem;
-  font-weight: 800;
-}
-
-.mini-tool-info h4 {
-  margin: 1px 0;
-}
-
-.mini-tool-info p {
-  margin: 0;
-  color: var(--muted);
-  font-size: 0.78rem;
-}
-
-.mini-tool-actions {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-}
-
-.mini-visit {
-  padding: 8px 10px;
-  font-size: 0.8rem;
-}
-
-.dashboard-empty {
-  padding: 35px 15px;
-  text-align: center;
-  color: var(--muted);
-}
-
-.dashboard-empty span {
-  display: block;
-  font-size: 2rem;
-}
-
-.dashboard-empty p {
-  margin: 5px 0;
-  color: var(--text);
-  font-weight: 700;
-}
 
 /* =========================================================
    COMPARE BAR
-========================================================= */
+   ========================================================= */
 
-.compare-bar {
-  position: fixed;
-  left: 50%;
-  bottom: -120px;
-  z-index: 400;
-  width: min(650px, calc(100% - 30px));
-  transform: translateX(-50%);
-  padding: 12px 15px;
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  background: color-mix(in srgb, var(--surface) 94%, transparent);
-  backdrop-filter: blur(16px);
-  box-shadow: var(--shadow-hover);
-  transition: bottom 260ms ease;
+function renderCompareBar() {
+
+  let bar = $("#compareBar");
+
+  if (!bar) {
+
+    bar = document.createElement("div");
+
+    bar.id = "compareBar";
+    bar.className = "compare-bar";
+
+    document.body.appendChild(bar);
+
+  }
+
+  if (!comparison.length) {
+
+    bar.innerHTML = "";
+    bar.classList.remove("show");
+
+    return;
+  }
+
+  const selected =
+    comparison
+      .map(getTool)
+      .filter(Boolean);
+
+  bar.innerHTML = `
+
+    <div class="compare-bar-inner">
+
+      <div>
+        <strong>
+          ${selected.length} tool${selected.length > 1 ? "s" : ""} selected
+        </strong>
+
+        <span>
+          Choose up to 3 tools.
+        </span>
+      </div>
+
+      <div class="compare-bar-actions">
+
+        <button id="openCompare">
+          Compare
+        </button>
+
+        <button id="clearCompare">
+          Clear
+        </button>
+
+      </div>
+
+    </div>
+  `;
+
+  bar.classList.add("show");
+
 }
 
-.compare-bar.visible {
-  bottom: 18px;
-}
-
-.compare-bar-content {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 15px;
-}
-
-.compare-bar-content strong {
-  display: block;
-}
-
-.compare-bar-content span {
-  color: var(--muted);
-  font-size: 0.8rem;
-}
-
-.compare-bar-actions {
-  display: flex;
-  gap: 7px;
-}
 
 /* =========================================================
-   MODAL
-========================================================= */
+   COMPARE MODAL
+   ========================================================= */
 
-.modal {
-  position: fixed;
-  inset: 0;
-  z-index: 600;
-  display: grid;
-  place-items: center;
-  padding: 20px;
-  background: rgba(5, 7, 12, 0.7);
-  backdrop-filter: blur(9px);
-  opacity: 0;
-  visibility: hidden;
-  transition: var(--transition);
+function openCompareModal() {
+
+  const selected =
+    comparison
+      .map(getTool)
+      .filter(Boolean);
+
+  if (!selected.length) return;
+
+  let modal = $("#compareModal");
+
+  if (!modal) {
+
+    modal = document.createElement("div");
+
+    modal.id = "compareModal";
+    modal.className = "modal-overlay";
+
+    document.body.appendChild(modal);
+
+  }
+
+  modal.innerHTML = `
+
+    <div class="compare-modal">
+
+      <button
+        class="modal-close"
+        id="closeCompare"
+      >
+        ✕
+      </button>
+
+      <h2>Compare Tools</h2>
+
+      <div class="comparison-grid">
+
+        ${selected.map(tool => `
+
+          <div class="comparison-card">
+
+            <div class="tool-icon">
+              ${tool.icon}
+            </div>
+
+            <h3>${tool.name}</h3>
+
+            <p>${tool.description}</p>
+
+            <strong>
+              ⭐ ${tool.rating}
+            </strong>
+
+            <span>
+              ${tool.pricing}
+            </span>
+
+            <a
+              href="${tool.url}"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Visit Tool →
+            </a>
+
+          </div>
+
+        `).join("")}
+
+      </div>
+
+    </div>
+  `;
+
+  modal.classList.add("open");
+
 }
 
-.modal.open {
-  opacity: 1;
-  visibility: visible;
-}
-
-.modal-backdrop {
-  position: absolute;
-  inset: 0;
-}
-
-.compare-modal-card {
-  position: relative;
-  width: min(1100px, 100%);
-  max-height: 90vh;
-  overflow: auto;
-  padding: 25px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 22px;
-  box-shadow: var(--shadow-hover);
-  transform: translateY(15px) scale(0.98);
-  transition: var(--transition);
-}
-
-.modal.open .compare-modal-card {
-  transform: translateY(0) scale(1);
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: start;
-  margin-bottom: 20px;
-}
-
-.modal-header h2 {
-  margin: 0;
-}
-
-.comparison-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
-}
-
-.comparison-card {
-  padding: 20px;
-  border: 1px solid var(--border);
-  border-radius: 17px;
-  background: var(--surface-2);
-}
-
-.comparison-icon {
-  width: 55px;
-  height: 55px;
-  display: grid;
-  place-items: center;
-  border-radius: 14px;
-  background: var(--surface);
-  font-size: 1.7rem;
-  margin-bottom: 15px;
-}
-
-.comparison-card h3 {
-  margin: 5px 0;
-}
-
-.comparison-card > p {
-  color: var(--muted);
-  font-size: 0.88rem;
-  min-height: 70px;
-}
-
-.comparison-details {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin: 20px 0;
-}
-
-.comparison-details div {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--border);
-}
-
-.comparison-details span {
-  color: var(--muted);
-}
 
 /* =========================================================
    TOAST
-========================================================= */
+   ========================================================= */
 
-.toast {
-  position: fixed;
-  left: 50%;
-  bottom: 25px;
-  z-index: 900;
-  transform: translate(-50%, 25px);
-  opacity: 0;
-  pointer-events: none;
-  padding: 11px 17px;
-  border-radius: 999px;
-  background: var(--text);
-  color: var(--bg);
-  font-size: 0.88rem;
-  font-weight: 700;
-  transition: 200ms ease;
+function showToast(message) {
+
+  let toast = $("#tzToast");
+
+  if (!toast) {
+
+    toast = document.createElement("div");
+
+    toast.id = "tzToast";
+    toast.className = "tz-toast";
+
+    document.body.appendChild(toast);
+
+  }
+
+  toast.textContent = message;
+  toast.classList.add("show");
+
+  clearTimeout(window.tzToastTimer);
+
+  window.tzToastTimer =
+    setTimeout(() => {
+      toast.classList.remove("show");
+    }, 2200);
+
 }
 
-.toast.show {
-  opacity: 1;
-  transform: translate(-50%, 0);
-}
 
 /* =========================================================
-   ANIMATIONS
-========================================================= */
+   AUTH UI
+   ========================================================= */
 
-.reveal-card {
-  animation: cardReveal 420ms ease both;
-  animation-delay: calc(var(--card-index, 0) * 35ms);
+function createAuthUI() {
+
+  if (!navLinks) return;
+
+  if ($("#accountButton")) return;
+
+  const button =
+    document.createElement("button");
+
+  button.type = "button";
+  button.id = "accountButton";
+  button.className = "account-button";
+
+  button.textContent = "Account";
+
+  navLinks.appendChild(button);
+
+  button.addEventListener(
+    "click",
+    openAuthModal
+  );
+
 }
 
-@keyframes cardReveal {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
+
+function openAuthModal() {
+
+  let modal = $("#authModal");
+
+  if (!modal) {
+
+    modal = document.createElement("div");
+
+    modal.id = "authModal";
+    modal.className = "modal-overlay";
+
+    document.body.appendChild(modal);
+
   }
 
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  renderAuthModal();
+
+  modal.classList.add("open");
+
 }
 
-@keyframes fadeDown {
-  from {
-    opacity: 0;
-    transform: translateY(-5px);
+
+function renderAuthModal() {
+
+  const modal = $("#authModal");
+
+  if (!modal) return;
+
+  if (currentUser) {
+
+    modal.innerHTML = `
+
+      <div class="auth-modal">
+
+        <button
+          class="modal-close"
+          data-close-auth
+        >
+          ✕
+        </button>
+
+        <h2>Welcome 👋</h2>
+
+        <p>
+          ${currentUser.email || "Signed in"}
+        </p>
+
+        <button
+          class="auth-submit"
+          id="logoutButton"
+        >
+          Log out
+        </button>
+
+      </div>
+    `;
+
+    $("#logoutButton")?.addEventListener(
+      "click",
+      logoutUser
+    );
+
+    return;
   }
 
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  modal.innerHTML = `
+
+    <div class="auth-modal">
+
+      <button
+        class="modal-close"
+        data-close-auth
+      >
+        ✕
+      </button>
+
+      <h2>Welcome to TzTools</h2>
+
+      <p>
+        Sign in to save favorites,
+        recent tools and comparisons.
+      </p>
+
+      <form id="authForm">
+
+        <input
+          type="email"
+          id="authEmail"
+          placeholder="Email address"
+          required
+        >
+
+        <input
+          type="password"
+          id="authPassword"
+          placeholder="Password"
+          required
+        >
+
+        <button
+          type="submit"
+          class="auth-submit"
+        >
+          Sign In
+        </button>
+
+      </form>
+
+      <button
+        class="auth-secondary"
+        id="signupButton"
+      >
+        Create Account
+      </button>
+
+      <p id="authMessage"></p>
+
+    </div>
+  `;
+
+  $("#authForm")?.addEventListener(
+    "submit",
+    signInUser
+  );
+
+  $("#signupButton")?.addEventListener(
+    "click",
+    signUpUser
+  );
+
 }
+
+
+async function signInUser(event) {
+
+  event.preventDefault();
+
+  if (!supabaseClient) {
+
+    showToast("Authentication is still loading.");
+
+    return;
+  }
+
+  const email =
+    $("#authEmail")?.value.trim();
+
+  const password =
+    $("#authPassword")?.value;
+
+  const message =
+    $("#authMessage");
+
+  const { data, error } =
+    await supabaseClient.auth.signInWithPassword({
+      email,
+      password
+    });
+
+  if (error) {
+
+    if (message) {
+      message.textContent =
+        error.message;
+    }
+
+    return;
+  }
+
+  currentUser = data.user;
+
+  showToast("Signed in successfully.");
+
+  renderAuthModal();
+  updateAccountButton();
+
+}
+
+
+async function signUpUser() {
+
+  if (!supabaseClient) {
+
+    showToast("Authentication is still loading.");
+
+    return;
+  }
+
+  const email =
+    $("#authEmail")?.value.trim();
+
+  const password =
+    $("#authPassword")?.value;
+
+  const message =
+    $("#authMessage");
+
+  if (!email || !password) {
+
+    if (message) {
+      message.textContent =
+        "Enter your email and password first.";
+    }
+
+    return;
+  }
+
+  const { data, error } =
+    await supabaseClient.auth.signUp({
+      email,
+      password
+    });
+
+  if (error) {
+
+    if (message) {
+      message.textContent =
+        error.message;
+    }
+
+    return;
+  }
+
+  if (message) {
+    message.textContent =
+      "Account created. Check your email if confirmation is required.";
+  }
+
+  if (data.user) {
+    currentUser = data.user;
+    updateAccountButton();
+  }
+
+}
+
+
+async function logoutUser() {
+
+  if (!supabaseClient) return;
+
+  await supabaseClient.auth.signOut();
+
+  currentUser = null;
+
+  renderAuthModal();
+  updateAccountButton();
+
+  showToast("Logged out.");
+
+}
+
+
+function updateAccountButton() {
+
+  const button =
+    $("#accountButton");
+
+  if (!button) return;
+
+  button.textContent =
+    currentUser
+      ? "Account ✓"
+      : "Account";
+
+}
+
 
 /* =========================================================
-   FOOTER
-========================================================= */
+   SUPABASE INITIALIZATION
+   ========================================================= */
 
-footer {
-  border-top: 1px solid var(--border);
-  background: var(--surface);
-  margin-top: 50px;
+function initializeSupabase() {
+
+  if (
+    SUPABASE_PUBLISHABLE_KEY ===
+    "PASTE_YOUR_PUBLISHABLE_KEY_HERE"
+  ) {
+
+    console.warn(
+      "TzTools: Supabase publishable key has not been added yet."
+    );
+
+    return;
+  }
+
+  if (
+    typeof window.supabase ===
+    "undefined"
+  ) {
+
+    console.warn(
+      "TzTools: Supabase library not loaded."
+    );
+
+    return;
+  }
+
+  supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY
+    );
+
+  supabaseClient.auth.getSession()
+    .then(({ data }) => {
+
+      currentUser =
+        data.session?.user || null;
+
+      updateAccountButton();
+
+    });
+
+  supabaseClient.auth.onAuthStateChange(
+    (_event, session) => {
+
+      currentUser =
+        session?.user || null;
+
+      updateAccountButton();
+
+    }
+  );
+
 }
 
-.footer-inner {
-  width: min(1180px, calc(100% - 32px));
-  margin: auto;
-  padding: 40px 0;
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-}
-
-footer p {
-  color: var(--muted);
-}
 
 /* =========================================================
-   RESPONSIVE
-========================================================= */
+   EVENT LISTENERS
+   ========================================================= */
 
-@media (max-width: 900px) {
-  .tools-grid,
-  #toolsGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+// Search
+searchButton?.addEventListener(
+  "click",
+  () => performSearch(
+    searchInput?.value || ""
+  )
+);
 
-  .dashboard-stats {
-    grid-template-columns: repeat(2, 1fr);
+searchInput?.addEventListener(
+  "input",
+  () => {
+    renderSuggestions(
+      searchInput.value
+    );
   }
+);
 
-  .category-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+searchInput?.addEventListener(
+  "keydown",
+  event => {
 
-  .comparison-grid {
-    grid-template-columns: 1fr;
-  }
+    if (event.key === "Enter") {
 
-  .comparison-card > p {
-    min-height: auto;
-  }
-}
+      event.preventDefault();
 
-@media (max-width: 720px) {
-  .navbar-inner {
-    min-height: 64px;
-  }
+      performSearch(
+        searchInput.value
+      );
 
-  .menu-button {
-    display: block;
-  }
+      suggestions?.classList.remove(
+        "open"
+      );
 
-  .nav-links {
-    position: absolute;
-    top: 64px;
-    left: 16px;
-    right: 16px;
-    display: none;
-    flex-direction: column;
-    align-items: stretch;
-    padding: 12px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    box-shadow: var(--shadow);
-  }
+    }
 
-  .nav-links.mobile-open {
-    display: flex;
   }
+);
 
-  .hero {
-    padding-top: 70px;
-  }
 
-  .search-box {
-    flex-direction: column;
-  }
+// Suggestions
+suggestions?.addEventListener(
+  "click",
+  event => {
 
-  .search-box button,
-  #searchButton {
-    min-height: 48px;
-  }
+    const button =
+      event.target.closest(
+        "[data-suggestion]"
+      );
 
-  .tools-grid,
-  #toolsGrid {
-    grid-template-columns: 1fr;
-  }
+    if (!button) return;
 
-  .advanced-filters {
-    align-items: stretch;
-    flex-direction: column;
-  }
+    performSearch(
+      button.dataset.suggestion
+    );
 
-  .filter-group {
-    min-width: 100%;
-  }
+    suggestions.classList.remove(
+      "open"
+    );
 
-  .filter-group select,
-  .filter-panel > select,
-  #categoryFilter {
-    width: 100%;
   }
+);
 
-  .dashboard-stats {
-    grid-template-columns: 1fr 1fr;
-  }
 
-  .mini-tool-card {
-    align-items: flex-start;
-    flex-wrap: wrap;
-  }
+// Category filter
+categoryFilter?.addEventListener(
+  "change",
+  () => {
 
-  .mini-tool-info {
-    min-width: calc(100% - 65px);
-  }
+    const category =
+      categoryFilter.value;
 
-  .mini-tool-actions {
-    width: 100%;
-    justify-content: flex-end;
-  }
+    if (category === "all") {
 
-  .footer-inner {
-    flex-direction: column;
-  }
-}
+      renderTools(tools);
 
-@media (max-width: 480px) {
-  .section {
-    width: min(100% - 22px, 1180px);
-    padding: 55px 0;
-  }
+      return;
+    }
 
-  .hero {
-    padding-left: 12px;
-    padding-right: 12px;
-  }
+    renderTools(
+      tools.filter(
+        tool =>
+          tool.category === category
+      )
+    );
 
-  .dashboard-stats {
-    grid-template-columns: 1fr;
   }
+);
 
-  .dashboard-section {
-    padding: 16px;
-  }
 
-  .category-grid {
-    grid-template-columns: 1fr 1fr;
-  }
+// Categories
+categoriesButton?.addEventListener(
+  "click",
+  openCategories
+);
 
-  .compare-bar-content {
-    align-items: stretch;
-    flex-direction: column;
-  }
+categoriesButtonHero?.addEventListener(
+  "click",
+  openCategories
+);
 
-  .compare-bar-actions {
-    width: 100%;
-  }
+footerCategoriesButton?.addEventListener(
+  "click",
+  openCategories
+);
 
-  .compare-bar-actions button {
-    flex: 1;
-  }
+categoriesClose?.addEventListener(
+  "click",
+  closeCategories
+);
 
-  .tool-card-actions {
-    grid-template-columns: 1fr;
-  }
+categoriesOverlay?.addEventListener(
+  "click",
+  event => {
 
-  .categories-menu,
-  .compare-modal-card {
-    padding: 18px;
+    if (
+      event.target ===
+      categoriesOverlay
+    ) {
+      closeCategories();
+    }
+
   }
-}
+);
+
+
+// Tool cards + global actions
+document.addEventListener(
+  "click",
+  event => {
+
+    const favorite =
+      event.target.closest(
+        "[data-favorite]"
+      );
+
+    if (favorite) {
+
+      toggleFavorite(
+        favorite.dataset.favorite
+      );
+
+      return;
+    }
+
+
+    const compare =
+      event.target.closest(
+        "[data-compare]"
+      );
+
+    if (compare) {
+
+      toggleCompare(
+        compare.dataset.compare
+      );
+
+      return;
+    }
+
+
+    const visit =
+      event.target.closest(
+        "[data-visit]"
+      );
+
+    if (visit) {
+
+      addRecentlyUsed(
+        visit.dataset.visit
+      );
+
+    }
+
+
+    const category =
+      event.target.closest(
+        "[data-category]"
+      );
+
+    if (category) {
+
+      const selected =
+        category.dataset.category;
+
+      if (categoryFilter) {
+        categoryFilter.value =
+          selected;
+      }
+
+      renderTools(
+        tools.filter(
+          tool =>
+            tool.category === selected
+        )
+      );
+
+      closeCategories();
+
+      $("#tools")?.scrollIntoView({
+        behavior: "smooth"
+      });
+
+    }
+
+
+    const closeAuth =
+      event.target.closest(
+        "[data-close-auth]"
+      );
+
+    if (closeAuth) {
+
+      $("#authModal")?.classList.remove(
+        "open"
+      );
+
+    }
+
+
+    const clearCompare =
+      event.target.closest(
+        "#clearCompare"
+      );
+
+    if (clearCompare) {
+
+      comparison = [];
+
+      saveLocalData();
+
+      renderTools(currentResults);
+      renderCompareBar();
+
+    }
+
+
+    const openCompare =
+      event.target.closest(
+        "#openCompare"
+      );
+
+    if (openCompare) {
+      openCompareModal();
+    }
+
+
+    const closeCompare =
+      event.target.closest(
+        "#closeCompare"
+      );
+
+    if (closeCompare) {
+
+      $("#compareModal")?.classList.remove(
+        "open"
+      );
+
+    }
+
+  }
+);
+
+
+// Close modals by clicking outside
+document.addEventListener(
+  "click",
+  event => {
+
+    const authModal =
+      $("#authModal");
+
+    if (
+      authModal &&
+      event.target === authModal
+    ) {
+      authModal.classList.remove(
+        "open"
+      );
+    }
+
+    const compareModal =
+      $("#compareModal");
+
+    if (
+      compareModal &&
+      event.target === compareModal
+    ) {
+      compareModal.classList.remove(
+        "open"
+      );
+    }
+
+  }
+);
+
 
 /* =========================================================
-   REDUCED MOTION
-========================================================= */
+   KEYBOARD ACCESSIBILITY
+   ========================================================= */
 
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    scroll-behavior: auto !important;
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
+document.addEventListener(
+  "keydown",
+  event => {
 
-  .tool-card:hover,
-  .category-card:hover,
-  .dashboard-action:hover {
-    transform: none;
+    if (event.key !== "Escape") return;
+
+    categoriesOverlay?.classList.remove(
+      "open"
+    );
+
+    $("#authModal")?.classList.remove(
+      "open"
+    );
+
+    $("#compareModal")?.classList.remove(
+      "open"
+    );
+
   }
+);
+
+
+/* =========================================================
+   START APP
+   ========================================================= */
+
+function initializeTzTools() {
+
+  populateCategoryFilter();
+
+  createDashboard();
+
+  createAuthUI();
+
+  initializeTheme();
+
+  initializeMobileNav();
+
+  initializeQuickSearches();
+
+  renderTools(tools);
+
+  renderCompareBar();
+
+  initializeSupabase();
+
+  console.log(
+    `TzTools V7 loaded — ${tools.length} tools available.`
+  );
+
+}
+
+
+if (
+  document.readyState === "loading"
+) {
+
+  document.addEventListener(
+    "DOMContentLoaded",
+    initializeTzTools
+  );
+
+} else {
+
+  initializeTzTools();
+
 }
