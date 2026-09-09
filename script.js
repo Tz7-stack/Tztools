@@ -1898,20 +1898,13 @@ renderDashboard();
 renderCommunity();
 
 updateCounts();
-
-
-console.log(
-  `TzTools V4.5 loaded successfully — ${tools.length} tools`
-);
 /* ================= RECENTLY USED ================= */
 
 function trackRecentlyUsed(toolId) {
   if (!toolId) return;
 
   recentlyUsed = recentlyUsed.filter(id => id !== toolId);
-
   recentlyUsed.unshift(toolId);
-
   recentlyUsed = recentlyUsed.slice(0, 10);
 
   localStorage.setItem(
@@ -1944,3 +1937,8 @@ function renderRecentlyUsed() {
     .map(tool => createToolCard(tool))
     .join("");
 }
+
+console.log(
+  `TzTools V4.5 loaded successfully — ${tools.length} tools`
+);
+
