@@ -1,333 +1,690 @@
-/* ================================
-   TZTOOLS V4 — GLOBAL STYLES (REFACTORED)
-   - Preserves your existing color variables and visual tokens
-   - Removes syntax errors and duplicate/conflicting rules
-   - Cleans and groups component styles for easier maintenance
-================================ */
+/* =========================================================
+   TZTOOLS — V6 JAVASCRIPT FOUNDATION
+   Search → Match → Recommend → Visit
+========================================================= */
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+
+/* =========================================================
+   TOOL DATABASE
+========================================================= */
+
+const tools = [
+
+  // ================= AI =================
+
+  {
+    id: "chatgpt",
+    name: "ChatGPT",
+    icon: "🤖",
+    description: "AI assistant for writing, studying, brainstorming, coding and more.",
+    category: "AI",
+    pricing: "Freemium",
+    rating: 4.9,
+    url: "https://chatgpt.com/",
+    tags: ["ai", "chat", "writing", "study", "coding", "assistant"]
+  },
+
+  {
+    id: "gemini",
+    name: "Google Gemini",
+    icon: "✨",
+    description: "Google's AI assistant for research, writing, ideas and everyday tasks.",
+    category: "AI",
+    pricing: "Free",
+    rating: 4.8,
+    url: "https://gemini.google.com/",
+    tags: ["ai", "google", "research", "writing", "study", "assistant"]
+  },
+
+  {
+    id: "claude",
+    name: "Claude",
+    icon: "🧠",
+    description: "AI assistant useful for writing, analysis, coding and long documents.",
+    category: "AI",
+    pricing: "Freemium",
+    rating: 4.8,
+    url: "https://claude.ai/",
+    tags: ["ai", "writing", "coding", "research", "documents"]
+  },
+
+
+  // ================= DESIGN =================
+
+  {
+    id: "canva",
+    name: "Canva",
+    icon: "🎨",
+    description: "Create logos, posters, presentations, social graphics and more.",
+    category: "Design",
+    pricing: "Freemium",
+    rating: 4.9,
+    url: "https://www.canva.com/",
+    tags: ["design", "logo", "logos", "poster", "graphics", "presentation", "social media"]
+  },
+
+  {
+    id: "adobe-express",
+    name: "Adobe Express",
+    icon: "🖌️",
+    description: "Quickly create graphics, social posts, flyers and visual content.",
+    category: "Design",
+    pricing: "Freemium",
+    rating: 4.7,
+    url: "https://www.adobe.com/express/",
+    tags: ["design", "logo", "graphics", "poster", "flyer", "social media"]
+  },
+
+  {
+    id: "figma",
+    name: "Figma",
+    icon: "🧩",
+    description: "Design websites, apps, interfaces and collaborative prototypes.",
+    category: "Design",
+    pricing: "Freemium",
+    rating: 4.8,
+    url: "https://www.figma.com/",
+    tags: ["design", "ui", "ux", "website", "app", "prototype"]
+  },
+
+
+  // ================= VIDEO =================
+
+  {
+    id: "capcut",
+    name: "CapCut",
+    icon: "🎬",
+    description: "Easy video editor for social media, short videos and creative projects.",
+    category: "Video",
+    pricing: "Freemium",
+    rating: 4.8,
+    url: "https://www.capcut.com/",
+    tags: ["video", "editing", "edit", "tiktok", "youtube", "shorts", "reels"]
+  },
+
+  {
+    id: "davinci",
+    name: "DaVinci Resolve",
+    icon: "🎞️",
+    description: "Professional video editing, color grading, effects and audio production.",
+    category: "Video",
+    pricing: "Free",
+    rating: 4.9,
+    url: "https://www.blackmagicdesign.com/products/davinciresolve",
+    tags: ["video", "editing", "edit", "professional", "color", "audio"]
+  },
+
+  {
+    id: "veed",
+    name: "VEED",
+    icon: "📹",
+    description: "Browser-based video editor for social media and online content.",
+    category: "Video",
+    pricing: "Freemium",
+    rating: 4.6,
+    url: "https://www.veed.io/",
+    tags: ["video", "editing", "edit", "social media", "subtitles"]
+  },
+
+
+  // ================= WRITING =================
+
+  {
+    id: "grammarly",
+    name: "Grammarly",
+    icon: "✍️",
+    description: "Improve grammar, spelling, clarity and writing quality.",
+    category: "Writing",
+    pricing: "Freemium",
+    rating: 4.7,
+    url: "https://www.grammarly.com/",
+    tags: ["writing", "grammar", "essay", "school", "proofreading"]
+  },
+
+  {
+    id: "quillbot",
+    name: "QuillBot",
+    icon: "📝",
+    description: "Paraphrase, summarize and improve your writing.",
+    category: "Writing",
+    pricing: "Freemium",
+    rating: 4.6,
+    url: "https://quillbot.com/",
+    tags: ["writing", "paraphrase", "summarize", "essay", "school"]
+  },
+
+  {
+    id: "google-docs",
+    name: "Google Docs",
+    icon: "📄",
+    description: "Create, edit and collaborate on documents online.",
+    category: "Writing",
+    pricing: "Free",
+    rating: 4.8,
+    url: "https://docs.google.com/",
+    tags: ["writing", "documents", "essay", "school", "collaboration"]
+  },
+
+
+  // ================= WEBSITES =================
+
+  {
+    id: "wordpress",
+    name: "WordPress",
+    icon: "🌐",
+    description: "Create websites, blogs and online publications.",
+    category: "Websites",
+    pricing: "Freemium",
+    rating: 4.7,
+    url: "https://wordpress.com/",
+    tags: ["website", "websites", "blog", "blogging", "site"]
+  },
+
+  {
+    id: "wix",
+    name: "Wix",
+    icon: "🏗️",
+    description: "Build websites using an easy visual website builder.",
+    category: "Websites",
+    pricing: "Freemium",
+    rating: 4.6,
+    url: "https://www.wix.com/",
+    tags: ["website", "websites", "site", "business", "builder"]
+  },
+
+  {
+    id: "framer",
+    name: "Framer",
+    icon: "⚡",
+    description: "Design and publish modern websites with a visual builder.",
+    category: "Websites",
+    pricing: "Freemium",
+    rating: 4.7,
+    url: "https://www.framer.com/",
+    tags: ["website", "websites", "design", "site", "builder"]
+  },
+
+
+  // ================= STUDENTS =================
+
+  {
+    id: "khan-academy",
+    name: "Khan Academy",
+    icon: "🎓",
+    description: "Free lessons and practice for maths, science and other subjects.",
+    category: "Students",
+    pricing: "Free",
+    rating: 4.9,
+    url: "https://www.khanacademy.org/",
+    tags: ["study", "student", "students", "school", "maths", "science", "learning"]
+  },
+
+  {
+    id: "wolframalpha",
+    name: "WolframAlpha",
+    icon: "🔢",
+    description: "Computational knowledge engine for maths, science and more.",
+    category: "Students",
+    pricing: "Freemium",
+    rating: 4.8,
+    url: "https://www.wolframalpha.com/",
+    tags: ["study", "student", "students", "math", "maths", "science", "calculation"]
+  },
+
+  {
+    id: "quizlet",
+    name: "Quizlet",
+    icon: "📚",
+    description: "Study with flashcards, practice tests and learning activities.",
+    category: "Students",
+    pricing: "Freemium",
+    rating: 4.7,
+    url: "https://quizlet.com/",
+    tags: ["study", "student", "students", "school", "flashcards", "learning"]
+  },
+
+
+  // ================= PRODUCTIVITY =================
+
+  {
+    id: "notion",
+    name: "Notion",
+    icon: "📓",
+    description: "Organize notes, projects, tasks and personal knowledge.",
+    category: "Productivity",
+    pricing: "Freemium",
+    rating: 4.8,
+    url: "https://www.notion.so/",
+    tags: ["productivity", "notes", "tasks", "planning", "organization"]
+  },
+
+  {
+    id: "trello",
+    name: "Trello",
+    icon: "📋",
+    description: "Organize projects and tasks using flexible boards.",
+    category: "Productivity",
+    pricing: "Freemium",
+    rating: 4.6,
+    url: "https://trello.com/",
+    tags: ["productivity", "tasks", "planning", "projects", "organization"]
+  },
+
+
+  // ================= IMAGES =================
+
+  {
+    id: "remove-bg",
+    name: "Remove.bg",
+    icon: "🪄",
+    description: "Automatically remove backgrounds from images.",
+    category: "Images",
+    pricing: "Freemium",
+    rating: 4.7,
+    url: "https://www.remove.bg/",
+    tags: ["image", "images", "photo", "background", "remove background", "editing"]
+  },
+
+  {
+    id: "pixlr",
+    name: "Pixlr",
+    icon: "🖼️",
+    description: "Online photo editor for quick image editing and designs.",
+    category: "Images",
+    pricing: "Freemium",
+    rating: 4.5,
+    url: "https://pixlr.com/",
+    tags: ["image", "images", "photo", "editing", "design"]
+  }
+
+];
+
+
+/* =========================================================
+   DOM ELEMENTS
+========================================================= */
+
+const searchInput = document.getElementById("searchInput");
+const toolsGrid = document.getElementById("toolsGrid");
+const searchButton = document.getElementById("searchButton");
+
+
+/* =========================================================
+   SEARCH INTENT
+========================================================= */
+
+const intentGroups = {
+
+  logo: [
+    "logo",
+    "logos",
+    "brand logo",
+    "make a logo",
+    "create a logo",
+    "design a logo"
+  ],
+
+  design: [
+    "design",
+    "graphic",
+    "graphics",
+    "poster",
+    "flyer",
+    "banner"
+  ],
+
+  video: [
+    "video",
+    "videos",
+    "edit video",
+    "video editing",
+    "youtube video",
+    "tiktok",
+    "reels",
+    "shorts"
+  ],
+
+  writing: [
+    "write",
+    "writing",
+    "essay",
+    "article",
+    "grammar",
+    "proofread",
+    "paraphrase"
+  ],
+
+  website: [
+    "website",
+    "websites",
+    "web",
+    "site",
+    "make a website",
+    "build a website"
+  ],
+
+  study: [
+    "study",
+    "studying",
+    "student",
+    "school",
+    "homework",
+    "learn",
+    "learning",
+    "math",
+    "maths",
+    "science"
+  ],
+
+  ai: [
+    "ai",
+    "artificial intelligence",
+    "chatbot",
+    "assistant"
+  ],
+
+  productivity: [
+    "productivity",
+    "organize",
+    "organization",
+    "tasks",
+    "planning",
+    "notes"
+  ],
+
+  image: [
+    "image",
+    "images",
+    "photo",
+    "photos",
+    "picture",
+    "background"
+  ]
+
+};
+
+
+/* =========================================================
+   DETECT USER INTENT
+========================================================= */
+
+function detectIntent(query) {
+
+  const text = query.toLowerCase();
+
+  for (const [intent, keywords] of Object.entries(intentGroups)) {
+
+    for (const keyword of keywords) {
+
+      if (text.includes(keyword)) {
+        return intent;
+      }
+
+    }
+
+  }
+
+  return null;
 }
 
-:root {
-  /* Color tokens (kept from original) */
-  --bg: #f7f8ff;
-  --surface: #ffffff;
-  --surface-soft: #f3f4ff;
-  --text: #111827;
-  --muted: #6b7280;
-  --border: #e5e7eb;
-  --primary: #6366f1;
-  --primary-dark: #4f46e5;
-  --shadow: 0 15px 40px rgba(17, 24, 39, 0.07);
 
-  /* Added/kept extras */
-  --accent: #f59e0b; /* used for accent/hover where appropriate */
+/* =========================================================
+   SCORE TOOLS
+========================================================= */
 
-  /* Layout tokens */
-  --radius-lg: 16px;
-  --radius-md: 10px;
+function scoreTool(tool, query) {
+
+  const text = query.toLowerCase();
+
+  if (!text.trim()) {
+    return 0;
+  }
+
+  let score = 0;
+
+  const intent = detectIntent(text);
+
+  const tags = tool.tags || [];
+
+  /* Exact name match */
+  if (tool.name.toLowerCase() === text) {
+    score += 100;
+  }
+
+  /* Name contains query */
+  if (tool.name.toLowerCase().includes(text)) {
+    score += 40;
+  }
+
+  /* Tag matching */
+  tags.forEach(tag => {
+
+    if (text.includes(tag.toLowerCase())) {
+      score += 20;
+    }
+
+    if (tag.toLowerCase().includes(text)) {
+      score += 10;
+    }
+
+  });
+
+
+  /* Intent matching */
+
+  const intentCategoryMap = {
+
+    logo: ["Design"],
+    design: ["Design"],
+    video: ["Video"],
+    writing: ["Writing"],
+    website: ["Websites"],
+    study: ["Students"],
+    ai: ["AI"],
+    productivity: ["Productivity"],
+    image: ["Images"]
+
+  };
+
+  if (
+    intent &&
+    intentCategoryMap[intent] &&
+    intentCategoryMap[intent].includes(tool.category)
+  ) {
+    score += 50;
+  }
+
+
+  /* Small rating bonus */
+
+  score += tool.rating * 2;
+
+
+  return score;
 }
 
-html {
-  scroll-behavior: smooth;
-  -webkit-font-smoothing: antialiased;
+
+/* =========================================================
+   SEARCH TOOLS
+========================================================= */
+
+function searchTools(query) {
+
+  const text = query.trim();
+
+  if (!text) {
+    return tools.slice();
+  }
+
+  return tools
+    .map(tool => ({
+      tool,
+      score: scoreTool(tool, text)
+    }))
+    .filter(result => result.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .map(result => result.tool)
+    .slice(0, 10);
 }
 
-body {
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  overflow-x: hidden;
-  transition: background 0.3s ease, color 0.3s ease;
+
+/* =========================================================
+   CREATE TOOL CARD
+========================================================= */
+
+function createToolCard(tool) {
+
+  return `
+    <article class="tool-card">
+
+      <div class="tool-icon">
+        ${tool.icon}
+      </div>
+
+      <div class="tool-info">
+
+        <div class="tool-title-row">
+
+          <h3>${tool.name}</h3>
+
+          <span class="tool-rating">
+            ⭐ ${tool.rating}
+          </span>
+
+        </div>
+
+        <p>
+          ${tool.description}
+        </p>
+
+        <div class="tool-meta">
+
+          <span>
+            ${tool.category}
+          </span>
+
+          <span>
+            ${tool.pricing}
+          </span>
+
+        </div>
+
+        <a
+          href="${tool.url}"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Visit Tool →
+        </a>
+
+      </div>
+
+    </article>
+  `;
 }
 
-/* ================================
-   DARK MODE
-================================ */
 
-body.dark-mode {
-  --bg: #0b1020;
-  --surface: #151b2e;
-  --surface-soft: #1c2440;
-  --text: #f9fafb;
-  --muted: #9ca3af;
-  --border: #29324a;
-  --primary: #818cf8;
-  --primary-dark: #6366f1;
-  --shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+/* =========================================================
+   RENDER TOOLS
+========================================================= */
+
+function renderTools(container, toolList) {
+
+  if (!container) return;
+
+  if (!toolList || toolList.length === 0) {
+
+    container.innerHTML = `
+      <div class="empty">
+        <h3>No matching tools found</h3>
+        <p>
+          Try something like "make a logo",
+          "edit videos", or "study maths".
+        </p>
+      </div>
+    `;
+
+    return;
+  }
+
+  container.innerHTML = toolList
+    .map(tool => createToolCard(tool))
+    .join("");
 }
 
-/* ================================
-   Utilities
-================================ */
 
-.container {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 20px;
+/* =========================================================
+   PERFORM SEARCH
+========================================================= */
+
+function performSearch() {
+
+  const query = searchInput
+    ? searchInput.value.trim()
+    : "";
+
+  const results = searchTools(query);
+
+  renderTools(toolsGrid, results);
+
 }
 
-.btn-reset {
-  border: none;
-  background: transparent;
-  padding: 0;
-  margin: 0;
-  cursor: pointer;
+
+/* =========================================================
+   SEARCH EVENTS
+========================================================= */
+
+if (searchButton) {
+
+  searchButton.addEventListener(
+    "click",
+    performSearch
+  );
+
 }
 
-/* ================================
-   NAVBAR
-================================ */
+if (searchInput) {
 
-.navbar {
-  width: 100%;
-  padding: 18px 6%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 25px;
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border);
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  searchInput.addEventListener(
+    "keydown",
+    event => {
+
+      if (event.key === "Enter") {
+        performSearch();
+      }
+
+    }
+  );
+
+  searchInput.addEventListener(
+    "input",
+    () => {
+
+      if (!searchInput.value.trim()) {
+
+        renderTools(
+          toolsGrid,
+          tools
+        );
+
+      }
+
+    }
+  );
+
 }
 
-.dark-mode .navbar {
-  background: rgba(11, 16, 32, 0.88);
-}
 
-.logo,
-.footer-logo {
-  text-decoration: none;
-  font-size: 27px;
-  font-weight: 900;
-  letter-spacing: -1px;
-  color: var(--text);
-}
+/* =========================================================
+   INITIAL LOAD
+========================================================= */
 
-.logo span,
-.footer-logo span { color: var(--primary); }
+renderTools(
+  toolsGrid,
+  tools
+);
 
-.nav-links { display: flex; gap: 8px; align-items: center; }
 
-.nav-links button,
-.footer-links button {
-  border: none;
-  background: transparent;
-  color: var(--muted);
-  padding: 9px 12px;
-  border-radius: 9px;
-  cursor: pointer;
-  font-weight: 700;
-  transition: 0.15s ease;
-}
-
-.nav-links button:hover,
-.footer-links button:hover { background: var(--surface-soft); color: var(--primary); }
-
-.nav-actions { display: flex; align-items: center; gap: 8px; }
-
-.icon-button,
-.menu-button {
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--text);
-  width: 42px;
-  height: 42px;
-  border-radius: 11px;
-  cursor: pointer;
-  font-size: 17px;
-  transition: transform 0.15s ease, border-color 0.15s ease;
-}
-
-.icon-button:hover,
-.menu-button:hover { transform: translateY(-2px); border-color: var(--primary); }
-
-.menu-button { display: none; }
-
-/* ================================
-   PAGES & HERO
-================================ */
-
-.page { display: none; }
-.page.active { display: block; }
-
-.hero {
-  text-align: center;
-  max-width: 1000px;
-  margin: auto;
-  padding: 100px 20px 70px;
-}
-
-.eyebrow {
-  display: inline-block;
-  color: var(--primary);
-  background: rgba(99, 102, 241, 0.09);
-  border: 1px solid rgba(99, 102, 241, 0.18);
-  padding: 9px 15px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 900;
-  letter-spacing: 1.3px;
-  margin-bottom: 25px;
-}
-
-.hero h1 { font-size: 64px; line-height: 1.04; letter-spacing: -3px; margin-bottom: 25px; }
-.subtitle { max-width: 650px; margin: auto; color: var(--muted); font-size: 18px; line-height: 1.7; }
-
-/* ================================
-   SEARCH
-================================ */
-
-.search-wrapper { position: relative; max-width: 780px; margin: 38px auto 0; }
-
-.search-box {
-  display: flex; align-items: center; gap: 8px; padding: 7px;
-  background: var(--surface); border: 1px solid var(--border); border-radius: 18px;
-  box-shadow: var(--shadow); transition: box-shadow 0.2s ease, border-color 0.15s ease;
-}
-
-.search-box:focus-within { border-color: var(--primary); box-shadow: 0 22px 50px rgba(99,102,241,0.12); }
-.search-box input { flex: 1; min-width: 0; border: none; outline: none; background: transparent; padding: 16px 8px; color: var(--text); }
-.search-box input::placeholder { color: var(--muted); }
-
-.search-box > #searchButton {
-  background: var(--primary); color: white; padding: 12px 18px; border-radius: 12px; font-weight: 800; cursor: pointer; border: none;
-}
-.search-box > #searchButton:hover { background: var(--primary-dark); transform: translateY(-2px); }
-
-.search-hint { color: var(--muted); font-size: 13px; margin-top: 12px; }
-
-/* ================================
-   SUGGESTIONS
-================================ */
-
-.suggestions { display: none; position: absolute; top: calc(100% + 8px); left: 0; right: 0; z-index: 30; background: var(--surface); border: 1px solid var(--border); border-radius: 15px; box-shadow: var(--shadow); overflow: hidden; }
-.suggestions.open { display: block; }
-.suggestion { display: flex; align-items: center; gap: 12px; padding: 14px 17px; cursor: pointer; color: var(--text); }
-.suggestion:hover { background: var(--surface-soft); }
-.suggestion-icon { width: 35px; height: 35px; display: grid; place-items: center; background: var(--surface-soft); border-radius: 9px; }
-
-/* ================================
-   QUICK SEARCHES
-================================ */
-
-.quick-searches { display: flex; justify-content: center; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 20px; }
-.quick-searches span { color: var(--muted); font-size: 12px; font-weight: 700; }
-.quick-searches button { border: 1px solid var(--border); background: var(--surface); color: var(--muted); padding: 8px 11px; border-radius: 999px; cursor: pointer; font-size: 12px; transition: transform 0.15s ease, border-color 0.15s ease; }
-.quick-searches button:hover { color: var(--primary); border-color: var(--primary); transform: translateY(-2px); }
-
-/* ================================
-   SECTIONS & LAYOUT
-================================ */
-
-.categories, .featured-section, .dashboard-section { max-width: 1100px; margin: 0 auto 90px; padding: 0 20px; }
-.section-heading { display: flex; align-items: end; justify-content: space-between; gap: 20px; margin-bottom: 25px; }
-.section-label { color: var(--primary); font-size: 11px; font-weight: 900; letter-spacing: 1.5px; }
-.section-heading h2 { font-size: 29px; margin-top: 5px; }
-.text-button { border: none; background: transparent; color: var(--primary); font-weight: 800; cursor: pointer; }
-
-/* ================================
-   CATEGORY GRID
-================================ */
-
-.category-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
-.category-grid button { border: 1px solid var(--border); background: var(--surface); color: var(--text); padding: 21px; border-radius: var(--radius-lg); cursor: pointer; text-align: left; transition: transform 0.2s ease, box-shadow 0.2s ease; }
-.category-grid button:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: var(--shadow); }
-
-/* ================================
-   TOOL GRID (FIXED)
-================================ */
-
-.tool-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
-
-.tool-card {
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--text);
-  padding: 18px;
-  border-radius: 14px;
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-  animation: toolCardAppear 0.4s ease both;
-}
-
-.tool-card:hover {
-  transform: translateY(-6px);
-  border-color: var(--accent);
-  box-shadow: 0 18px 40px rgba(17, 24, 39, 0.12);
-}
-
-.dark-mode .tool-card { box-shadow: none; }
-
-@keyframes toolCardAppear {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.tool-icon { width: 55px; height: 55px; display: grid; place-items: center; flex-shrink: 0; background: var(--surface-soft); border: 1px solid var(--border); border-radius: 14px; font-size: 25px; }
-
-.tool-info { min-width: 0; flex: 1; }
-.tool-info h3 { font-size: 19px; margin-bottom: 7px; }
-.tool-info > p { color: var(--muted); font-size: 13px; line-height: 1.55; margin-bottom: 13px; }
-
-.tool-rating { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 11px; }
-.tool-rating span { padding: 6px 8px; border-radius: 7px; font-size: 10px; font-weight: 800; }
-.rating { color: #c2410c; background: #fff7ed; border: 1px solid #fed7aa; }
-.best-for { color: var(--primary-dark); background: var(--surface-soft); border: 1px solid var(--border); }
-
-.tool-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 13px; }
-.tool-tags span { color: var(--muted); background: var(--surface-soft); border: 1px solid var(--border); padding: 4px 7px; border-radius: 6px; font-size: 9px; font-weight: 700; }
-
-.tool-meta { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 14px; }
-.tool-meta span { color: var(--muted); background: var(--surface-soft); border: 1px solid var(--border); padding: 5px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; }
-
-.visit-button { display: inline-flex; align-items: center; text-decoration: none; background: var(--text); color: var(--bg); padding: 10px 13px; border-radius: 9px; font-size: 12px; font-weight: 800; transition: background 0.18s ease, transform 0.12s ease; }
-.visit-button:hover { background: var(--primary); color: white; transform: translateX(3px); }
-
-/* ================================
-   TOOL ACTIONS
-================================ */
-
-.tool-actions { display: flex; gap: 7px; flex-wrap: wrap; }
-.tool-action { border: 1px solid var(--border); background: var(--surface); color: var(--text); padding: 9px 11px; border-radius: 9px; cursor: pointer; font-size: 11px; font-weight: 800; transition: border-color 0.12s ease, color 0.12s ease; }
-.tool-action:hover { border-color: var(--primary); color: var(--primary); }
-.tool-action.active { background: var(--primary); border-color: var(--primary); color: white; }
-
-/* ================================
-   LARGER LAYOUT SECTIONS (kept)
-================================ */
-
-.empty { grid-column: 1 / -1; text-align: center; padding: 55px 20px; background: var(--surface); border: 1px solid var(--border); border-radius: 18px; }
-.empty h2 { margin-bottom: 9px; }
-.empty p { color: var(--muted); }
-
-.dashboard-grid { max-width: 1100px; margin: 0 auto 55px; padding: 0 20px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
-.dashboard-card { display: flex; align-items: center; gap: 15px; padding: 23px; background: var(--surface); border: 1px solid var(--border); border-radius: 17px; }
-.dashboard-icon { width: 50px; height: 50px; display: grid; place-items: center; background: var(--surface-soft); border-radius: 13px; font-size: 22px; }
-.dashboard-card > strong { margin-left: auto; font-size: 27px; color: var(--primary); }
-
-/* ================================
-   RESPONSIVE
-================================ */
-
-@media (max-width: 900px) {
-  .category-grid { grid-template-columns: repeat(2, 1fr); }
-  .tool-grid { grid-template-columns: 1fr; }
-  .menu-button { display: inline-flex; }
-  .nav-links { display: none; }
-}
-
-@media (max-width: 480px) {
-  .hero h1 { font-size: 38px; }
-}
-
-/* End of refactor */
+console.log(
+  `TzTools V6 loaded successfully — ${tools.length} tools`
+);
