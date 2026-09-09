@@ -650,12 +650,7 @@ let comparisons =
   JSON.parse(localStorage.getItem("tztools-comparisons")) || [];
 
 let recentlyUsed = [];
-  const container = document.getElementById("recentlyUsedContainer");
-
-  if (!container) return;
-
-  if (!Array.isArray(recentlyUsed)) {
-    recentlyUsed = [];
+  
   }
 
   const recentTools = recentlyUsed
