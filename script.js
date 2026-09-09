@@ -649,30 +649,19 @@ let favourites =
 let comparisons =
   JSON.parse(localStorage.getItem("tztools-comparisons")) || [];
 
-let recentlyUsed =
-function renderRecentlyUsed() {
-  const container = document.getElementById("recentlyUsedContainer");
+let recentlyUsed = [];
 
-  if (!container) return;
+try {
+  const savedRecent = JSON.parse(
+    localStorage.getItem("tztools-recent")
+  );
 
-  const recentTools = recentlyUsed
-    .map(id => getTool(id))
-    .filter(Boolean);
-
-  if (recentTools.length === 0) {
-    container.innerHTML = `
-      <p class="empty-state">
-        You haven't used any tools yet.
-      </p>
-    `;
-    return;
+  if (Array.isArray(savedRecent)) {
+    recentlyUsed = savedRecent;
   }
-
-  container.innerHTML = recentTools
-    .map(tool => createToolCard(tool))
-    .join("");
+} catch (error) {
+  recentlyUsed = [];
 }
-  
 /* ================= ELEMENTS ================= */
 
 const searchInput = document.getElementById("search");
