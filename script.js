@@ -1322,6 +1322,7 @@ function renderDashboard() {
 
   renderFavourites();
   renderComparison();
+  renderRecentlyUsed();
   updateCounts();
 
 }
