@@ -652,12 +652,12 @@ let comparisons =
 let recentlyUsed = [];
 
 try {
-  const savedRecent = JSON.parse(
+  const storedRecent = JSON.parse(
     localStorage.getItem("tztools-recent")
   );
 
-  if (Array.isArray(savedRecent)) {
-    recentlyUsed = savedRecent;
+  if (Array.isArray(storedRecent)) {
+    recentlyUsed = storedRecent;
   }
 } catch (error) {
   recentlyUsed = [];
