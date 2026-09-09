@@ -649,18 +649,31 @@ let favourites =
 let comparisons =
   JSON.parse(localStorage.getItem("tztools-comparisons")) || [];
 
-let recentlyUsed = [];
+function renderRecentlyUsed() {
+  const container = document.getElementById("recentlyUsedContainer");
 
-try {
-  const storedRecent = JSON.parse(
-    localStorage.getItem("tztools-recent")
-  );
+  if (!container) return;
 
-  if (Array.isArray(storedRecent)) {
-    recentlyUsed = storedRecent;
+  if (!Array.isArray(recentlyUsed)) {
+    recentlyUsed = [];
   }
-} catch (error) {
-  recentlyUsed = [];
+
+  const recentTools = recentlyUsed
+    .map(id => tools.find(tool => tool.id === id))
+    .filter(Boolean);
+
+  if (recentTools.length === 0) {
+    container.innerHTML = `
+      <p class="empty-state">
+        You haven't used any tools yet.
+      </p>
+    `;
+    return;
+  }
+
+  container.innerHTML = recentTools
+    .map(tool => createToolCard(tool))
+    .join("");
 }
 /* ================= ELEMENTS ================= */
 
