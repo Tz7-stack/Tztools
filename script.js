@@ -1,10 +1,10 @@
 /* =========================================================
-   TzTools V6.4
-   Smart Search + Favorites + Recently Used
+   TzTools V6.5
+   Smart Search + Favorites + Recently Used + Dashboard
    ========================================================= */
 
 const tools = [
-  // AI
+  // ==================== AI ====================
   {
     name: "ChatGPT",
     category: "AI",
@@ -29,7 +29,7 @@ const tools = [
     name: "Claude",
     category: "AI",
     icon: "🧠",
-    description: "AI assistant useful for writing, analysis, coding and long documents.",
+    description: "AI assistant useful for writing, analysis, coding and documents.",
     rating: 4.8,
     pricing: "Freemium",
     url: "https://claude.ai/",
@@ -56,7 +56,7 @@ const tools = [
     keywords: ["ai", "search", "research", "answers"]
   },
 
-  // Design
+  // ==================== DESIGN ====================
   {
     name: "Canva",
     category: "Design",
@@ -108,7 +108,7 @@ const tools = [
     keywords: ["photo", "image", "edit", "design"]
   },
 
-  // Video
+  // ==================== VIDEO ====================
   {
     name: "CapCut",
     category: "Video",
@@ -133,7 +133,7 @@ const tools = [
     name: "VEED",
     category: "Video",
     icon: "📹",
-    description: "Simple browser-based video editor with useful creator tools.",
+    description: "Simple browser-based video editor with creator tools.",
     rating: 4.6,
     pricing: "Freemium",
     url: "https://www.veed.io/",
@@ -160,7 +160,7 @@ const tools = [
     keywords: ["video", "ai", "creator", "editing"]
   },
 
-  // Writing
+  // ==================== WRITING ====================
   {
     name: "Grammarly",
     category: "Writing",
@@ -212,7 +212,7 @@ const tools = [
     keywords: ["writing", "essay", "readability"]
   },
 
-  // Websites
+  // ==================== WEBSITES ====================
   {
     name: "WordPress",
     category: "Websites",
@@ -274,7 +274,7 @@ const tools = [
     keywords: ["website", "hosting", "github", "coding"]
   },
 
-  // Students
+  // ==================== STUDENTS ====================
   {
     name: "Khan Academy",
     category: "Students",
@@ -319,7 +319,7 @@ const tools = [
     name: "GeoGebra",
     category: "Students",
     icon: "📐",
-    description: "Interactive mathematics tools for geometry, algebra and more.",
+    description: "Interactive mathematics tools for geometry and algebra.",
     rating: 4.8,
     pricing: "Free",
     url: "https://www.geogebra.org/",
@@ -336,7 +336,7 @@ const tools = [
     keywords: ["research", "study", "academic", "papers"]
   },
 
-  // Productivity
+  // ==================== PRODUCTIVITY ====================
   {
     name: "Notion",
     category: "Productivity",
@@ -388,7 +388,7 @@ const tools = [
     keywords: ["notes", "productivity", "tasks", "reminders"]
   },
 
-  // Images
+  // ==================== IMAGES ====================
   {
     name: "Remove.bg",
     category: "Images",
@@ -430,7 +430,7 @@ const tools = [
     keywords: ["image", "photo", "video", "stock"]
   },
 
-  // Audio
+  // ==================== AUDIO ====================
   {
     name: "Audacity",
     category: "Audio",
@@ -452,7 +452,7 @@ const tools = [
     keywords: ["music", "audio", "record", "beat"]
   },
 
-  // PDF
+  // ==================== PDF ====================
   {
     name: "Smallpdf",
     category: "PDF & Documents",
@@ -487,7 +487,7 @@ const tools = [
 
 
 /* =========================================================
-   SETTINGS
+   STORAGE
    ========================================================= */
 
 const FAVORITES_KEY = "tztools_favorites";
@@ -504,7 +504,6 @@ const searchButton = document.getElementById("searchButton");
 const suggestions = document.getElementById("suggestions");
 const toolsGrid = document.getElementById("toolsGrid");
 const categoryFilter = document.getElementById("categoryFilter");
-
 const dashboard = document.getElementById("dashboard");
 
 const categoriesOverlay = document.getElementById("categoriesOverlay");
@@ -515,7 +514,6 @@ const categoriesClose = document.getElementById("categoriesClose");
 
 const menuButton = document.getElementById("menuButton");
 const navLinks = document.getElementById("navLinks");
-
 const themeToggle = document.getElementById("themeToggle");
 
 
@@ -594,11 +592,9 @@ function addRecentlyVisited(toolName) {
 
   recent = recent.filter(name => name !== toolName);
   recent.unshift(toolName);
-
   recent = recent.slice(0, MAX_RECENT);
 
   saveRecentlyUsed(recent);
-
   renderDashboard();
 }
 
@@ -609,123 +605,22 @@ function clearRecentlyUsed() {
 
 
 /* =========================================================
-   INTENT SEARCH
+   INTENTS
    ========================================================= */
 
 const intentGroups = {
-  logo: [
-    "logo",
-    "logos",
-    "brand",
-    "branding"
-  ],
-
-  design: [
-    "design",
-    "poster",
-    "flyer",
-    "graphics",
-    "graphic",
-    "banner",
-    "social media"
-  ],
-
-  video: [
-    "video",
-    "videos",
-    "edit video",
-    "editing",
-    "movie",
-    "reels",
-    "shorts",
-    "tiktok"
-  ],
-
-  writing: [
-    "write",
-    "writing",
-    "essay",
-    "grammar",
-    "spell",
-    "paraphrase",
-    "article",
-    "document"
-  ],
-
-  website: [
-    "website",
-    "web",
-    "site",
-    "blog",
-    "landing page"
-  ],
-
-  study: [
-    "study",
-    "school",
-    "learn",
-    "learning",
-    "exam",
-    "homework",
-    "revision"
-  ],
-
-  math: [
-    "math",
-    "mathematics",
-    "calculate",
-    "calculation",
-    "equation",
-    "algebra",
-    "geometry",
-    "graph"
-  ],
-
-  ai: [
-    "ai",
-    "artificial intelligence",
-    "chatbot",
-    "assistant"
-  ],
-
-  productivity: [
-    "productivity",
-    "tasks",
-    "task",
-    "todo",
-    "planning",
-    "organize",
-    "notes"
-  ],
-
-  image: [
-    "image",
-    "images",
-    "photo",
-    "photos",
-    "picture",
-    "pictures",
-    "background"
-  ],
-
-  audio: [
-    "audio",
-    "music",
-    "song",
-    "sound",
-    "record",
-    "recording",
-    "beat"
-  ],
-
-  pdf: [
-    "pdf",
-    "document",
-    "documents",
-    "merge pdf",
-    "compress pdf",
-    "convert pdf"
-  ]
+  logo: ["logo", "logos", "brand", "branding"],
+  design: ["design", "poster", "flyer", "graphics", "graphic", "banner"],
+  video: ["video", "videos", "edit video", "editing", "movie", "reels", "shorts", "tiktok"],
+  writing: ["write", "writing", "essay", "grammar", "spell", "paraphrase", "article"],
+  website: ["website", "web", "site", "blog", "landing page"],
+  study: ["study", "school", "learn", "learning", "exam", "homework", "revision"],
+  math: ["math", "mathematics", "calculate", "calculation", "equation", "algebra", "geometry", "graph"],
+  ai: ["ai", "artificial intelligence", "chatbot", "assistant"],
+  productivity: ["productivity", "tasks", "task", "todo", "planning", "organize", "notes"],
+  image: ["image", "images", "photo", "photos", "picture", "pictures", "background"],
+  audio: ["audio", "music", "song", "sound", "record", "recording", "beat"],
+  pdf: ["pdf", "document", "documents", "merge pdf", "compress pdf", "convert pdf"]
 };
 
 function detectIntents(query) {
@@ -743,7 +638,7 @@ function detectIntents(query) {
 
 
 /* =========================================================
-   SEARCH SCORING
+   SEARCH
    ========================================================= */
 
 function scoreTool(tool, query, intents) {
@@ -757,37 +652,37 @@ function scoreTool(tool, query, intents) {
   const description = normalizeText(tool.description);
   const keywords = tool.keywords.map(normalizeText);
 
-  if (toolName === q) {
-    score += 100;
-  }
+  if (toolName === q) score += 100;
+  if (toolName.includes(q)) score += 70;
 
-  if (toolName.includes(q)) {
-    score += 70;
-  }
-
-  const queryWords = q.split(/\s+/).filter(Boolean);
-
-  queryWords.forEach(word => {
+  q.split(/\s+/).filter(Boolean).forEach(word => {
     if (toolName.includes(word)) score += 25;
     if (description.includes(word)) score += 8;
+
     if (keywords.some(keyword => keyword.includes(word))) {
       score += 20;
     }
   });
 
   intents.forEach(intent => {
-    if (intent === "logo" && tool.category === "Design") score += 35;
-    if (intent === "design" && tool.category === "Design") score += 30;
-    if (intent === "video" && tool.category === "Video") score += 35;
-    if (intent === "writing" && tool.category === "Writing") score += 35;
-    if (intent === "website" && tool.category === "Websites") score += 35;
-    if (intent === "study" && tool.category === "Students") score += 35;
-    if (intent === "math" && tool.category === "Students") score += 35;
-    if (intent === "ai" && tool.category === "AI") score += 35;
-    if (intent === "productivity" && tool.category === "Productivity") score += 35;
-    if (intent === "image" && tool.category === "Images") score += 35;
-    if (intent === "audio" && tool.category === "Audio") score += 35;
-    if (intent === "pdf" && tool.category === "PDF & Documents") score += 35;
+    const categoryMap = {
+      logo: "Design",
+      design: "Design",
+      video: "Video",
+      writing: "Writing",
+      website: "Websites",
+      study: "Students",
+      math: "Students",
+      ai: "AI",
+      productivity: "Productivity",
+      image: "Images",
+      audio: "Audio",
+      pdf: "PDF & Documents"
+    };
+
+    if (tool.category === categoryMap[intent]) {
+      score += 35;
+    }
   });
 
   return score;
@@ -809,10 +704,7 @@ function searchTools(query) {
     }))
     .filter(item => item.score > 0)
     .sort((a, b) => {
-      if (b.score !== a.score) {
-        return b.score - a.score;
-      }
-
+      if (b.score !== a.score) return b.score - a.score;
       return b.tool.rating - a.tool.rating;
     })
     .slice(0, 10)
@@ -821,7 +713,7 @@ function searchTools(query) {
 
 
 /* =========================================================
-   TOOL CARD
+   TOOL CARDS
    ========================================================= */
 
 function createToolCard(tool) {
@@ -869,7 +761,6 @@ function createToolCard(tool) {
         </a>
 
       </div>
-
     </article>
   `;
 }
@@ -890,7 +781,7 @@ function renderTools(results) {
     toolsGrid.innerHTML = `
       <div class="empty-state">
         <h3>No tools found</h3>
-        <p>Try another search like "make a logo", "edit video", or "study maths".</p>
+        <p>Try something like "make a logo", "edit video", or "study maths".</p>
       </div>
     `;
     return;
@@ -906,7 +797,7 @@ function renderTools(results) {
    DASHBOARD
    ========================================================= */
 
-function createDashboardCard(tool) {
+function createDashboardToolCard(tool) {
   return `
     <article class="tool-card dashboard-tool-card">
 
@@ -954,6 +845,8 @@ function renderDashboard() {
     .map(name => tools.find(tool => tool.name === name))
     .filter(Boolean);
 
+  const categoryCount = new Set(tools.map(tool => tool.category)).size;
+
   dashboard.innerHTML = `
     <div class="dashboard-inner">
 
@@ -961,24 +854,128 @@ function renderDashboard() {
         <div>
           <p class="section-label">YOUR SPACE</p>
           <h2>Dashboard</h2>
-          <p>Keep track of the tools you love and use most.</p>
+          <p>Your personal TzTools hub.</p>
         </div>
       </div>
+
+
+      <!-- STATS -->
+
+      <div class="dashboard-stats">
+
+        <div class="dashboard-stat">
+          <div class="dashboard-stat-icon">🧰</div>
+          <div>
+            <strong>${tools.length}</strong>
+            <span>Total Tools</span>
+          </div>
+        </div>
+
+        <div class="dashboard-stat">
+          <div class="dashboard-stat-icon">⭐</div>
+          <div>
+            <strong>${favoriteTools.length}</strong>
+            <span>Favorites</span>
+          </div>
+        </div>
+
+        <div class="dashboard-stat">
+          <div class="dashboard-stat-icon">🕘</div>
+          <div>
+            <strong>${recentTools.length}</strong>
+            <span>Recently Used</span>
+          </div>
+        </div>
+
+        <div class="dashboard-stat">
+          <div class="dashboard-stat-icon">📂</div>
+          <div>
+            <strong>${categoryCount}</strong>
+            <span>Categories</span>
+          </div>
+        </div>
+
+      </div>
+
+
+      <!-- QUICK ACTIONS -->
 
       <section class="dashboard-section">
 
         <div class="dashboard-section-header">
           <div>
+            <h3>⚡ Quick Actions</h3>
+            <p>Jump straight into what you need.</p>
+          </div>
+        </div>
+
+        <div class="dashboard-actions">
+
+          <button
+            class="dashboard-action"
+            data-dashboard-search="make a logo"
+          >
+            <span>🎨</span>
+            <strong>Make a Logo</strong>
+            <small>Find design tools</small>
+          </button>
+
+          <button
+            class="dashboard-action"
+            data-dashboard-search="edit video"
+          >
+            <span>🎬</span>
+            <strong>Edit a Video</strong>
+            <small>Find video editors</small>
+          </button>
+
+          <button
+            class="dashboard-action"
+            data-dashboard-search="study"
+          >
+            <span>🎓</span>
+            <strong>Study</strong>
+            <small>Find learning tools</small>
+          </button>
+
+          <button
+            class="dashboard-action"
+            data-dashboard-search="build a website"
+          >
+            <span>🌐</span>
+            <strong>Build a Website</strong>
+            <small>Find website builders</small>
+          </button>
+
+        </div>
+
+      </section>
+
+
+      <!-- FAVORITES -->
+
+      <section class="dashboard-section">
+
+        <div class="dashboard-section-header">
+
+          <div>
             <h3>⭐ Favorite Tools</h3>
             <p>Your saved tools.</p>
           </div>
+
+          ${
+            favoriteTools.length
+              ? `<span class="dashboard-count">${favoriteTools.length}</span>`
+              : ""
+          }
+
         </div>
 
         ${
           favoriteTools.length
             ? `
               <div class="favorites-dashboard-grid">
-                ${favoriteTools.map(createDashboardCard).join("")}
+                ${favoriteTools.map(createDashboardToolCard).join("")}
               </div>
             `
             : `
@@ -991,6 +988,9 @@ function renderDashboard() {
         }
 
       </section>
+
+
+      <!-- RECENT -->
 
       <section class="dashboard-section">
 
@@ -1013,7 +1013,7 @@ function renderDashboard() {
           recentTools.length
             ? `
               <div class="recent-dashboard-grid">
-                ${recentTools.map(createDashboardCard).join("")}
+                ${recentTools.map(createDashboardToolCard).join("")}
               </div>
             `
             : `
@@ -1035,11 +1035,25 @@ function renderDashboard() {
   if (clearButton) {
     clearButton.addEventListener("click", clearRecentlyUsed);
   }
+
+  document.querySelectorAll("[data-dashboard-search]").forEach(button => {
+    button.addEventListener("click", () => {
+
+      const query = button.dataset.dashboardSearch;
+
+      if (searchInput) {
+        searchInput.value = query;
+      }
+
+      performSearch();
+
+    });
+  });
 }
 
 
 /* =========================================================
-   SEARCH
+   SEARCH ACTION
    ========================================================= */
 
 function performSearch() {
@@ -1124,7 +1138,11 @@ function filterByCategory() {
   const category = categoryFilter.value;
 
   if (category === "all") {
-    renderTools(searchInput?.value ? searchTools(searchInput.value) : tools);
+    renderTools(
+      searchInput?.value
+        ? searchTools(searchInput.value)
+        : tools.slice(0, 10)
+    );
     return;
   }
 
@@ -1135,7 +1153,7 @@ function filterByCategory() {
 
 
 /* =========================================================
-   EVENT LISTENERS
+   EVENTS
    ========================================================= */
 
 if (searchButton) {
@@ -1143,6 +1161,7 @@ if (searchButton) {
 }
 
 if (searchInput) {
+
   searchInput.addEventListener("keydown", event => {
     if (event.key === "Enter") {
       performSearch();
@@ -1158,7 +1177,7 @@ if (categoryFilter) {
 
 
 /* =========================================================
-   DELEGATED CLICKS
+   GLOBAL CLICK HANDLER
    ========================================================= */
 
 document.addEventListener("click", event => {
@@ -1166,12 +1185,11 @@ document.addEventListener("click", event => {
   const favoriteButton = event.target.closest("[data-favorite]");
 
   if (favoriteButton) {
+
     event.preventDefault();
     event.stopPropagation();
 
-    const toolName = favoriteButton.dataset.favorite;
-
-    toggleFavorite(toolName);
+    toggleFavorite(favoriteButton.dataset.favorite);
 
     return;
   }
@@ -1180,9 +1198,8 @@ document.addEventListener("click", event => {
   const visitLink = event.target.closest("[data-visit]");
 
   if (visitLink) {
-    const toolName = visitLink.dataset.visit;
 
-    addRecentlyVisited(toolName);
+    addRecentlyVisited(visitLink.dataset.visit);
 
     return;
   }
@@ -1191,8 +1208,8 @@ document.addEventListener("click", event => {
   const suggestion = event.target.closest("[data-suggestion]");
 
   if (suggestion) {
-    const toolName = suggestion.dataset.suggestion;
 
+    const toolName = suggestion.dataset.suggestion;
     const tool = tools.find(item => item.name === toolName);
 
     if (tool && searchInput) {
@@ -1214,7 +1231,10 @@ document.querySelectorAll(".quick-search").forEach(button => {
 
   button.addEventListener("click", () => {
 
-    const query = button.dataset.query || button.dataset.search || "";
+    const query =
+      button.dataset.query ||
+      button.dataset.search ||
+      "";
 
     if (searchInput) {
       searchInput.value = query;
@@ -1232,6 +1252,7 @@ document.querySelectorAll(".quick-search").forEach(button => {
    ========================================================= */
 
 function openCategories() {
+
   if (!categoriesOverlay) return;
 
   categoriesOverlay.classList.add("active");
@@ -1241,6 +1262,7 @@ function openCategories() {
 }
 
 function closeCategories() {
+
   if (!categoriesOverlay) return;
 
   categoriesOverlay.classList.remove("active");
@@ -1254,9 +1276,11 @@ function closeCategories() {
   categoriesButtonHero,
   footerCategoriesButton
 ].forEach(button => {
+
   if (button) {
     button.addEventListener("click", openCategories);
   }
+
 });
 
 if (categoriesClose) {
@@ -1264,11 +1288,15 @@ if (categoriesClose) {
 }
 
 if (categoriesOverlay) {
+
   categoriesOverlay.addEventListener("click", event => {
+
     if (event.target === categoriesOverlay) {
       closeCategories();
     }
+
   });
+
 }
 
 document.querySelectorAll(".category-card").forEach(button => {
@@ -1280,11 +1308,13 @@ document.querySelectorAll(".category-card").forEach(button => {
     closeCategories();
 
     if (category === "all") {
+
       if (categoryFilter) {
         categoryFilter.value = "all";
       }
 
       renderTools(tools.slice(0, 10));
+
       return;
     }
 
@@ -1292,7 +1322,9 @@ document.querySelectorAll(".category-card").forEach(button => {
       categoryFilter.value = category;
     }
 
-    const filtered = tools.filter(tool => tool.category === category);
+    const filtered = tools.filter(
+      tool => tool.category === category
+    );
 
     renderTools(filtered.slice(0, 10));
 
@@ -1353,7 +1385,8 @@ if (themeToggle) {
 
   themeToggle.addEventListener("click", () => {
 
-    const dark = document.body.classList.toggle("dark-mode");
+    const dark =
+      document.body.classList.toggle("dark-mode");
 
     localStorage.setItem(
       "tztools_theme",
@@ -1366,7 +1399,7 @@ if (themeToggle) {
 
 
 /* =========================================================
-   ESCAPE KEY
+   ESCAPE
    ========================================================= */
 
 document.addEventListener("keydown", event => {
@@ -1379,138 +1412,269 @@ document.addEventListener("keydown", event => {
 
 
 /* =========================================================
-   EXTRA V6.4 DASHBOARD STYLING
+   V6.5 DASHBOARD STYLES
    ========================================================= */
 
-const v64Styles = document.createElement("style");
+const v65Styles = document.createElement("style");
 
-v64Styles.textContent = `
+v65Styles.textContent = `
 
-  .favorite-button {
-    position: absolute;
-    top: 14px;
-    right: 14px;
-    width: 38px;
-    height: 38px;
-    border: 0;
-    border-radius: 50%;
-    background: rgba(127, 127, 127, 0.12);
-    cursor: pointer;
-    font-size: 22px;
-    line-height: 1;
-    z-index: 5;
-    transition: transform 0.2s ease, background 0.2s ease;
+.dashboard-inner {
+  width: 100%;
+}
+
+.dashboard-header {
+  margin-bottom: 30px;
+}
+
+.dashboard-header h2 {
+  margin-bottom: 8px;
+}
+
+.dashboard-header p {
+  opacity: 0.7;
+}
+
+
+/* STATS */
+
+.dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 45px;
+}
+
+.dashboard-stat {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px;
+  border-radius: 18px;
+  background: rgba(127, 127, 127, 0.08);
+  border: 1px solid rgba(127, 127, 127, 0.12);
+}
+
+.dashboard-stat-icon {
+  font-size: 28px;
+}
+
+.dashboard-stat strong {
+  display: block;
+  font-size: 25px;
+  line-height: 1.1;
+}
+
+.dashboard-stat span {
+  display: block;
+  margin-top: 5px;
+  font-size: 13px;
+  opacity: 0.65;
+}
+
+
+/* SECTIONS */
+
+.dashboard-section {
+  margin-bottom: 48px;
+}
+
+.dashboard-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.dashboard-section-header h3 {
+  margin: 0 0 5px;
+}
+
+.dashboard-section-header p {
+  margin: 0;
+  opacity: 0.65;
+}
+
+.dashboard-count {
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: rgba(127, 127, 127, 0.12);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+
+/* QUICK ACTIONS */
+
+.dashboard-actions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+}
+
+.dashboard-action {
+  text-align: left;
+  border: 1px solid rgba(127, 127, 127, 0.14);
+  background: rgba(127, 127, 127, 0.07);
+  border-radius: 18px;
+  padding: 20px;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.dashboard-action:hover {
+  transform: translateY(-3px);
+  background: rgba(127, 127, 127, 0.13);
+}
+
+.dashboard-action span {
+  display: block;
+  font-size: 28px;
+  margin-bottom: 13px;
+}
+
+.dashboard-action strong {
+  display: block;
+  font-size: 15px;
+}
+
+.dashboard-action small {
+  display: block;
+  margin-top: 5px;
+  opacity: 0.6;
+}
+
+
+/* TOOL GRIDS */
+
+.favorites-dashboard-grid,
+.recent-dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.dashboard-tool-card {
+  position: relative;
+}
+
+
+/* EMPTY */
+
+.dashboard-empty {
+  padding: 45px 25px;
+  text-align: center;
+  border: 1px dashed rgba(127, 127, 127, 0.35);
+  border-radius: 20px;
+}
+
+.dashboard-empty > div {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+.dashboard-empty h4 {
+  margin: 0 0 8px;
+  font-size: 20px;
+}
+
+.dashboard-empty p {
+  margin: 0;
+  opacity: 0.65;
+}
+
+
+/* FAVORITES */
+
+.favorite-button {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(127, 127, 127, 0.12);
+  cursor: pointer;
+  font-size: 22px;
+  line-height: 1;
+  z-index: 5;
+  transition: transform 0.2s ease;
+}
+
+.favorite-button:hover {
+  transform: scale(1.1);
+}
+
+.favorite-button.active {
+  background: rgba(255, 190, 0, 0.16);
+}
+
+
+/* CLEAR */
+
+.clear-recent-button {
+  border: 0;
+  background: rgba(127, 127, 127, 0.12);
+  padding: 9px 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.clear-recent-button:hover {
+  background: rgba(127, 127, 127, 0.2);
+}
+
+
+/* EMPTY SEARCH */
+
+.empty-state {
+  width: 100%;
+  text-align: center;
+  padding: 50px 20px;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 850px) {
+
+  .dashboard-stats {
+    grid-template-columns: repeat(2, 1fr);
   }
 
-  .favorite-button:hover {
-    transform: scale(1.1);
+  .dashboard-actions {
+    grid-template-columns: repeat(2, 1fr);
   }
 
-  .favorite-button.active {
-    background: rgba(255, 190, 0, 0.16);
+}
+
+@media (max-width: 550px) {
+
+  .dashboard-stats {
+    grid-template-columns: 1fr;
   }
 
-  .dashboard-inner {
-    width: 100%;
-  }
-
-  .dashboard-header {
-    margin-bottom: 36px;
-  }
-
-  .dashboard-header h2 {
-    margin-bottom: 8px;
-  }
-
-  .dashboard-section {
-    margin-bottom: 48px;
-  }
-
-  .dashboard-section-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    margin-bottom: 20px;
-  }
-
-  .dashboard-section-header h3 {
-    margin: 0 0 6px;
-  }
-
-  .dashboard-section-header p {
-    margin: 0;
-    opacity: 0.7;
+  .dashboard-actions {
+    grid-template-columns: 1fr;
   }
 
   .favorites-dashboard-grid,
   .recent-dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 20px;
+    grid-template-columns: 1fr;
   }
 
-  .dashboard-tool-card {
-    position: relative;
+  .dashboard-section-header {
+    align-items: flex-start;
   }
 
-  .dashboard-empty {
-    padding: 45px 25px;
-    text-align: center;
-    border: 1px dashed rgba(127, 127, 127, 0.35);
-    border-radius: 20px;
-  }
-
-  .dashboard-empty > div {
-    font-size: 40px;
-    margin-bottom: 10px;
-  }
-
-  .dashboard-empty h4 {
-    margin: 0 0 8px;
-    font-size: 20px;
-  }
-
-  .dashboard-empty p {
-    margin: 0;
-    opacity: 0.7;
-  }
-
-  .clear-recent-button {
-    border: 0;
-    background: rgba(127, 127, 127, 0.12);
-    padding: 9px 15px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: 600;
-  }
-
-  .clear-recent-button:hover {
-    background: rgba(127, 127, 127, 0.2);
-  }
-
-  .empty-state {
-    width: 100%;
-    text-align: center;
-    padding: 50px 20px;
-  }
-
-  @media (max-width: 650px) {
-
-    .dashboard-section-header {
-      align-items: flex-start;
-    }
-
-    .favorites-dashboard-grid,
-    .recent-dashboard-grid {
-      grid-template-columns: 1fr;
-    }
-
-  }
+}
 
 `;
 
-document.head.appendChild(v64Styles);
+document.head.appendChild(v65Styles);
 
 
 /* =========================================================
@@ -1523,4 +1687,4 @@ renderTools(tools.slice(0, 10));
 
 renderDashboard();
 
-console.log("TzTools V6.4 loaded successfully 🚀");
+console.log("TzTools V6.5 loaded successfully 🚀");
