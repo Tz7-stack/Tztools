@@ -1712,7 +1712,7 @@ function toggleFavorite(id) {
   }
 
   saveLocalData();
-
+syncFavoritesToCloud();
   updateCounts();
 
   refreshVisibleCards();
