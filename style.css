@@ -1272,3 +1272,256 @@ body.dark-mode .bottom-navigation {
   }
 
 }
+/* =========================================================
+   V7.5 HTML ↔ CSS ALIGNMENT FIX
+   ========================================================= */
+
+.hero {
+  min-height: calc(100vh - 150px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-content {
+  width: min(760px, 100%);
+  text-align: center;
+  margin-top: -40px;
+}
+
+.hero-title {
+  font-size: clamp(38px, 7vw, 68px);
+  line-height: 1;
+  letter-spacing: -3px;
+  margin-bottom: 16px;
+}
+
+.hero-title span {
+  display: block;
+}
+
+.hero-subtitle {
+  color: var(--muted);
+  font-size: 17px;
+  margin-bottom: 30px;
+}
+
+.search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 8px;
+  box-shadow: var(--shadow);
+}
+
+.search-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.search-input {
+  flex: 1;
+  min-width: 0;
+  height: 54px;
+  border: 0;
+  outline: 0;
+  padding: 0 45px;
+  background: transparent;
+  color: var(--text);
+  font-size: 16px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 15px;
+  z-index: 2;
+}
+
+.search-clear {
+  position: absolute;
+  right: 5px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+}
+
+.search-button {
+  border: 0;
+  background: var(--primary);
+  color: var(--bg);
+  height: 54px;
+  padding: 0 22px;
+  border-radius: 16px;
+  font-weight: 700;
+}
+
+.icon-button {
+  border: 0;
+  background: var(--surface-2);
+  color: var(--text);
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  font-size: 20px;
+}
+
+/* Page headers */
+.page-header {
+  margin-bottom: 25px;
+}
+
+.page-header h1,
+.page-header h2 {
+  letter-spacing: -1.5px;
+  margin-bottom: 8px;
+}
+
+.page-header p:not(.section-label) {
+  color: var(--muted);
+}
+
+/* Me settings */
+.settings-item {
+  width: 100%;
+  min-height: 58px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 15px;
+  padding: 12px 17px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  text-align: left;
+}
+
+.settings-item:hover {
+  background: var(--surface-2);
+}
+
+.settings-text {
+  flex: 1;
+}
+
+.settings-text strong,
+.settings-text small {
+  display: block;
+}
+
+.settings-text small {
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+.settings-arrow {
+  color: var(--muted);
+}
+
+/* Dashboard cards */
+.dashboard-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.dashboard-card-icon {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  background: var(--surface-2);
+  border-radius: 14px;
+  font-size: 23px;
+}
+
+.dashboard-card-label {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 5px;
+}
+
+.dashboard-card strong {
+  font-size: 28px;
+}
+
+/* Modal backdrops used by HTML */
+.auth-modal-backdrop,
+.tool-modal-backdrop,
+.comparison-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+}
+
+/* Modal icons */
+.tool-modal-icon {
+  width: 60px;
+  height: 60px;
+  display: grid;
+  place-items: center;
+  background: var(--surface-2);
+  border-radius: 16px;
+  font-size: 30px;
+  margin-bottom: 15px;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .hero {
+    min-height: calc(100vh - 125px);
+  }
+
+  .hero-content {
+    margin-top: -25px;
+  }
+
+  .hero-title {
+    font-size: 43px;
+    letter-spacing: -2px;
+  }
+
+  .hero-subtitle {
+    font-size: 15px;
+  }
+
+  .search-box {
+    padding: 6px;
+    border-radius: 18px;
+  }
+
+  .search-input {
+    height: 50px;
+    font-size: 14px;
+  }
+
+  .search-button {
+    height: 50px;
+    padding: 0 14px;
+    border-radius: 13px;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bottom-nav {
+    height: 64px;
+    bottom: 8px;
+    border-radius: 19px;
+  }
+}
