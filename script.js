@@ -2187,6 +2187,10 @@ async function getCurrentUser() {
     await supabaseClient.auth.getUser();
 
   if (error) {
+    if (error.name === "AuthSessionMissingError") {
+      return null;
+    }
+
     console.error("Get user error:", error);
     return null;
   }
