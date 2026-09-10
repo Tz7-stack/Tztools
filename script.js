@@ -2463,7 +2463,18 @@ if (accountButton) {
   );
 
 }
+/* =========================================================
+   ACCOUNT SETTINGS
+   ========================================================= */
 
+if (accountSettingsButton) {
+  accountSettingsButton.addEventListener(
+    "click",
+    () => {
+      openAuthModal();
+    }
+  );
+}
 
 /* =========================================================
    LOGIN
