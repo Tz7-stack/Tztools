@@ -2751,29 +2751,78 @@ async function updateAuthUI() {
    LOGOUT
    ========================================================= */
 
-if (logoutButton) {
+function ensureLogoutButton() {
+  let button = document.getElementById("logoutButton");
 
-  logoutButton.addEventListener(
-    "click",
-    async () => {
+  if (button) {
+    return button;
+  }
 
-      if (supabaseClient) {
-        await supabaseClient.auth.signOut();
-      }
+  button = document.createElement("button");
 
-      showToast(
-        "Signed out."
-      );
+  button.id = "logoutButton";
+  button.type = "button";
+  button.className = "settings-item";
+  button.textContent = "Log Out";
 
-      updateAuthUI();
+  if (accountSettingsButton) {
+    accountSettingsButton.insertAdjacentElement(
+      "afterend",
+      button
+    );
+  } else if (meView) {
+    meView.appendChild(button);
+  }
 
-      closeAuthModal();
-
-    }
-  );
-
+  return button;
 }
 
+
+document.addEventListener(
+  "click",
+  async event => {
+
+    const button =
+      event.target.closest("#logoutButton");
+
+    if (!button) return;
+
+    if (!supabaseClient) {
+      showToast(
+        "Supabase is not connected."
+      );
+      return;
+    }
+
+    button.disabled = true;
+
+    const { error } =
+      await supabaseClient.auth.signOut();
+
+    button.disabled = false;
+
+    if (error) {
+      console.error(
+        "Logout error:",
+        error
+      );
+
+      showToast(
+        "Could not log out. Try again."
+      );
+
+      return;
+    }
+
+    showToast(
+      "Signed out."
+    );
+
+    updateAuthUI();
+
+    closeAuthModal();
+  }
+);
 
 /* =========================================================
    SUPABASE AUTH LISTENER
