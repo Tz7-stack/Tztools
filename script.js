@@ -2377,43 +2377,10 @@ async function loadCloudData() {
 }
 
 
-async function syncRecentToCloud() {
-  const user = await getCurrentUser();
-
-  if (!user) return;
-
-  const { data: existing } =
-    await supabaseClient
-      .from("recently_used")
-      .select("tool_id")
-      .eq("user_id", user.id);
-
-  const cloudIds =
-    (existing || []).map(row => row.tool_id);
-
-  const missing =
-    recentlyUsed.filter(
-      id => !cloudIds.includes(id)
-    );
-
-  if (!missing.length) return;
-
-  await supabaseClient
-    .from("recently_used")
-    .insert(
-      missing.map(tool_id => ({
-        user_id: user.id,
-        tool_id
-      }))
-    );
-}
 
 
-async function loadCloudData() {
-  const user = await getCurrentUser();
+  
 
-  if (!user) return;
-}
   
 /* =========================================================
    DARK MODE
