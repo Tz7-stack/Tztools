@@ -2285,14 +2285,18 @@ async function syncRecentToCloud() {
   if (!missing.length) return;
 
   const { error: insertError } =
-    await supabaseClient
-      .from("recently_used")
-      .insert(
-        missing.map(tool_name => ({
-          user_id: user.id,
-          tool_name
-        }))
-      );
+  await supabaseClient
+    .from("recently_used")
+    .upsert(
+      missing.map(tool_name => ({
+        user_id: user.id,
+        tool_name
+      })),
+      {
+        onConflict: "user_id,tool_name",
+        ignoreDuplicates: true
+      }
+    );
 
   if (insertError) {
     console.error(
