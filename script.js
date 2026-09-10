@@ -649,7 +649,86 @@ const tools = [
   }
 
 ];
+  {
+    id: "gimp",
+    name: "GIMP",
+    icon: "🎨",
+    description: "Powerful free and open-source image editor for photos, graphics, and digital artwork.",
+    category: "Images",
+    pricing: "Free Forever",
+    rating: 4.8,
+    url: "https://www.gimp.org/",
+    keywords: [
+      "photo editor",
+      "image editor",
+      "edit photos",
+      "graphic design",
+      "free photoshop alternative",
+      "image editing",
+      "open source"
+    ]
+  },
 
+  {
+    id: "krita",
+    name: "Krita",
+    icon: "🖌️",
+    description: "Free and open-source digital painting software for illustrations, concept art, comics, and animation.",
+    category: "Design",
+    pricing: "Free Forever",
+    rating: 4.8,
+    url: "https://krita.org/",
+    keywords: [
+      "digital painting",
+      "drawing",
+      "illustration",
+      "digital art",
+      "concept art",
+      "free drawing app",
+      "animation"
+    ]
+  },
+
+  {
+    id: "blender",
+    name: "Blender",
+    icon: "🧊",
+    description: "Free and open-source 3D creation suite for modeling, animation, rendering, VFX, and more.",
+    category: "Design",
+    pricing: "Free Forever",
+    rating: 4.9,
+    url: "https://www.blender.org/",
+    keywords: [
+      "3d",
+      "3d modeling",
+      "animation",
+      "3d animation",
+      "rendering",
+      "vfx",
+      "game assets",
+      "3d design"
+    ]
+  },
+
+  {
+    id: "inkscape",
+    name: "Inkscape",
+    icon: "✒️",
+    description: "Free and open-source vector graphics editor for logos, illustrations, icons, and scalable designs.",
+    category: "Design",
+    pricing: "Free Forever",
+    rating: 4.7,
+    url: "https://inkscape.org/",
+    keywords: [
+      "vector",
+      "vector graphics",
+      "logo design",
+      "svg",
+      "illustration",
+      "icons",
+      "free illustrator alternative"
+    ]
+  }
 
 /* =========================================================
    STORAGE
