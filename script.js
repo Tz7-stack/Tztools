@@ -729,7 +729,90 @@ const tools = [
       "free illustrator alternative"
     ]
   }
+  {
+    id: "photopea",
+    name: "Photopea",
+    icon: "🖼️",
+    description: "Free browser-based photo editor with powerful tools and support for PSD files.",
+    category: "Images",
+    pricing: "Free",
+    rating: 4.8,
+    url: "https://www.photopea.com/",
+    keywords: [
+      "photo editor",
+      "image editor",
+      "edit photos",
+      "photoshop alternative",
+      "psd editor",
+      "graphic design",
+      "browser photo editor",
+      "free photo editor"
+    ]
+  },
 
+  {
+    id: "penpot",
+    name: "Penpot",
+    icon: "🎨",
+    description: "Free and open-source design platform for UI, UX, prototypes, and collaborative design.",
+    category: "Design",
+    pricing: "Free",
+    rating: 4.7,
+    url: "https://penpot.app/",
+    keywords: [
+      "ui design",
+      "ux design",
+      "prototype",
+      "prototyping",
+      "figma alternative",
+      "web design",
+      "app design",
+      "open source design"
+    ]
+  },
+
+  {
+    id: "excalidraw",
+    name: "Excalidraw",
+    icon: "✏️",
+    description: "Simple free online whiteboard for diagrams, brainstorming, sketches, and visual ideas.",
+    category: "Productivity",
+    pricing: "Free",
+    rating: 4.8,
+    url: "https://excalidraw.com/",
+    keywords: [
+      "whiteboard",
+      "diagram",
+      "diagrams",
+      "brainstorm",
+      "brainstorming",
+      "sketch",
+      "flowchart",
+      "mind map",
+      "visual notes"
+    ]
+  },
+
+  {
+    id: "darktable",
+    name: "darktable",
+    icon: "📷",
+    description: "Free and open-source photography workflow and RAW image developer for photographers.",
+    category: "Images",
+    pricing: "Free Forever",
+    rating: 4.7,
+    url: "https://www.darktable.org/",
+    keywords: [
+      "raw editor",
+      "raw photo",
+      "photo workflow",
+      "photography",
+      "photo editing",
+      "lightroom alternative",
+      "image processing",
+      "free photo editor"
+    ]
+  },
 /* =========================================================
    STORAGE
    ========================================================= */
