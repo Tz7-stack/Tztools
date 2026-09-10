@@ -3078,7 +3078,11 @@ function initialiseV76() {
 
   renderDashboard();
 
-  updateAuthUI();
+    updateAuthUI();
+
+  if (supabaseClient) {
+    loadCloudData();
+  }
 
   /*
      Home is always the starting point.
