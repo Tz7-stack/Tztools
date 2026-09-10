@@ -2229,14 +2229,18 @@ async function syncFavoritesToCloud() {
   if (!missing.length) return;
 
   const { error: insertError } =
-    await supabaseClient
-      .from("favorites")
-      .insert(
-        missing.map(tool_name => ({
-          user_id: user.id,
-          tool_name
-        }))
-      );
+  await supabaseClient
+    .from("favorites")
+    .upsert(
+      missing.map(tool_name => ({
+        user_id: user.id,
+        tool_name
+      })),
+      {
+        onConflict: "user_id,tool_name",
+        ignoreDuplicates: true
+      }
+    );
 
   if (insertError) {
     console.error(
