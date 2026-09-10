@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
 
@@ -11,611 +10,1352 @@
 
   <meta
     name="description"
-    content="TzTools — Find the right digital tool for whatever you want to accomplish."
+    content="TzTools helps you find the right digital tools for whatever you want to accomplish."
   >
 
   <meta
     name="theme-color"
-    content="#6366f1"
+    content="#0f172a"
   >
 
-  <title>TzTools — Find The Right Tool</title>
+  <title>TzTools — Find the right tool</title>
 
+  <!-- Main stylesheet -->
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-  <!-- ================= NAVBAR ================= -->
+  <!-- =========================================================
+       APP
+  ========================================================== -->
 
-  <header class="navbar">
+  <div id="app">
 
-    <div class="container nav-container">
+    <!-- =======================================================
+         HOME NAVBAR
+    ======================================================== -->
 
-      <a href="#home" class="logo">
-        Tz<span>Tools</span>
-      </a>
+    <header class="navbar" id="homeNavbar">
 
+      <div class="container nav-container">
 
-      <nav
-        class="nav-links"
-        id="navLinks"
-      >
-
-        <a href="#home">
-          Home
+        <a
+          href="#home"
+          class="logo"
+          id="logoLink"
+          aria-label="TzTools Home"
+        >
+          Tz<span>Tools</span>
         </a>
 
-        <a href="#tools">
-          Tools
-        </a>
+        <div class="nav-actions">
 
-        <button
-          type="button"
-          class="nav-category-button"
-          id="categoriesButton"
-        >
-          Categories
-          <span>⌄</span>
-        </button>
-
-        <a href="#dashboard">
-          Dashboard
-        </a>
-
-      </nav>
-
-
-      <div class="nav-actions">
-
-        <button
-          type="button"
-          class="icon-button"
-          id="themeToggle"
-          aria-label="Toggle dark mode"
-        >
-          🌙
-        </button>
-
-        <button
-          type="button"
-          class="menu-button"
-          id="menuButton"
-          aria-label="Open menu"
-          aria-expanded="false"
-        >
-          ☰
-        </button>
-
-      </div>
-
-    </div>
-
-  </header>
-
-
-  <!-- ================= CATEGORY MENU ================= -->
-
-  <div
-    class="category-menu-overlay"
-    id="categoriesOverlay"
-    aria-hidden="true"
-  >
-
-    <div
-      class="category-menu"
-      id="categoriesMenu"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="categoryMenuTitle"
-    >
-
-      <div class="category-menu-header">
-
-        <div>
-
-          <p class="section-label">
-            EXPLORE
-          </p>
-
-          <h2 id="categoryMenuTitle">
-            What are you looking for?
-          </h2>
-
-          <p>
-            Browse tools by category.
-          </p>
+          <button
+            type="button"
+            class="icon-button"
+            id="navAccountButton"
+            aria-label="Open account"
+            title="Account"
+          >
+            👤
+          </button>
 
         </div>
 
-
-        <button
-          type="button"
-          class="category-menu-close"
-          id="categoriesClose"
-          aria-label="Close categories"
-        >
-          ×
-        </button>
-
       </div>
 
-
-      <div class="category-menu-grid">
-
-        <button
-          type="button"
-          class="category-card"
-          data-category="AI"
-        >
-          <span>🤖</span>
-          <strong>AI</strong>
-          <small>AI-powered tools</small>
-        </button>
+    </header>
 
 
-        <button
-          type="button"
-          class="category-card"
-          data-category="Design"
-        >
-          <span>🎨</span>
-          <strong>Design</strong>
-          <small>Logos & graphics</small>
-        </button>
+    <!-- =======================================================
+         MAIN APP CONTENT
+    ======================================================== -->
+
+    <main id="mainContent">
 
 
-        <button
-          type="button"
-          class="category-card"
-          data-category="Video"
-        >
-          <span>🎬</span>
-          <strong>Video</strong>
-          <small>Video creation</small>
-        </button>
+      <!-- =====================================================
+           HOME SCREEN
+      ====================================================== -->
+
+      <section
+        class="app-view home-view active"
+        id="home"
+        data-view="home"
+      >
+
+        <div class="container">
+
+          <div class="hero">
+
+            <div class="hero-content">
+
+              <div class="hero-badge">
+                ✦ Smart tool discovery
+              </div>
+
+              <h1 class="hero-title">
+                Find the right tool
+                <span>for what you want to do.</span>
+              </h1>
+
+              <p class="hero-subtitle">
+                Tell TzTools what you want to accomplish,
+                and we'll help you find the tools that can get you there.
+              </p>
 
 
-        <button
-          type="button"
-          class="category-card"
-          data-category="Writing"
-        >
-          <span>✍️</span>
-          <strong>Writing</strong>
-          <small>Write & improve</small>
-        </button>
+              <!-- ===========================================
+                   MAIN SEARCH
+              ============================================ -->
+
+              <form
+                class="search-box"
+                id="searchForm"
+                autocomplete="off"
+              >
+
+                <div class="search-input-wrap">
+
+                  <span
+                    class="search-icon"
+                    aria-hidden="true"
+                  >
+                    🔎
+                  </span>
+
+                  <input
+                    type="text"
+                    id="searchInput"
+                    class="search-input"
+                    placeholder="What do you want to do?"
+                    aria-label="Search for a tool"
+                    autocomplete="off"
+                  >
+
+                  <button
+                    type="button"
+                    class="search-clear"
+                    id="searchClear"
+                    aria-label="Clear search"
+                    title="Clear search"
+                  >
+                    ×
+                  </button>
+
+                </div>
+
+                <button
+                  type="submit"
+                  class="search-button"
+                  id="searchButton"
+                >
+                  Search
+                </button>
+
+              </form>
 
 
-        <button
-          type="button"
-          class="category-card"
-          data-category="Websites"
-        >
-          <span>🌐</span>
-          <strong>Websites</strong>
-          <small>Build websites</small>
-        </button>
+              <!-- ===========================================
+                   SEARCH SUGGESTIONS
+              ============================================ -->
+
+              <div
+                class="suggestions"
+                id="suggestions"
+                aria-live="polite"
+              ></div>
 
 
-        <button
-          type="button"
-          class="category-card"
-          data-category="Students"
-        >
-          <span>📚</span>
-          <strong>Students</strong>
-          <small>Learn & study</small>
-        </button>
+              <!-- ===========================================
+                   QUICK SEARCHES
+              ============================================ -->
+
+              <div class="quick-searches">
+
+                <span class="quick-search-label">
+                  Try:
+                </span>
+
+                <button
+                  type="button"
+                  class="quick-search"
+                  data-query="make a logo"
+                >
+                  🎨 Make a logo
+                </button>
+
+                <button
+                  type="button"
+                  class="quick-search"
+                  data-query="edit videos"
+                >
+                  🎬 Edit videos
+                </button>
+
+                <button
+                  type="button"
+                  class="quick-search"
+                  data-query="build a website"
+                >
+                  🌐 Build a website
+                </button>
+
+                <button
+                  type="button"
+                  class="quick-search"
+                  data-query="study better"
+                >
+                  📚 Study better
+                </button>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
 
 
-        <button
-          type="button"
-          class="category-card"
-          data-category="Productivity"
-        >
-          <span>⚡</span>
-          <strong>Productivity</strong>
-          <small>Get things done</small>
-        </button>
+      <!-- =====================================================
+           SEARCH RESULTS SCREEN
+      ====================================================== -->
 
+      <section
+        class="app-view results-view"
+        id="searchResultsView"
+        data-view="results"
+        hidden
+      >
 
-        <button
-          type="button"
-          class="category-card"
-          data-category="all"
-        >
-          <span>✨</span>
-          <strong>View All</strong>
-          <small>Explore everything</small>
-        </button>
+        <div class="container">
 
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <!-- ================= MAIN ================= -->
-
-  <main>
-
-
-    <!-- ================= HERO ================= -->
-
-    <section
-      id="home"
-      class="hero"
-    >
-
-      <div class="container hero-content">
-
-        <p class="eyebrow">
-          YOUR DIGITAL TOOL FINDER
-        </p>
-
-
-        <h1>
-          Tell us what you need.
-          <span>We'll find the tools.</span>
-        </h1>
-
-
-        <p class="hero-subtitle">
-          Discover the right digital tools for AI, design, video,
-          studying, writing, websites, productivity and more.
-        </p>
-
-
-        <!-- SMART SEARCH -->
-
-        <div class="search-wrapper">
-
-          <div class="search-box">
-
-            <span class="search-icon">
-              🔎
-            </span>
-
-
-            <input
-              type="text"
-              id="searchInput"
-              placeholder="What do you want to accomplish?"
-              autocomplete="off"
-              aria-label="Search for a tool"
-            >
-
+          <div class="page-header">
 
             <button
               type="button"
-              id="searchButton"
+              class="back-button"
+              id="resultsBackButton"
             >
-              Search
+              ← Back
+            </button>
+
+            <div>
+
+              <p class="section-label">
+                TzTools recommendations
+              </p>
+
+              <h2 id="resultsTitle">
+                Tools for you
+              </h2>
+
+              <p id="resultsSubtitle">
+                Here are some tools that may help.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <!-- =============================================
+               RESULT CONTROLS
+          ============================================== -->
+
+          <div class="results-controls">
+
+            <div class="results-count">
+              <span id="resultsCount">0</span>
+              tools found
+            </div>
+
+            <select
+              id="resultsCategoryFilter"
+              class="category-filter"
+              aria-label="Filter results by category"
+            >
+
+              <option value="all">
+                All Categories
+              </option>
+
+              <option value="AI">
+                AI
+              </option>
+
+              <option value="Design">
+                Design
+              </option>
+
+              <option value="Images">
+                Images
+              </option>
+
+              <option value="Video">
+                Video
+              </option>
+
+              <option value="Writing">
+                Writing
+              </option>
+
+              <option value="Productivity">
+                Productivity
+              </option>
+
+              <option value="Websites">
+                Websites
+              </option>
+
+              <option value="Students">
+                Students
+              </option>
+
+              <option value="PDF">
+                PDF & Documents
+              </option>
+
+              <option value="Audio">
+                Audio
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <!-- =============================================
+               RESULTS GRID
+          ============================================== -->
+
+          <div
+            class="tools-grid"
+            id="toolsGrid"
+            aria-live="polite"
+          ></div>
+
+
+          <!-- =============================================
+               NO RESULTS
+          ============================================== -->
+
+          <div
+            class="empty-state"
+            id="noResults"
+            hidden
+          >
+
+            <div class="empty-state-icon">
+              🔍
+            </div>
+
+            <h3>
+              We couldn't find a match
+            </h3>
+
+            <p>
+              Try describing what you want to accomplish
+              in a different way.
+            </p>
+
+            <button
+              type="button"
+              class="primary-button"
+              id="emptyStateHomeButton"
+            >
+              Back to search
+            </button>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =====================================================
+           CUSTOMER SERVICE SCREEN
+      ====================================================== -->
+
+      <section
+        class="app-view support-view"
+        id="customerService"
+        data-view="support"
+        hidden
+      >
+
+        <div class="container">
+
+          <div class="support-card">
+
+            <div class="support-icon">
+              🛠️
+            </div>
+
+            <p class="section-label">
+              Customer Service
+            </p>
+
+            <h1>
+              We're working on it.
+            </h1>
+
+            <p>
+              Customer Service is coming soon.
+              We'll make it easier to get help,
+              report problems and contact the TzTools team.
+            </p>
+
+            <button
+              type="button"
+              class="primary-button"
+              data-view-target="home"
+            >
+              Back Home
+            </button>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =====================================================
+           ME / PROFILE SCREEN
+      ====================================================== -->
+
+      <section
+        class="app-view me-view"
+        id="me"
+        data-view="me"
+        hidden
+      >
+
+        <div class="container">
+
+          <div class="page-header">
+
+            <p class="section-label">
+              Your space
+            </p>
+
+            <h1>
+              Me
+            </h1>
+
+            <p>
+              Manage your account and TzTools preferences.
+            </p>
+
+          </div>
+
+
+          <!-- =============================================
+               PROFILE CARD
+          ============================================== -->
+
+          <div class="profile-card">
+
+            <div class="profile-avatar" id="profileAvatar">
+              👤
+            </div>
+
+            <div class="profile-info">
+
+              <h2 id="profileName">
+                Guest User
+              </h2>
+
+              <p id="profileEmail">
+                You're currently browsing as a guest.
+              </p>
+
+            </div>
+
+            <button
+              type="button"
+              class="secondary-button"
+              id="accountButton"
+            >
+              Account
             </button>
 
           </div>
 
 
+          <!-- =============================================
+               ME SETTINGS
+          ============================================== -->
+
+          <div class="settings-list">
+
+            <button
+              type="button"
+              class="settings-item"
+              id="themeSettingButton"
+            >
+
+              <span class="settings-icon">
+                🌙
+              </span>
+
+              <span class="settings-text">
+
+                <strong>
+                  Appearance
+                </strong>
+
+                <small id="themeStatus">
+                  Light / system appearance
+                </small>
+
+              </span>
+
+              <span class="settings-arrow">
+                →
+              </span>
+
+            </button>
+
+
+            <button
+              type="button"
+              class="settings-item"
+              id="aboutButton"
+            >
+
+              <span class="settings-icon">
+                ℹ️
+              </span>
+
+              <span class="settings-text">
+
+                <strong>
+                  About TzTools
+                </strong>
+
+                <small>
+                  Learn what TzTools is about
+                </small>
+
+              </span>
+
+              <span class="settings-arrow">
+                →
+              </span>
+
+            </button>
+
+
+            <button
+              type="button"
+              class="settings-item"
+              id="accountSettingsButton"
+            >
+
+              <span class="settings-icon">
+                🔐
+              </span>
+
+              <span class="settings-text">
+
+                <strong>
+                  Account
+                </strong>
+
+                <small>
+                  Sign in or manage your account
+                </small>
+
+              </span>
+
+              <span class="settings-arrow">
+                →
+              </span>
+
+            </button>
+
+          </div>
+
+
+          <!-- =============================================
+               ABOUT PANEL
+          ============================================== -->
+
           <div
-            id="suggestions"
-            class="suggestions"
-          ></div>
+            class="about-panel"
+            id="aboutPanel"
+            hidden
+          >
+
+            <div class="about-panel-header">
+
+              <h2>
+                About TzTools
+              </h2>
+
+              <button
+                type="button"
+                class="modal-close"
+                id="aboutClose"
+                aria-label="Close about"
+              >
+                ×
+              </button>
+
+            </div>
+
+            <p>
+              TzTools is designed to help you discover
+              useful digital tools without wasting time
+              searching through hundreds of websites.
+            </p>
+
+            <p>
+              Tell us what you want to accomplish,
+              explore the recommendations, and choose
+              the tool that fits your needs.
+            </p>
+
+            <div class="about-version">
+              TzTools V7.5
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
 
 
-          <p class="search-hint">
-            Try: "make a logo", "edit videos", "study maths",
-            "build a website"
+      <!-- =====================================================
+           DASHBOARD SCREEN
+      ====================================================== -->
+
+      <section
+        class="app-view dashboard-view"
+        id="dashboard"
+        data-view="dashboard"
+        hidden
+      >
+
+        <div class="container">
+
+          <div class="page-header">
+
+            <p class="section-label">
+              Your workspace
+            </p>
+
+            <h1>
+              Dashboard
+            </h1>
+
+            <p>
+              Your saved tools, recent activity and
+              comparisons will live here.
+            </p>
+
+          </div>
+
+
+          <!-- =============================================
+               DASHBOARD OVERVIEW
+          ============================================== -->
+
+          <div class="dashboard-grid">
+
+            <article class="dashboard-card">
+
+              <div class="dashboard-card-icon">
+                ❤️
+              </div>
+
+              <div>
+
+                <span class="dashboard-card-label">
+                  Favorites
+                </span>
+
+                <strong id="favoriteCount">
+                  0
+                </strong>
+
+              </div>
+
+            </article>
+
+
+            <article class="dashboard-card">
+
+              <div class="dashboard-card-icon">
+                🕘
+              </div>
+
+              <div>
+
+                <span class="dashboard-card-label">
+                  Recently Used
+                </span>
+
+                <strong id="recentCount">
+                  0
+                </strong>
+
+              </div>
+
+            </article>
+
+
+            <article class="dashboard-card">
+
+              <div class="dashboard-card-icon">
+                ⚖️
+              </div>
+
+              <div>
+
+                <span class="dashboard-card-label">
+                  Comparisons
+                </span>
+
+                <strong id="comparisonCount">
+                  0
+                </strong>
+
+              </div>
+
+            </article>
+
+          </div>
+
+
+          <!-- =============================================
+               FAVORITES
+          ============================================== -->
+
+          <div class="dashboard-section">
+
+            <div class="dashboard-section-header">
+
+              <div>
+
+                <p class="section-label">
+                  Saved
+                </p>
+
+                <h2>
+                  Your Favorites
+                </h2>
+
+              </div>
+
+            </div>
+
+            <div
+              class="tools-grid dashboard-tools-grid"
+              id="favoritesGrid"
+            ></div>
+
+            <div
+              class="dashboard-empty"
+              id="favoritesEmpty"
+            >
+              <span>❤️</span>
+
+              <p>
+                Tools you favorite will appear here.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <!-- =============================================
+               RECENTLY USED
+          ============================================== -->
+
+          <div class="dashboard-section">
+
+            <div class="dashboard-section-header">
+
+              <div>
+
+                <p class="section-label">
+                  Activity
+                </p>
+
+                <h2>
+                  Recently Used
+                </h2>
+
+              </div>
+
+            </div>
+
+            <div
+              class="tools-grid dashboard-tools-grid"
+              id="recentGrid"
+            ></div>
+
+            <div
+              class="dashboard-empty"
+              id="recentEmpty"
+            >
+              <span>🕘</span>
+
+              <p>
+                Tools you visit will appear here.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <!-- =============================================
+               COMPARISONS
+          ============================================== -->
+
+          <div class="dashboard-section">
+
+            <div class="dashboard-section-header">
+
+              <div>
+
+                <p class="section-label">
+                  Compare
+                </p>
+
+                <h2>
+                  Saved Comparisons
+                </h2>
+
+              </div>
+
+            </div>
+
+            <div
+              class="comparison-list"
+              id="comparisonList"
+            ></div>
+
+            <div
+              class="dashboard-empty"
+              id="comparisonEmpty"
+            >
+              <span>⚖️</span>
+
+              <p>
+                Your saved tool comparisons will appear here.
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </main>
+
+
+    <!-- =======================================================
+         FIXED BOTTOM NAVIGATION
+    ======================================================== -->
+
+    <nav
+      class="bottom-nav"
+      id="bottomNavigation"
+      aria-label="Main navigation"
+    >
+
+      <button
+        type="button"
+        class="bottom-nav-item active"
+        data-view-target="home"
+        aria-label="Home"
+        aria-current="page"
+      >
+
+        <span
+          class="bottom-nav-icon"
+          aria-hidden="true"
+        >
+          🏠
+        </span>
+
+        <span class="bottom-nav-label">
+          Home
+        </span>
+
+      </button>
+
+
+      <button
+        type="button"
+        class="bottom-nav-item"
+        data-view-target="support"
+        aria-label="Customer Service"
+      >
+
+        <span
+          class="bottom-nav-icon"
+          aria-hidden="true"
+        >
+          💬
+        </span>
+
+        <span class="bottom-nav-label">
+          Support
+        </span>
+
+      </button>
+
+
+      <button
+        type="button"
+        class="bottom-nav-item"
+        data-view-target="me"
+        aria-label="Me"
+      >
+
+        <span
+          class="bottom-nav-icon"
+          aria-hidden="true"
+        >
+          👤
+        </span>
+
+        <span class="bottom-nav-label">
+          Me
+        </span>
+
+      </button>
+
+
+      <button
+        type="button"
+        class="bottom-nav-item"
+        data-view-target="dashboard"
+        aria-label="Dashboard"
+      >
+
+        <span
+          class="bottom-nav-icon"
+          aria-hidden="true"
+        >
+          ▦
+        </span>
+
+        <span class="bottom-nav-label">
+          Dashboard
+        </span>
+
+      </button>
+
+    </nav>
+
+
+    <!-- =======================================================
+         AUTH MODAL
+    ======================================================== -->
+
+    <div
+      class="auth-modal"
+      id="authModal"
+      hidden
+      aria-hidden="true"
+    >
+
+      <div
+        class="auth-modal-backdrop"
+        id="authModalBackdrop"
+      ></div>
+
+
+      <div
+        class="auth-modal-card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="authModalTitle"
+      >
+
+        <button
+          type="button"
+          class="modal-close"
+          id="authModalClose"
+          aria-label="Close account"
+        >
+          ×
+        </button>
+
+
+        <!-- =============================================
+             AUTH HEADER
+        ============================================== -->
+
+        <div class="auth-header">
+
+          <div class="auth-logo">
+            Tz<span>Tools</span>
+          </div>
+
+          <h2 id="authModalTitle">
+            Welcome to TzTools
+          </h2>
+
+          <p id="authModalSubtitle">
+            Sign in to save your favorite tools
+            and keep your activity synced.
           </p>
 
         </div>
 
 
-        <!-- QUICK SEARCHES -->
+        <!-- =============================================
+             AUTH TABS
+        ============================================== -->
 
-        <div class="quick-searches">
+        <div class="auth-tabs">
 
           <button
             type="button"
-            class="quick-search"
-            data-query="make a logo"
-            data-search="make a logo"
+            class="auth-tab active"
+            id="loginTab"
+            data-auth-mode="login"
           >
-            🎨 Make a logo
+            Sign In
           </button>
 
-
           <button
             type="button"
-            class="quick-search"
-            data-query="edit videos"
-            data-search="edit videos"
+            class="auth-tab"
+            id="signupTab"
+            data-auth-mode="signup"
           >
-            🎬 Edit videos
-          </button>
-
-
-          <button
-            type="button"
-            class="quick-search"
-            data-query="study"
-            data-search="study"
-          >
-            📚 Study
-          </button>
-
-
-          <button
-            type="button"
-            class="quick-search"
-            data-query="build a website"
-            data-search="build a website"
-          >
-            🌐 Build a website
-          </button>
-
-
-          <button
-            type="button"
-            class="quick-search"
-            data-query="write"
-            data-search="write"
-          >
-            ✍️ Write
+            Create Account
           </button>
 
         </div>
 
-      </div>
 
-    </section>
+        <!-- =============================================
+             LOGIN FORM
+        ============================================== -->
 
+        <form
+          class="auth-form"
+          id="loginForm"
+          autocomplete="on"
+        >
 
-    <!-- ================= TOOLS ================= -->
+          <div class="form-group">
 
-    <section
-      id="tools"
-      class="section tools-section"
-    >
+            <label for="loginEmail">
+              Email
+            </label>
 
-      <div class="container">
-
-
-        <div class="section-header">
-
-          <div>
-
-            <p class="section-label">
-              DISCOVER
-            </p>
-
-
-            <h2>
-              Recommended Tools
-            </h2>
-
-
-            <p>
-              Tools that can help you get where you want to go.
-            </p>
+            <input
+              type="email"
+              id="loginEmail"
+              name="email"
+              placeholder="you@example.com"
+              autocomplete="email"
+              required
+            >
 
           </div>
 
-        </div>
+
+          <div class="form-group">
+
+            <label for="loginPassword">
+              Password
+            </label>
+
+            <input
+              type="password"
+              id="loginPassword"
+              name="password"
+              placeholder="Your password"
+              autocomplete="current-password"
+              required
+            >
+
+          </div>
 
 
-        <!-- CATEGORY FILTER -->
-
-        <div class="filter-panel">
-
-          <select
-            id="categoryFilter"
-            aria-label="Filter tools by category"
+          <button
+            type="submit"
+            class="primary-button auth-submit"
+            id="loginSubmit"
           >
-
-            <option value="all">
-              All Categories
-            </option>
-
-            <option value="AI">
-              AI
-            </option>
-
-            <option value="Design">
-              Design
-            </option>
-
-            <option value="Video">
-              Video
-            </option>
-
-            <option value="Writing">
-              Writing
-            </option>
-
-            <option value="Websites">
-              Websites
-            </option>
-
-            <option value="Students">
-              Students
-            </option>
-
-            <option value="Productivity">
-              Productivity
-            </option>
-
-            <option value="Images">
-              Images
-            </option>
-
-            <option value="Audio">
-              Audio
-            </option>
-
-            <option value="PDF & Documents">
-              PDF & Documents
-            </option>
-
-          </select>
-
-        </div>
+            Sign In
+          </button>
 
 
-        <!-- TOOL GRID -->
+          <p
+            class="auth-message"
+            id="loginMessage"
+            aria-live="polite"
+          ></p>
+
+        </form>
+
+
+        <!-- =============================================
+             SIGNUP FORM
+        ============================================== -->
+
+        <form
+          class="auth-form"
+          id="signupForm"
+          autocomplete="on"
+          hidden
+        >
+
+          <div class="form-group">
+
+            <label for="signupName">
+              Display Name
+            </label>
+
+            <input
+              type="text"
+              id="signupName"
+              name="name"
+              placeholder="Your name"
+              autocomplete="name"
+              maxlength="50"
+              required
+            >
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label for="signupEmail">
+              Email
+            </label>
+
+            <input
+              type="email"
+              id="signupEmail"
+              name="email"
+              placeholder="you@example.com"
+              autocomplete="email"
+              required
+            >
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label for="signupPassword">
+              Password
+            </label>
+
+            <input
+              type="password"
+              id="signupPassword"
+              name="password"
+              placeholder="Create a password"
+              autocomplete="new-password"
+              minlength="6"
+              required
+            >
+
+          </div>
+
+
+          <button
+            type="submit"
+            class="primary-button auth-submit"
+            id="signupSubmit"
+          >
+            Create Account
+          </button>
+
+
+          <p
+            class="auth-message"
+            id="signupMessage"
+            aria-live="polite"
+          ></p>
+
+        </form>
+
+
+        <!-- =============================================
+             LOGGED-IN ACCOUNT PANEL
+        ============================================== -->
 
         <div
-          id="toolsGrid"
-          class="tool-grid"
-        ></div>
+          class="logged-in-panel"
+          id="loggedInPanel"
+          hidden
+        >
+
+          <div class="logged-in-avatar" id="loggedInAvatar">
+            👤
+          </div>
+
+          <h3 id="loggedInName">
+            User
+          </h3>
+
+          <p id="loggedInEmail">
+            user@example.com
+          </p>
+
+          <button
+            type="button"
+            class="secondary-button"
+            id="logoutButton"
+          >
+            Sign Out
+          </button>
+
+        </div>
 
       </div>
 
-    </section>
+    </div>
 
 
-    <!-- ================= CATEGORY CTA ================= -->
+    <!-- =======================================================
+         TOOL DETAIL / VISIT MODAL
+    ======================================================== -->
 
-    <section
-      id="categories"
-      class="section categories-section"
+    <div
+      class="tool-modal"
+      id="toolModal"
+      hidden
+      aria-hidden="true"
     >
 
-      <div class="container">
+      <div
+        class="tool-modal-backdrop"
+        id="toolModalBackdrop"
+      ></div>
 
-        <div class="category-cta">
+      <div
+        class="tool-modal-card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="toolModalTitle"
+      >
 
-          <div>
+        <button
+          type="button"
+          class="modal-close"
+          id="toolModalClose"
+          aria-label="Close tool"
+        >
+          ×
+        </button>
 
-            <p class="section-label">
-              EXPLORE
-            </p>
+        <div
+          class="tool-modal-icon"
+          id="toolModalIcon"
+        >
+          🛠️
+        </div>
 
+        <p
+          class="section-label"
+          id="toolModalCategory"
+        >
+          Tool
+        </p>
 
-            <h2>
-              Not sure where to start?
-            </h2>
+        <h2 id="toolModalTitle">
+          Tool Name
+        </h2>
 
+        <p id="toolModalDescription">
+          Tool description.
+        </p>
 
-            <p>
-              Browse our categories and discover tools made
-              for different tasks.
-            </p>
+        <div
+          class="tool-modal-meta"
+          id="toolModalMeta"
+        ></div>
 
-          </div>
-
+        <div class="tool-modal-actions">
 
           <button
             type="button"
             class="primary-button"
-            id="categoriesButtonHero"
+            id="visitToolButton"
           >
-            Explore Categories
-            <span>→</span>
+            Visit Tool →
+          </button>
+
+          <button
+            type="button"
+            class="secondary-button"
+            id="modalFavoriteButton"
+          >
+            ♡ Favorite
           </button>
 
         </div>
 
       </div>
 
-    </section>
+    </div>
 
 
-    <!-- ================= DASHBOARD ================= -->
+    <!-- =======================================================
+         COMPARE BAR
+    ======================================================== -->
 
-    <section
-      id="dashboard"
-      class="section dashboard-section"
+    <div
+      class="compare-bar"
+      id="compareBar"
+      hidden
     >
 
-      <div class="container">
+      <div class="compare-bar-info">
 
-        <div class="section-header">
+        <strong>
+          Compare tools
+        </strong>
 
-          <p class="section-label">
-            YOUR SPACE
-          </p>
-
-
-          <h2>
-            Dashboard
-          </h2>
-
-
-          <p>
-            Your personal tools, favorites and activity will
-            live here.
-          </p>
-
-        </div>
-
-
-        <div class="dashboard-placeholder">
-
-          <div class="dashboard-placeholder-icon">
-            ✨
-          </div>
-
-
-          <h3>
-            Your personal dashboard
-          </h3>
-
-
-          <p>
-            Favorites, recently used tools and comparisons
-            will be available here.
-          </p>
-
-        </div>
+        <span id="compareCount">
+          0 selected
+        </span>
 
       </div>
 
-    </section>
-
-  </main>
-
-
-  <!-- ================= FOOTER ================= -->
-
-  <footer class="footer">
-
-    <div class="container footer-content">
-
-
-      <div>
-
-        <a
-          href="#home"
-          class="footer-logo"
-        >
-          TzTools
-        </a>
-
-
-        <p>
-          Find the right tool for whatever you want to accomplish.
-        </p>
-
-      </div>
-
-
-      <div class="footer-links">
-
-        <a href="#home">
-          Home
-        </a>
-
-        <a href="#tools">
-          Tools
-        </a>
+      <div class="compare-bar-actions">
 
         <button
           type="button"
-          id="footerCategoriesButton"
+          class="secondary-button"
+          id="clearCompareButton"
         >
-          Categories
+          Clear
+        </button>
+
+        <button
+          type="button"
+          class="primary-button"
+          id="openCompareButton"
+        >
+          Compare
         </button>
 
       </div>
@@ -623,21 +1363,98 @@
     </div>
 
 
-    <div class="container footer-bottom">
+    <!-- =======================================================
+         COMPARISON MODAL
+    ======================================================== -->
 
-      <p>
-        © 2026 TzTools. Built to help you find your way.
-      </p>
+    <div
+      class="comparison-modal"
+      id="comparisonModal"
+      hidden
+      aria-hidden="true"
+    >
+
+      <div
+        class="comparison-modal-backdrop"
+        id="comparisonModalBackdrop"
+      ></div>
+
+      <div
+        class="comparison-modal-card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="comparisonModalTitle"
+      >
+
+        <button
+          type="button"
+          class="modal-close"
+          id="comparisonModalClose"
+          aria-label="Close comparison"
+        >
+          ×
+        </button>
+
+        <p class="section-label">
+          Tool comparison
+        </p>
+
+        <h2 id="comparisonModalTitle">
+          Compare your tools
+        </h2>
+
+        <div
+          class="comparison-content"
+          id="comparisonContent"
+        ></div>
+
+        <div class="comparison-actions">
+
+          <button
+            type="button"
+            class="primary-button"
+            id="saveComparisonButton"
+          >
+            Save Comparison
+          </button>
+
+          <button
+            type="button"
+            class="secondary-button"
+            id="closeComparisonButton"
+          >
+            Close
+          </button>
+
+        </div>
+
+      </div>
 
     </div>
 
-  </footer>
+
+    <!-- =======================================================
+         TOAST NOTIFICATIONS
+    ======================================================== -->
+
+    <div
+      class="toast-container"
+      id="toastContainer"
+      aria-live="polite"
+      aria-atomic="true"
+    ></div>
+
+  </div>
 
 
-  <!-- ================= JAVASCRIPT ================= -->
+  <!-- =========================================================
+       SUPABASE
+  ========================================================== -->
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Main application JavaScript -->
   <script src="script.js"></script>
 
 </body>
-
 </html>
