@@ -2,78 +2,123 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="TzTools helps you find the right digital tool for what you want to accomplish.">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="description"
+    content="Find the right tool for what you want to do."
+  >
+
   <title>TzTools — Find the right tool</title>
 
-  <link rel="stylesheet" href="style.css">
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
 </head>
 
 <body>
 
-<div id="app">
+  <!-- =====================================================
+       TOP NAVBAR
+       ===================================================== -->
 
-  <!-- NAVBAR -->
-  <header class="navbar" id="homeNavbar">
+  <header
+    class="navbar"
+    id="homeNavbar"
+  >
+
     <div class="nav-container">
 
-      <a href="#home" class="logo" id="logoLink">
-        Tz<span>Tools</span>
-      </a>
-
       <button
+        class="brand-button"
+        id="brandButton"
         type="button"
-        class="nav-account-button"
-        id="navAccountButton"
-        aria-label="Account"
+        aria-label="Go to home"
       >
-        👤
+
+        <span class="brand-mark">
+          T
+        </span>
+
+        <span class="brand-name">
+          TzTools
+        </span>
+
       </button>
 
     </div>
+
   </header>
 
 
-  <!-- MAIN -->
+  <!-- =====================================================
+       MAIN APP
+       ===================================================== -->
+
   <main>
 
-    <!-- HOME -->
-    <section class="app-view home-view active" id="home">
+
+    <!-- ===================================================
+         HOME
+         =================================================== -->
+
+    <section
+      class="app-view home-view active"
+      id="home"
+    >
 
       <div class="home-content">
 
         <div class="hero-badge">
-          ✦ Smart tool discovery
+          <span></span>
+          Find tools faster
         </div>
+
 
         <h1>
           Find the right tool
-          <span>for what you want to do.</span>
+          <br>
+          for what you want to do.
         </h1>
 
-        <p>
-          Tell TzTools what you want to accomplish,
-          and we'll help you find the tools that can get you there.
+
+        <p class="hero-subtitle">
+          Tell us what you want to do.
         </p>
+
+
+        <!-- SEARCH -->
 
         <div class="search-wrapper">
 
-          <form class="search-form" id="searchForm">
+          <form
+            class="search-form"
+            id="searchForm"
+          >
 
             <div class="search-input-wrap">
 
-              <span class="search-icon">🔎</span>
+              <span class="search-icon">
+                ⌕
+              </span>
 
               <input
                 type="text"
                 id="searchInput"
-                placeholder="What do you want to do?"
                 autocomplete="off"
+                placeholder="What do you want to do?"
+                aria-label="Search for a tool"
               >
 
               <button
                 type="button"
                 id="searchClear"
+                class="search-clear"
                 aria-label="Clear search"
               >
                 ×
@@ -81,215 +126,561 @@
 
             </div>
 
-            <button type="submit" id="searchButton">
+
+            <button
+              type="submit"
+              id="searchButton"
+              class="search-button"
+            >
               Search
             </button>
 
           </form>
 
+
           <div
             class="suggestions"
             id="suggestions"
-            hidden
           ></div>
 
         </div>
 
-
-        <div class="quick-searches">
-
-          <span>Try:</span>
-
-          <button class="quick-search" data-query="make a logo">
-            🎨 Make a logo
-          </button>
-
-          <button class="quick-search" data-query="edit videos">
-            🎬 Edit videos
-          </button>
-
-          <button class="quick-search" data-query="build a website">
-            🌐 Build a website
-          </button>
-
-          <button class="quick-search" data-query="study better">
-            📚 Study better
-          </button>
-
-        </div>
-
       </div>
 
     </section>
 
 
-    <!-- RESULTS -->
+
+    <!-- ===================================================
+         SEARCH RESULTS
+         =================================================== -->
+
     <section
       class="app-view results-view"
       id="searchResultsView"
-      hidden
     >
 
-      <div class="container">
-
-        <button id="resultsBackButton" class="back-button">
-          ← Back
-        </button>
+      <div class="page-container">
 
         <div class="results-heading">
 
-          <p class="section-label">
-            TzTools recommendations
-          </p>
+          <div>
 
-          <h1 id="resultsTitle">
-            Tools for you
-          </h1>
+            <p class="section-label">
+              RESULTS
+            </p>
 
-          <p id="resultsSubtitle">
-            Here are some tools that may help.
-          </p>
-
-        </div>
-
-        <div class="results-controls">
-
-          <span id="resultsCount">
-            0 tools found
-          </span>
-
-          <select id="resultsCategoryFilter">
-
-            <option value="all">All Categories</option>
-            <option value="AI">AI</option>
-            <option value="Design">Design</option>
-            <option value="Images">Images</option>
-            <option value="Video">Video</option>
-            <option value="Writing">Writing</option>
-            <option value="Productivity">Productivity</option>
-            <option value="Websites">Websites</option>
-            <option value="Students">Students</option>
-            <option value="PDF">PDF</option>
-            <option value="Audio">Audio</option>
-
-          </select>
-
-        </div>
-
-        <div class="tools-grid" id="toolsGrid"></div>
-
-        <div id="noResults" hidden>
-
-          <h2>No matching tools found</h2>
-
-          <p>
-            Try describing what you want to accomplish differently.
-          </p>
-
-          <button id="emptyStateHomeButton">
-            Back to search
-          </button>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- CUSTOMER SERVICE -->
-    <section
-      class="app-view support-view"
-      id="customerService"
-      hidden
-    >
-
-      <div class="container">
-
-        <div class="support-card">
-
-          <div class="big-icon">🛠️</div>
-
-          <p class="section-label">Customer Service</p>
-
-          <h1>Coming soon.</h1>
-
-          <p>
-            We're building a better way for you to get help,
-            report problems and contact the TzTools team.
-          </p>
-
-          <button data-view-target="home" class="primary-button">
-            Back Home
-          </button>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- ME -->
-    <section
-      class="app-view me-view"
-      id="me"
-      hidden
-    >
-
-      <div class="container">
-
-        <p class="section-label">Your space</p>
-        <h1 class="page-title">Me</h1>
-        <p class="page-subtitle">
-          Manage your account and preferences.
-        </p>
-
-        <div class="profile-card">
-
-          <div class="profile-avatar" id="profileAvatar">
-            👤
-          </div>
-
-          <div class="profile-info">
-
-            <h2 id="profileName">
-              Guest User
+            <h2 id="resultsTitle">
+              Tools for you
             </h2>
 
-            <p id="profileEmail">
-              You're browsing as a guest.
+            <p
+              class="results-subtitle"
+              id="resultsSubtitle"
+            >
+              Here are some tools that could help.
             </p>
 
           </div>
 
+
+          <div class="results-controls">
+
+            <span
+              class="results-count"
+              id="resultsCount"
+            >
+              0 tools
+            </span>
+
+            <select
+              id="resultsCategoryFilter"
+              class="category-filter"
+            >
+
+              <option value="all">
+                All
+              </option>
+
+              <option value="AI">
+                AI
+              </option>
+
+              <option value="Design">
+                Design
+              </option>
+
+              <option value="Images">
+                Images
+              </option>
+
+              <option value="Video">
+                Video
+              </option>
+
+              <option value="Writing">
+                Writing
+              </option>
+
+              <option value="Productivity">
+                Productivity
+              </option>
+
+              <option value="Websites">
+                Websites
+              </option>
+
+              <option value="Students">
+                Students
+              </option>
+
+              <option value="PDF">
+                PDF
+              </option>
+
+              <option value="Audio">
+                Audio
+              </option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+
+        <div
+          class="tools-grid"
+          id="toolsGrid"
+        ></div>
+
+
+        <div
+          class="no-results"
+          id="noResults"
+        >
+
+          <div class="empty-icon">
+            🔎
+          </div>
+
+          <h3>
+            No tools found
+          </h3>
+
+          <p>
+            Try describing what you want to do.
+          </p>
+
           <button
             class="secondary-button"
-            id="accountButton"
+            id="emptyStateHomeButton"
+            type="button"
           >
-            Account
+            Back home
           </button>
 
         </div>
 
+      </div>
+
+    </section>
+
+
+
+    <!-- ===================================================
+         CUSTOMER SERVICE
+         =================================================== -->
+
+    <section
+      class="app-view"
+      id="customerService"
+    >
+
+      <div class="simple-page">
+
+        <div class="simple-icon">
+          💬
+        </div>
+
+        <p class="section-label">
+          SUPPORT
+        </p>
+
+        <h2>
+          Customer Service
+        </h2>
+
+        <p>
+          Support is coming soon.
+        </p>
+
+        <button
+          class="primary-button"
+          type="button"
+          data-view-target="home"
+        >
+          Back home
+        </button>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- ===================================================
+         DASHBOARD
+         =================================================== -->
+
+    <section
+      class="app-view"
+      id="dashboard"
+    >
+
+      <div class="page-container dashboard-page">
+
+        <div class="page-title-block">
+
+          <p class="section-label">
+            YOUR SPACE
+          </p>
+
+          <h2>
+            Dashboard
+          </h2>
+
+          <p>
+            Your saved tools in one place.
+          </p>
+
+        </div>
+
+
+        <!-- STATS -->
+
+        <div class="dashboard-stats">
+
+          <div class="dashboard-stat">
+
+            <span class="stat-icon">
+              ♥
+            </span>
+
+            <div>
+
+              <strong id="favoriteCount">
+                0
+              </strong>
+
+              <span>
+                Favorites
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <div class="dashboard-stat">
+
+            <span class="stat-icon">
+              ↺
+            </span>
+
+            <div>
+
+              <strong id="recentCount">
+                0
+              </strong>
+
+              <span>
+                Recent
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <div class="dashboard-stat">
+
+            <span class="stat-icon">
+              ✓
+            </span>
+
+            <div>
+
+              <strong id="comparisonCount">
+                0
+              </strong>
+
+              <span>
+                Compare
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- FAVORITES -->
+
+        <section class="dashboard-section">
+
+          <div class="dashboard-section-header">
+
+            <div>
+
+              <p class="section-label">
+                SAVED
+              </p>
+
+              <h3>
+                Favorites
+              </h3>
+
+            </div>
+
+          </div>
+
+
+          <div
+            class="tools-grid dashboard-grid"
+            id="favoritesGrid"
+          ></div>
+
+
+          <div
+            class="dashboard-empty"
+            id="favoritesEmpty"
+          >
+
+            <span>
+              ♥
+            </span>
+
+            <h4>
+              No favorites yet
+            </h4>
+
+            <p>
+              Save tools you want to find again.
+            </p>
+
+          </div>
+
+        </section>
+
+
+
+        <!-- RECENT -->
+
+        <section class="dashboard-section">
+
+          <div class="dashboard-section-header">
+
+            <div>
+
+              <p class="section-label">
+                HISTORY
+              </p>
+
+              <h3>
+                Recently used
+              </h3>
+
+            </div>
+
+          </div>
+
+
+          <div
+            class="tools-grid dashboard-grid"
+            id="recentGrid"
+          ></div>
+
+
+          <div
+            class="dashboard-empty"
+            id="recentEmpty"
+          >
+
+            <span>
+              ↺
+            </span>
+
+            <h4>
+              Nothing here yet
+            </h4>
+
+            <p>
+              Tools you visit will appear here.
+            </p>
+
+          </div>
+
+        </section>
+
+
+
+        <!-- COMPARISON -->
+
+        <section
+          class="dashboard-section comparison-section"
+        >
+
+          <div class="dashboard-section-header">
+
+            <div>
+
+              <p class="section-label">
+                COMPARE
+              </p>
+
+              <h3>
+                Your comparison
+              </h3>
+
+            </div>
+
+          </div>
+
+
+          <div
+            class="comparison-list"
+            id="comparisonList"
+          ></div>
+
+
+          <div
+            class="dashboard-empty"
+            id="comparisonEmpty"
+          >
+
+            <span>
+              ✓
+            </span>
+
+            <h4>
+              Nothing to compare
+            </h4>
+
+            <p>
+              Add tools to compare them later.
+            </p>
+
+          </div>
+
+        </section>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- ===================================================
+         ME
+         =================================================== -->
+
+    <section
+      class="app-view"
+      id="me"
+    >
+
+      <div class="page-container me-page">
+
+        <div class="profile-card">
+
+          <div
+            class="profile-avatar"
+            id="profileAvatar"
+          >
+            G
+          </div>
+
+          <div class="profile-info">
+
+            <p class="section-label">
+              ACCOUNT
+            </p>
+
+            <h2 id="profileName">
+              Guest
+            </h2>
+
+            <p id="profileEmail">
+              Sign in to sync your tools
+            </p>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- ACCOUNT -->
 
         <div class="settings-list">
 
           <button
             class="setting-button"
-            id="themeSettingButton"
+            id="accountButton"
+            type="button"
           >
 
-            <span class="setting-icon">🌙</span>
-
-            <span class="setting-content">
-              <strong>Appearance</strong>
-              <small id="themeStatus">
-                Light appearance
-              </small>
+            <span class="setting-icon">
+              👤
             </span>
 
-            <span>→</span>
+            <span class="setting-content">
+
+              <strong>
+                Account
+              </strong>
+
+              <small>
+                Sign in or create an account
+              </small>
+
+            </span>
+
+            <span class="setting-arrow">
+              ›
+            </span>
+
+          </button>
+
+
+          <button
+            class="setting-button"
+            id="themeSettingButton"
+            type="button"
+          >
+
+            <span class="setting-icon">
+              ◐
+            </span>
+
+            <span class="setting-content">
+
+              <strong>
+                Dark mode
+              </strong>
+
+              <small id="themeStatus">
+                Off
+              </small>
+
+            </span>
+
+            <span class="setting-arrow">
+              ›
+            </span>
 
           </button>
 
@@ -297,16 +688,28 @@
           <button
             class="setting-button"
             id="aboutButton"
+            type="button"
           >
 
-            <span class="setting-icon">ℹ️</span>
-
-            <span class="setting-content">
-              <strong>About TzTools</strong>
-              <small>Learn more about TzTools</small>
+            <span class="setting-icon">
+              ℹ
             </span>
 
-            <span>→</span>
+            <span class="setting-content">
+
+              <strong>
+                About TzTools
+              </strong>
+
+              <small>
+                Learn more
+              </small>
+
+            </span>
+
+            <span class="setting-arrow">
+              ›
+            </span>
 
           </button>
 
@@ -314,16 +717,28 @@
           <button
             class="setting-button"
             id="accountSettingsButton"
+            type="button"
           >
 
-            <span class="setting-icon">🔐</span>
-
-            <span class="setting-content">
-              <strong>Account</strong>
-              <small>Sign in or manage your account</small>
+            <span class="setting-icon">
+              ⚙
             </span>
 
-            <span>→</span>
+            <span class="setting-content">
+
+              <strong>
+                Settings
+              </strong>
+
+              <small>
+                Account settings
+              </small>
+
+            </span>
+
+            <span class="setting-arrow">
+              ›
+            </span>
 
           </button>
 
@@ -333,128 +748,31 @@
         <div
           class="about-panel"
           id="aboutPanel"
-          hidden
         >
 
           <button
-            class="modal-close"
+            class="panel-close"
             id="aboutClose"
+            type="button"
           >
             ×
           </button>
 
-          <h2>About TzTools</h2>
-
-          <p>
-            TzTools helps people discover useful digital
-            tools without wasting time searching everywhere.
+          <p class="section-label">
+            ABOUT
           </p>
 
+          <h3>
+            TzTools
+          </h3>
+
           <p>
-            Tell us what you want to accomplish,
-            explore the recommendations and choose
-            the tool that fits you.
+            Find the right tool for what you want to do.
           </p>
 
-          <strong>TzTools V7.5</strong>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- DASHBOARD -->
-    <section
-      class="app-view dashboard-view"
-      id="dashboard"
-      hidden
-    >
-
-      <div class="container">
-
-        <p class="section-label">Your workspace</p>
-
-        <h1 class="page-title">
-          Dashboard
-        </h1>
-
-        <p class="page-subtitle">
-          Your saved tools and activity.
-        </p>
-
-
-        <div class="dashboard-stats">
-
-          <div class="dashboard-stat">
-            <span>❤️ Favorites</span>
-            <strong id="favoriteCount">0</strong>
-          </div>
-
-          <div class="dashboard-stat">
-            <span>🕘 Recent</span>
-            <strong id="recentCount">0</strong>
-          </div>
-
-          <div class="dashboard-stat">
-            <span>⚖️ Comparisons</span>
-            <strong id="comparisonCount">0</strong>
-          </div>
-
-        </div>
-
-
-        <div class="dashboard-section">
-
-          <h2>Your Favorites</h2>
-
-          <div
-            class="tools-grid"
-            id="favoritesGrid"
-          ></div>
-
-          <div
-            class="dashboard-empty"
-            id="favoritesEmpty"
-          >
-            ❤️ Your favorite tools will appear here.
-          </div>
-
-        </div>
-
-
-        <div class="dashboard-section">
-
-          <h2>Recently Used</h2>
-
-          <div
-            class="tools-grid"
-            id="recentGrid"
-          ></div>
-
-          <div
-            class="dashboard-empty"
-            id="recentEmpty"
-          >
-            🕘 Tools you visit will appear here.
-          </div>
-
-        </div>
-
-
-        <div class="dashboard-section">
-
-          <h2>Saved Comparisons</h2>
-
-          <div id="comparisonList"></div>
-
-          <div
-            class="dashboard-empty"
-            id="comparisonEmpty"
-          >
-            ⚖️ Your saved comparisons will appear here.
-          </div>
+          <span>
+            Version 7.6
+          </span>
 
         </div>
 
@@ -465,52 +783,96 @@
   </main>
 
 
-  <!-- BOTTOM NAV -->
+
+  <!-- =====================================================
+       BOTTOM NAVIGATION
+       ===================================================== -->
+
   <nav
     class="bottom-navigation"
     id="bottomNavigation"
+    aria-label="Main navigation"
   >
 
     <button
       class="bottom-nav-item active"
       data-view-target="home"
+      type="button"
     >
-      <span class="bottom-nav-icon">🏠</span>
-      <span>Home</span>
+
+      <span class="nav-icon">
+        ⌂
+      </span>
+
+      <span>
+        Home
+      </span>
+
     </button>
+
 
     <button
       class="bottom-nav-item"
-      data-view-target="support"
+      data-view-target="customerService"
+      type="button"
     >
-      <span class="bottom-nav-icon">💬</span>
-      <span>Support</span>
+
+      <span class="nav-icon">
+        💬
+      </span>
+
+      <span>
+        Support
+      </span>
+
     </button>
 
-    <button
-      class="bottom-nav-item"
-      data-view-target="me"
-    >
-      <span class="bottom-nav-icon">👤</span>
-      <span>Me</span>
-    </button>
 
     <button
       class="bottom-nav-item"
       data-view-target="dashboard"
+      type="button"
     >
-      <span class="bottom-nav-icon">▦</span>
-      <span>Dashboard</span>
+
+      <span class="nav-icon">
+        ▦
+      </span>
+
+      <span>
+        Dashboard
+      </span>
+
+    </button>
+
+
+    <button
+      class="bottom-nav-item"
+      data-view-target="me"
+      type="button"
+    >
+
+      <span class="nav-icon">
+        ◯
+      </span>
+
+      <span>
+        Me
+      </span>
+
     </button>
 
   </nav>
 
 
-  <!-- AUTH MODAL -->
+
+  <!-- =====================================================
+       AUTH MODAL
+       ===================================================== -->
+
   <div
-    class="auth-modal"
+    class="modal"
     id="authModal"
-    hidden
+    aria-hidden="true"
   >
 
     <div
@@ -518,133 +880,177 @@
       id="authModalBackdrop"
     ></div>
 
-    <div class="auth-modal-card">
+
+    <div
+      class="modal-card auth-card"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Account"
+    >
 
       <button
         class="modal-close"
         id="authModalClose"
+        type="button"
       >
         ×
       </button>
 
-      <h2 id="authModalTitle">
-        Welcome to TzTools
-      </h2>
 
-      <p>
-        Sign in to save your tools and activity.
-      </p>
+      <div class="auth-header">
 
+        <div class="modal-icon">
+          👤
+        </div>
+
+        <h2>
+          Welcome
+        </h2>
+
+        <p>
+          Sign in or create your account.
+        </p>
+
+      </div>
+
+
+      <!-- ONLY ONE MODE IS SHOWN AT A TIME -->
 
       <div class="auth-tabs">
 
         <button
+          class="auth-tab active"
           id="loginTab"
-          class="active"
+          type="button"
         >
-          Sign In
+          Sign in
         </button>
 
-        <button id="signupTab">
-          Create Account
+        <button
+          class="auth-tab"
+          id="signupTab"
+          type="button"
+        >
+          Create account
         </button>
 
       </div>
 
 
-      <form id="loginForm" class="auth-form">
+      <!-- LOGIN -->
 
-        <label>Email</label>
+      <form
+        id="loginForm"
+        class="auth-form"
+      >
+
+        <label>
+          Email
+        </label>
 
         <input
-          id="loginEmail"
           type="email"
+          id="loginEmail"
+          placeholder="you@example.com"
           required
         >
 
-        <label>Password</label>
+
+        <label>
+          Password
+        </label>
 
         <input
-          id="loginPassword"
           type="password"
+          id="loginPassword"
+          placeholder="Your password"
           required
         >
+
 
         <button
-          id="loginSubmit"
-          class="auth-submit"
+          class="primary-button"
+          type="submit"
         >
-          Sign In
+          Sign in
         </button>
-
-        <p id="loginMessage"></p>
 
       </form>
 
+
+      <!-- SIGN UP -->
 
       <form
         id="signupForm"
         class="auth-form"
-        hidden
+        style="display:none;"
       >
 
-        <label>Name</label>
+        <label>
+          Name
+        </label>
 
         <input
+          type="text"
           id="signupName"
+          placeholder="Your name"
           required
         >
 
-        <label>Email</label>
+
+        <label>
+          Email
+        </label>
 
         <input
-          id="signupEmail"
           type="email"
+          id="signupEmail"
+          placeholder="you@example.com"
           required
         >
 
-        <label>Password</label>
+
+        <label>
+          Password
+        </label>
 
         <input
-          id="signupPassword"
           type="password"
+          id="signupPassword"
+          placeholder="At least 6 characters"
           minlength="6"
           required
         >
 
-        <button
-          id="signupSubmit"
-          class="auth-submit"
-        >
-          Create Account
-        </button>
 
-        <p id="signupMessage"></p>
+        <button
+          class="primary-button"
+          type="submit"
+        >
+          Create account
+        </button>
 
       </form>
 
 
+      <!-- LOGGED IN -->
+
       <div
         id="loggedInPanel"
-        hidden
         class="logged-in-panel"
+        style="display:none;"
       >
 
-        <div
-          class="logged-in-avatar"
-          id="loggedInAvatar"
-        >
-          👤
-        </div>
-
-        <h3 id="loggedInName">User</h3>
-        <p id="loggedInEmail">user@example.com</p>
+        <h3>
+          You're signed in.
+        </h3>
 
         <button
+          class="secondary-button"
           id="logoutButton"
-          class="logout-button"
+          type="button"
         >
-          Sign Out
+          Sign out
         </button>
 
       </div>
@@ -654,71 +1060,39 @@
   </div>
 
 
-  <!-- COMPARE BAR -->
+
+  <!-- =====================================================
+       COMPARE BAR
+       ===================================================== -->
+
   <div
     class="compare-bar"
     id="compareBar"
-    hidden
   >
 
     <span>
-      <strong>Compare</strong>
-      · <span id="compareCount">0 selected</span>
+      <strong id="compareCount">
+        0
+      </strong>
+      selected
     </span>
 
-    <button id="clearCompareButton">
-      Clear
-    </button>
-
-    <button
-      id="openCompareButton"
-      class="primary-button"
-    >
-      Compare
-    </button>
-
-  </div>
-
-
-  <!-- COMPARISON MODAL -->
-  <div
-    class="comparison-modal"
-    id="comparisonModal"
-    hidden
-  >
-
-    <div
-      class="modal-backdrop"
-      id="comparisonModalBackdrop"
-    ></div>
-
-    <div class="comparison-modal-card">
+    <div>
 
       <button
-        class="modal-close"
-        id="comparisonModalClose"
+        class="compare-clear"
+        id="clearCompareButton"
+        type="button"
       >
-        ×
-      </button>
-
-      <h2 id="comparisonModalTitle">
-        Compare Tools
-      </h2>
-
-      <div id="comparisonContent"></div>
-
-      <button
-        id="saveComparisonButton"
-        class="primary-button"
-      >
-        Save Comparison
+        Clear
       </button>
 
       <button
-        id="closeComparisonButton"
-        class="secondary-button"
+        class="compare-open"
+        id="openCompareButton"
+        type="button"
       >
-        Close
+        Compare
       </button>
 
     </div>
@@ -726,17 +1100,33 @@
   </div>
 
 
-  <!-- TOAST -->
+
+  <!-- =====================================================
+       TOASTS
+       ===================================================== -->
+
   <div
     class="toast-container"
     id="toastContainer"
+    aria-live="polite"
   ></div>
 
-</div>
 
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="script.js"></script>
+  <!-- =====================================================
+       SUPABASE
+       ===================================================== -->
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+  ></script>
+
+
+  <!-- =====================================================
+       APP JS
+       ===================================================== -->
+
+  <script src="script.js"></script>
 
 </body>
 </html>
