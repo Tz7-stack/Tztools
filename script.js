@@ -1,30 +1,26 @@
 /* =========================================================
-   TzTools V7.5
-   Smart Tool Finder + Accounts + Favorites + Recent + Compare
+   TZTOOLS V7.6
+   Smart Tool Finder
    ========================================================= */
 
 "use strict";
 
 /* =========================================================
-   1. SUPABASE
+   SUPABASE
    ========================================================= */
 
-const SUPABASE_URL = "https://nslaakklgidpzwlymrhf.supabase.co";
+const SUPABASE_URL =
+  "https://nslaakklgidpzwlymrhf.supabase.co";
 
-/*
-  IMPORTANT:
-  Paste your SUPABASE PUBLISHABLE KEY below.
-
-  DO NOT paste the secret/service_role key here.
-*/
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_XoDQsJkHs_7PA8wQAoutHA_glygnyxK";
+const SUPABASE_PUBLISHABLE_KEY =
+  "PASTE_YOUR_PUBLISHABLE_KEY_HERE";
 
 let supabaseClient = null;
 
 if (
   window.supabase &&
-  SUPABASE_PUBLISHABLE_KEY &&
-  !SUPABASE_PUBLISHABLE_KEY.includes("PASTE_YOUR")
+  SUPABASE_PUBLISHABLE_KEY !==
+    "PASTE_YOUR_PUBLISHABLE_KEY_HERE"
 ) {
   supabaseClient = window.supabase.createClient(
     SUPABASE_URL,
@@ -34,58 +30,7 @@ if (
 
 
 /* =========================================================
-   2. LOCAL STORAGE
-   ========================================================= */
-
-const STORAGE_KEYS = {
-  favorites: "tztools_v75_favorites",
-  recent: "tztools_v75_recent",
-  compare: "tztools_v75_compare",
-  theme: "tztools_v75_theme"
-};
-
-function loadStorage(key, fallback = []) {
-  try {
-    const value = localStorage.getItem(key);
-
-    if (!value) return fallback;
-
-    return JSON.parse(value);
-  } catch (error) {
-    console.warn("Storage read error:", error);
-    return fallback;
-  }
-}
-
-function saveStorage(key, value) {
-  try {
-    localStorage.setItem(key, JSON.stringify(value));
-  } catch (error) {
-    console.warn("Storage save error:", error);
-  }
-}
-
-
-/* =========================================================
-   3. APP STATE
-   ========================================================= */
-
-const state = {
-  currentView: "home",
-  currentQuery: "",
-  currentResults: [],
-  favorites: loadStorage(STORAGE_KEYS.favorites, []),
-  recent: loadStorage(STORAGE_KEYS.recent, []),
-  comparisons: loadStorage(STORAGE_KEYS.compare, []),
-  currentTool: null,
-  currentUser: null,
-  profile: null,
-  darkMode: localStorage.getItem(STORAGE_KEYS.theme) === "dark"
-};
-
-
-/* =========================================================
-   4. TOOL DATABASE
+   TOOL DATABASE
    ========================================================= */
 
 const tools = [
@@ -93,751 +38,903 @@ const tools = [
   /* ================= AI ================= */
 
   {
+    id: "chatgpt",
     name: "ChatGPT",
-    category: "AI",
     icon: "🤖",
-    description: "AI assistant for questions, writing, brainstorming, learning and more.",
+    description: "AI assistant for writing, ideas, learning and more.",
+    category: "AI",
     pricing: "Freemium",
     rating: 4.8,
-    url: "https://chatgpt.com/",
-    tags: ["ai", "assistant", "study", "writing", "research", "questions"],
-    intents: ["ai", "study", "write", "research", "brainstorm"]
+    url: "https://chatgpt.com",
+    keywords: [
+      "ai",
+      "chat",
+      "writing",
+      "study",
+      "research",
+      "ideas",
+      "assistant"
+    ]
   },
 
   {
+    id: "claude",
     name: "Claude",
-    category: "AI",
     icon: "🧠",
-    description: "AI assistant useful for writing, analysis, brainstorming and research.",
+    description: "AI assistant for writing, thinking and research.",
+    category: "AI",
     pricing: "Freemium",
     rating: 4.7,
-    url: "https://claude.ai/",
-    tags: ["ai", "assistant", "writing", "research", "analysis"],
-    intents: ["ai", "write", "research"]
+    url: "https://claude.ai",
+    keywords: [
+      "ai",
+      "writing",
+      "research",
+      "chat",
+      "study"
+    ]
   },
 
   {
+    id: "gemini",
     name: "Gemini",
-    category: "AI",
     icon: "✨",
-    description: "Google's AI assistant for answering questions, learning and creating.",
+    description: "Google's AI assistant for ideas, research and productivity.",
+    category: "AI",
     pricing: "Freemium",
     rating: 4.6,
-    url: "https://gemini.google.com/",
-    tags: ["ai", "google", "study", "questions", "research"],
-    intents: ["ai", "study", "research"]
+    url: "https://gemini.google.com",
+    keywords: [
+      "ai",
+      "google",
+      "research",
+      "writing",
+      "study"
+    ]
   },
 
   {
+    id: "perplexity",
     name: "Perplexity",
-    category: "AI",
     icon: "🔎",
-    description: "AI search and research tool designed to help you find information.",
+    description: "AI search for research and finding answers.",
+    category: "AI",
     pricing: "Freemium",
-    rating: 4.6,
-    url: "https://www.perplexity.ai/",
-    tags: ["ai", "search", "research", "answers"],
-    intents: ["ai", "research", "search", "study"]
+    rating: 4.7,
+    url: "https://www.perplexity.ai",
+    keywords: [
+      "ai",
+      "search",
+      "research",
+      "answers"
+    ]
   },
 
   {
-    name: "Microsoft Copilot",
+    id: "pi",
+    name: "Pi",
+    icon: "💬",
+    description: "Friendly AI for conversations and ideas.",
     category: "AI",
-    icon: "🪟",
-    description: "AI assistant for questions, ideas, writing and productivity.",
+    pricing: "Free",
+    rating: 4.4,
+    url: "https://pi.ai",
+    keywords: [
+      "ai",
+      "chat",
+      "conversation"
+    ]
+  },
+
+  {
+    id: "you",
+    name: "You.com",
+    icon: "🌐",
+    description: "AI search and productivity tools.",
+    category: "AI",
+    pricing: "Freemium",
+    rating: 4.3,
+    url: "https://you.com",
+    keywords: [
+      "ai",
+      "search",
+      "research",
+      "productivity"
+    ]
+  },
+
+  {
+    id: "gamma",
+    name: "Gamma",
+    icon: "📊",
+    description: "Create presentations and pages with AI.",
+    category: "AI",
     pricing: "Freemium",
     rating: 4.5,
-    url: "https://copilot.microsoft.com/",
-    tags: ["ai", "assistant", "writing", "productivity"],
-    intents: ["ai", "write", "productivity"]
+    url: "https://gamma.app",
+    keywords: [
+      "ai",
+      "presentation",
+      "slides",
+      "website"
+    ]
+  },
+
+  {
+    id: "copyai",
+    name: "Copy.ai",
+    icon: "✍️",
+    description: "AI tools for writing and content.",
+    category: "AI",
+    pricing: "Freemium",
+    rating: 4.2,
+    url: "https://www.copy.ai",
+    keywords: [
+      "ai",
+      "writing",
+      "content",
+      "marketing"
+    ]
   },
 
 
   /* ================= DESIGN ================= */
 
   {
+    id: "canva",
     name: "Canva",
-    category: "Design",
     icon: "🎨",
-    description: "Easy design platform for logos, posters, presentations, social media and more.",
+    description: "Design posters, presentations, logos and more.",
+    category: "Design",
     pricing: "Freemium",
     rating: 4.8,
-    url: "https://www.canva.com/",
-    tags: ["design", "logo", "poster", "graphics", "social media", "presentation"],
-    intents: ["logo", "design", "poster", "graphics", "presentation"]
+    url: "https://www.canva.com",
+    keywords: [
+      "design",
+      "logo",
+      "poster",
+      "presentation",
+      "graphics"
+    ]
   },
 
   {
-    name: "Adobe Express",
-    category: "Design",
-    icon: "🅰️",
-    description: "Quickly create graphics, flyers, social posts, videos and other designs.",
-    pricing: "Freemium",
-    rating: 4.6,
-    url: "https://www.adobe.com/express/",
-    tags: ["design", "logo", "graphics", "poster", "social media"],
-    intents: ["logo", "design", "graphics", "poster"]
-  },
-
-  {
+    id: "figma",
     name: "Figma",
+    icon: "🖌️",
+    description: "Design interfaces, websites and prototypes.",
     category: "Design",
-    icon: "🟣",
-    description: "Collaborative design platform for interfaces, graphics and prototypes.",
     pricing: "Freemium",
     rating: 4.7,
-    url: "https://www.figma.com/",
-    tags: ["design", "ui", "ux", "prototype", "graphics"],
-    intents: ["design", "website", "ui"]
+    url: "https://www.figma.com",
+    keywords: [
+      "design",
+      "ui",
+      "ux",
+      "website",
+      "prototype"
+    ]
   },
 
   {
-    name: "Looka",
+    id: "adobe-express",
+    name: "Adobe Express",
+    icon: "🅰️",
+    description: "Quickly create graphics, videos and social posts.",
     category: "Design",
-    icon: "💎",
-    description: "AI-powered logo and brand identity maker.",
     pricing: "Freemium",
     rating: 4.5,
-    url: "https://looka.com/",
-    tags: ["logo", "branding", "brand", "design", "ai"],
-    intents: ["logo", "branding"]
+    url: "https://www.adobe.com/express",
+    keywords: [
+      "design",
+      "graphics",
+      "poster",
+      "social"
+    ]
   },
 
   {
-    name: "Logo.com",
+    id: "pixlr",
+    name: "Pixlr",
+    icon: "🖼️",
+    description: "Online image editing and design tools.",
     category: "Design",
-    icon: "🏷️",
-    description: "Online logo maker for creating brand logos quickly.",
     pricing: "Freemium",
-    rating: 4.4,
-    url: "https://logo.com/",
-    tags: ["logo", "branding", "brand"],
-    intents: ["logo", "branding"]
+    rating: 4.3,
+    url: "https://pixlr.com",
+    keywords: [
+      "design",
+      "photo",
+      "edit",
+      "image"
+    ]
   },
 
 
   /* ================= IMAGES ================= */
 
   {
-    name: "Pixlr",
+    id: "removebg",
+    name: "Remove.bg",
+    icon: "✂️",
+    description: "Remove image backgrounds automatically.",
     category: "Images",
-    icon: "🖼️",
-    description: "Online photo editor for quick image editing and graphic design.",
     pricing: "Freemium",
-    rating: 4.5,
-    url: "https://pixlr.com/",
-    tags: ["photo", "image", "editing", "design"],
-    intents: ["photo", "image", "edit"]
+    rating: 4.7,
+    url: "https://www.remove.bg",
+    keywords: [
+      "image",
+      "background",
+      "remove",
+      "photo"
+    ]
   },
 
   {
-    name: "Photopea",
+    id: "unsplash",
+    name: "Unsplash",
+    icon: "📷",
+    description: "Find free high-quality photos.",
     category: "Images",
+    pricing: "Free",
+    rating: 4.8,
+    url: "https://unsplash.com",
+    keywords: [
+      "images",
+      "photos",
+      "pictures",
+      "background"
+    ]
+  },
+
+  {
+    id: "pexels",
+    name: "Pexels",
     icon: "📸",
-    description: "Powerful browser-based image editor with advanced editing features.",
+    description: "Free stock photos and videos.",
+    category: "Images",
     pricing: "Free",
     rating: 4.7,
-    url: "https://www.photopea.com/",
-    tags: ["photo", "image", "photoshop", "editing"],
-    intents: ["photo", "image", "edit"]
+    url: "https://www.pexels.com",
+    keywords: [
+      "images",
+      "photos",
+      "video",
+      "stock"
+    ]
   },
 
   {
-    name: "remove.bg",
+    id: "tinypng",
+    name: "TinyPNG",
+    icon: "🗜️",
+    description: "Compress PNG and JPEG images.",
     category: "Images",
-    icon: "✂️",
-    description: "Automatically remove backgrounds from images.",
     pricing: "Freemium",
     rating: 4.6,
-    url: "https://www.remove.bg/",
-    tags: ["background", "remove", "image", "photo"],
-    intents: ["background", "image", "photo"]
-  },
-
-  {
-    name: "Unsplash",
-    category: "Images",
-    icon: "🌄",
-    description: "Large library of free high-quality photos.",
-    pricing: "Free",
-    rating: 4.8,
-    url: "https://unsplash.com/",
-    tags: ["photos", "images", "stock", "pictures"],
-    intents: ["image", "photo", "pictures"]
-  },
-
-  {
-    name: "Pexels",
-    category: "Images",
-    icon: "📷",
-    description: "Free stock photos and videos for creative projects.",
-    pricing: "Free",
-    rating: 4.8,
-    url: "https://www.pexels.com/",
-    tags: ["photos", "videos", "stock", "pictures"],
-    intents: ["image", "photo", "video"]
-  },
-
-  {
-    name: "Pixabay",
-    category: "Images",
-    icon: "🌅",
-    description: "Free stock images, illustrations, vectors and media.",
-    pricing: "Free",
-    rating: 4.6,
-    url: "https://pixabay.com/",
-    tags: ["images", "photos", "vectors", "stock"],
-    intents: ["image", "photo", "graphics"]
+    url: "https://tinypng.com",
+    keywords: [
+      "image",
+      "compress",
+      "png",
+      "jpg"
+    ]
   },
 
 
   /* ================= VIDEO ================= */
 
   {
+    id: "capcut",
     name: "CapCut",
-    category: "Video",
     icon: "🎬",
-    description: "Popular video editor for short-form videos, effects, captions and more.",
+    description: "Edit videos with effects, text and templates.",
+    category: "Video",
     pricing: "Freemium",
-    rating: 4.8,
-    url: "https://www.capcut.com/",
-    tags: ["video", "editing", "tiktok", "reels", "shorts"],
-    intents: ["video", "edit", "shorts"]
+    rating: 4.7,
+    url: "https://www.capcut.com",
+    keywords: [
+      "video",
+      "edit",
+      "editing",
+      "shorts",
+      "reels"
+    ]
   },
 
   {
+    id: "veed",
     name: "VEED",
-    category: "Video",
-    icon: "🎞️",
-    description: "Browser video editor for social media videos, captions and more.",
-    pricing: "Freemium",
-    rating: 4.6,
-    url: "https://www.veed.io/",
-    tags: ["video", "editing", "captions", "social media"],
-    intents: ["video", "edit"]
-  },
-
-  {
-    name: "InVideo",
-    category: "Video",
-    icon: "📹",
-    description: "Online video creation platform with templates and AI features.",
-    pricing: "Freemium",
-    rating: 4.5,
-    url: "https://invideo.io/",
-    tags: ["video", "ai", "editing", "templates"],
-    intents: ["video", "edit", "ai"]
-  },
-
-  {
-    name: "Descript",
-    category: "Video",
-    icon: "📝",
-    description: "Video and audio editor with transcript-based editing.",
-    pricing: "Freemium",
-    rating: 4.5,
-    url: "https://www.descript.com/",
-    tags: ["video", "audio", "editing", "transcript"],
-    intents: ["video", "audio", "edit"]
-  },
-
-  {
-    name: "DaVinci Resolve",
-    category: "Video",
     icon: "🎥",
-    description: "Professional video editing, color grading, effects and audio software.",
-    pricing: "Free",
-    rating: 4.8,
-    url: "https://www.blackmagicdesign.com/products/davinciresolve",
-    tags: ["video", "editing", "professional", "color"],
-    intents: ["video", "edit"]
+    description: "Online video editing with captions and effects.",
+    category: "Video",
+    pricing: "Freemium",
+    rating: 4.5,
+    url: "https://www.veed.io",
+    keywords: [
+      "video",
+      "edit",
+      "captions",
+      "subtitles"
+    ]
   },
 
   {
-    name: "Clipchamp",
+    id: "descript",
+    name: "Descript",
+    icon: "🎙️",
+    description: "Edit video and audio using text.",
     category: "Video",
-    icon: "✂️",
-    description: "Simple online video editor for creating and editing videos.",
+    pricing: "Freemium",
+    rating: 4.5,
+    url: "https://www.descript.com",
+    keywords: [
+      "video",
+      "audio",
+      "edit",
+      "podcast"
+    ]
+  },
+
+  {
+    id: "invideo",
+    name: "InVideo",
+    icon: "📹",
+    description: "Create videos using templates and AI.",
+    category: "Video",
     pricing: "Freemium",
     rating: 4.4,
-    url: "https://clipchamp.com/",
-    tags: ["video", "editing", "microsoft"],
-    intents: ["video", "edit"]
+    url: "https://invideo.io",
+    keywords: [
+      "video",
+      "ai",
+      "editing",
+      "templates"
+    ]
   },
 
 
   /* ================= WRITING ================= */
 
   {
+    id: "grammarly",
     name: "Grammarly",
+    icon: "📝",
+    description: "Improve grammar, spelling and writing.",
     category: "Writing",
-    icon: "✍️",
-    description: "Writing assistant for grammar, spelling, clarity and tone.",
     pricing: "Freemium",
     rating: 4.7,
-    url: "https://www.grammarly.com/",
-    tags: ["writing", "grammar", "spelling", "essay"],
-    intents: ["write", "grammar", "essay"]
+    url: "https://www.grammarly.com",
+    keywords: [
+      "writing",
+      "grammar",
+      "spelling",
+      "essay"
+    ]
   },
 
   {
-    name: "LanguageTool",
-    category: "Writing",
-    icon: "🔤",
-    description: "Grammar, spelling and style checker.",
-    pricing: "Freemium",
-    rating: 4.6,
-    url: "https://languagetool.org/",
-    tags: ["writing", "grammar", "spelling"],
-    intents: ["write", "grammar"]
-  },
-
-  {
+    id: "quillbot",
     name: "QuillBot",
+    icon: "🔄",
+    description: "Rewrite and improve your writing.",
     category: "Writing",
-    icon: "🪶",
-    description: "Writing tools for paraphrasing, summarizing and improving text.",
     pricing: "Freemium",
     rating: 4.5,
-    url: "https://quillbot.com/",
-    tags: ["writing", "paraphrase", "summary", "essay"],
-    intents: ["write", "essay", "summary"]
+    url: "https://quillbot.com",
+    keywords: [
+      "writing",
+      "rewrite",
+      "paraphrase",
+      "essay"
+    ]
   },
 
   {
-    name: "Google Docs",
-    category: "Writing",
-    icon: "📄",
-    description: "Online document editor for writing and collaborating.",
-    pricing: "Free",
-    rating: 4.7,
-    url: "https://docs.google.com/",
-    tags: ["writing", "document", "essay", "school"],
-    intents: ["write", "document", "essay", "study"]
-  },
-
-
-  /* ================= PRODUCTIVITY ================= */
-
-  {
+    id: "notion",
     name: "Notion",
+    icon: "📒",
+    description: "Organize notes, tasks and projects.",
     category: "Productivity",
-    icon: "📓",
-    description: "Workspace for notes, planning, projects, databases and organization.",
     pricing: "Freemium",
     rating: 4.7,
-    url: "https://www.notion.com/",
-    tags: ["notes", "planning", "organization", "productivity"],
-    intents: ["notes", "productivity", "planning"]
-  },
-
-  {
-    name: "Trello",
-    category: "Productivity",
-    icon: "📋",
-    description: "Visual project and task management using boards and cards.",
-    pricing: "Freemium",
-    rating: 4.5,
-    url: "https://trello.com/",
-    tags: ["tasks", "project", "planning", "productivity"],
-    intents: ["tasks", "productivity", "planning"]
-  },
-
-  {
-    name: "Todoist",
-    category: "Productivity",
-    icon: "✅",
-    description: "Task manager for organizing your to-do list and projects.",
-    pricing: "Freemium",
-    rating: 4.6,
-    url: "https://todoist.com/",
-    tags: ["tasks", "todo", "planning"],
-    intents: ["tasks", "productivity", "planning"]
-  },
-
-  {
-    name: "Google Keep",
-    category: "Productivity",
-    icon: "🗒️",
-    description: "Simple notes and reminders for keeping track of ideas and tasks.",
-    pricing: "Free",
-    rating: 4.4,
-    url: "https://keep.google.com/",
-    tags: ["notes", "reminders", "tasks"],
-    intents: ["notes", "productivity"]
-  },
-
-  {
-    name: "Google Drive",
-    category: "Productivity",
-    icon: "☁️",
-    description: "Cloud storage for files, documents and collaborative work.",
-    pricing: "Freemium",
-    rating: 4.7,
-    url: "https://drive.google.com/",
-    tags: ["storage", "files", "documents", "cloud"],
-    intents: ["files", "documents", "productivity"]
+    url: "https://www.notion.so",
+    keywords: [
+      "notes",
+      "writing",
+      "study",
+      "planning",
+      "productivity"
+    ]
   },
 
 
   /* ================= WEBSITES ================= */
 
   {
+    id: "wix",
     name: "Wix",
-    category: "Websites",
     icon: "🌐",
-    description: "Website builder for creating websites without needing to code.",
+    description: "Build a website without coding.",
+    category: "Websites",
     pricing: "Freemium",
     rating: 4.5,
-    url: "https://www.wix.com/",
-    tags: ["website", "builder", "business", "site"],
-    intents: ["website", "business"]
+    url: "https://www.wix.com",
+    keywords: [
+      "website",
+      "web",
+      "site",
+      "build"
+    ]
   },
 
   {
-    name: "WordPress.com",
-    category: "Websites",
+    id: "wordpress",
+    name: "WordPress",
     icon: "📰",
-    description: "Website and blog platform for creating online sites.",
+    description: "Create websites and blogs.",
+    category: "Websites",
     pricing: "Freemium",
-    rating: 4.5,
-    url: "https://wordpress.com/",
-    tags: ["website", "blog", "site"],
-    intents: ["website", "blog"]
+    rating: 4.6,
+    url: "https://wordpress.com",
+    keywords: [
+      "website",
+      "blog",
+      "web",
+      "site"
+    ]
   },
 
   {
+    id: "framer",
     name: "Framer",
-    category: "Websites",
     icon: "⚡",
-    description: "Modern website builder focused on design and responsive sites.",
+    description: "Build modern websites visually.",
+    category: "Websites",
     pricing: "Freemium",
     rating: 4.6,
-    url: "https://www.framer.com/",
-    tags: ["website", "design", "builder"],
-    intents: ["website", "design"]
+    url: "https://www.framer.com",
+    keywords: [
+      "website",
+      "web",
+      "design",
+      "landing page"
+    ]
   },
 
   {
+    id: "webflow",
     name: "Webflow",
-    category: "Websites",
     icon: "🔷",
-    description: "Visual website builder for creating highly customized websites.",
+    description: "Design and build professional websites.",
+    category: "Websites",
     pricing: "Freemium",
     rating: 4.6,
-    url: "https://webflow.com/",
-    tags: ["website", "builder", "design"],
-    intents: ["website", "design"]
-  },
-
-  {
-    name: "Carrd",
-    category: "Websites",
-    icon: "💻",
-    description: "Simple website builder for clean one-page websites.",
-    pricing: "Freemium",
-    rating: 4.5,
-    url: "https://carrd.co/",
-    tags: ["website", "one page", "landing page"],
-    intents: ["website", "landing"]
-  },
-
-  {
-    name: "Google Sites",
-    category: "Websites",
-    icon: "🌍",
-    description: "Simple website builder from Google.",
-    pricing: "Free",
-    rating: 4.2,
-    url: "https://sites.google.com/",
-    tags: ["website", "google", "site"],
-    intents: ["website"]
+    url: "https://webflow.com",
+    keywords: [
+      "website",
+      "web",
+      "design",
+      "build"
+    ]
   },
 
 
   /* ================= STUDENTS ================= */
 
   {
+    id: "khan",
     name: "Khan Academy",
-    category: "Students",
     icon: "🎓",
-    description: "Free learning platform covering many school subjects.",
+    description: "Learn maths, science and many other subjects.",
+    category: "Students",
     pricing: "Free",
     rating: 4.8,
-    url: "https://www.khanacademy.org/",
-    tags: ["study", "math", "science", "school", "learning"],
-    intents: ["study", "school", "math", "science"]
+    url: "https://www.khanacademy.org",
+    keywords: [
+      "study",
+      "math",
+      "science",
+      "school",
+      "learning"
+    ]
   },
 
   {
+    id: "quizlet",
     name: "Quizlet",
-    category: "Students",
     icon: "🧠",
-    description: "Study platform with flashcards and learning activities.",
+    description: "Study using flashcards and practice tests.",
+    category: "Students",
     pricing: "Freemium",
     rating: 4.6,
-    url: "https://quizlet.com/",
-    tags: ["study", "flashcards", "school", "revision"],
-    intents: ["study", "revision"]
+    url: "https://quizlet.com",
+    keywords: [
+      "study",
+      "flashcards",
+      "school",
+      "revision"
+    ]
   },
 
   {
-    name: "WolframAlpha",
+    id: "photomath",
+    name: "Photomath",
+    icon: "➗",
+    description: "Get help understanding maths problems.",
     category: "Students",
-    icon: "🧮",
-    description: "Computational knowledge engine for maths, science and more.",
     pricing: "Freemium",
     rating: 4.7,
-    url: "https://www.wolframalpha.com/",
-    tags: ["math", "science", "calculations", "study"],
-    intents: ["math", "science", "study"]
-  },
-
-  {
-    name: "Desmos",
-    category: "Students",
-    icon: "📈",
-    description: "Online graphing calculator and mathematics tools.",
-    pricing: "Free",
-    rating: 4.7,
-    url: "https://www.desmos.com/",
-    tags: ["math", "graph", "calculator", "school"],
-    intents: ["math", "study"]
-  },
-
-  {
-    name: "Coursera",
-    category: "Students",
-    icon: "📚",
-    description: "Online learning platform with courses from universities and organizations.",
-    pricing: "Freemium",
-    rating: 4.6,
-    url: "https://www.coursera.org/",
-    tags: ["learning", "courses", "education"],
-    intents: ["study", "learning"]
-  },
-
-  {
-    name: "edX",
-    category: "Students",
-    icon: "🎒",
-    description: "Online learning platform offering courses and educational content.",
-    pricing: "Freemium",
-    rating: 4.5,
-    url: "https://www.edx.org/",
-    tags: ["learning", "courses", "education"],
-    intents: ["study", "learning"]
+    url: "https://photomath.com",
+    keywords: [
+      "math",
+      "study",
+      "school",
+      "calculation"
+    ]
   },
 
 
   /* ================= PDF ================= */
 
   {
-    name: "Smallpdf",
-    category: "PDF",
-    icon: "📕",
-    description: "Online PDF tools for converting, compressing, merging and editing files.",
-    pricing: "Freemium",
-    rating: 4.6,
-    url: "https://smallpdf.com/",
-    tags: ["pdf", "merge", "compress", "convert"],
-    intents: ["pdf", "document", "convert"]
-  },
-
-  {
+    id: "ilovepdf",
     name: "iLovePDF",
+    icon: "📄",
+    description: "Merge, split, compress and edit PDFs.",
     category: "PDF",
-    icon: "❤️",
-    description: "Collection of online tools for managing and editing PDFs.",
+    pricing: "Freemium",
+    rating: 4.7,
+    url: "https://www.ilovepdf.com",
+    keywords: [
+      "pdf",
+      "merge",
+      "split",
+      "compress"
+    ]
+  },
+
+  {
+    id: "smallpdf",
+    name: "Smallpdf",
+    icon: "📑",
+    description: "Simple online PDF tools.",
+    category: "PDF",
     pricing: "Freemium",
     rating: 4.6,
-    url: "https://www.ilovepdf.com/",
-    tags: ["pdf", "merge", "compress", "convert"],
-    intents: ["pdf", "document", "convert"]
-  },
-
-  {
-    name: "PDF24",
-    category: "PDF",
-    icon: "📑",
-    description: "Free online PDF tools for editing, converting and managing documents.",
-    pricing: "Free",
-    rating: 4.5,
-    url: "https://tools.pdf24.org/",
-    tags: ["pdf", "documents", "convert", "merge"],
-    intents: ["pdf", "document", "convert"]
-  },
-
-  {
-    name: "Adobe Acrobat Online",
-    category: "PDF",
-    icon: "📘",
-    description: "Online PDF tools from Adobe for common document tasks.",
-    pricing: "Freemium",
-    rating: 4.5,
-    url: "https://www.adobe.com/acrobat/online.html",
-    tags: ["pdf", "adobe", "document"],
-    intents: ["pdf", "document"]
+    url: "https://smallpdf.com",
+    keywords: [
+      "pdf",
+      "compress",
+      "convert",
+      "edit"
+    ]
   },
 
 
   /* ================= AUDIO ================= */
 
   {
-    name: "ElevenLabs",
+    id: "audacity",
+    name: "Audacity",
+    icon: "🎧",
+    description: "Record and edit audio.",
     category: "Audio",
+    pricing: "Free",
+    rating: 4.6,
+    url: "https://www.audacityteam.org",
+    keywords: [
+      "audio",
+      "record",
+      "music",
+      "edit"
+    ]
+  },
+
+  {
+    id: "elevenlabs",
+    name: "ElevenLabs",
     icon: "🔊",
-    description: "AI voice and audio platform for generating and working with speech.",
+    description: "Create realistic AI voices and audio.",
+    category: "Audio",
     pricing: "Freemium",
     rating: 4.6,
-    url: "https://elevenlabs.io/",
-    tags: ["voice", "audio", "ai", "speech"],
-    intents: ["audio", "voice", "ai"]
-  },
-
-  {
-    name: "Suno",
-    category: "Audio",
-    icon: "🎵",
-    description: "AI music creation platform.",
-    pricing: "Freemium",
-    rating: 4.5,
-    url: "https://suno.com/",
-    tags: ["music", "song", "ai", "audio"],
-    intents: ["music", "audio", "ai"]
-  },
-
-  {
-    name: "Audacity",
-    category: "Audio",
-    icon: "🎙️",
-    description: "Free open-source audio recording and editing software.",
-    pricing: "Free",
-    rating: 4.7,
-    url: "https://www.audacityteam.org/",
-    tags: ["audio", "recording", "editing", "podcast"],
-    intents: ["audio", "record", "podcast"]
-  },
-
-  {
-    name: "Soundtrap",
-    category: "Audio",
-    icon: "🎚️",
-    description: "Online music and audio production studio.",
-    pricing: "Freemium",
-    rating: 4.4,
-    url: "https://www.soundtrap.com/",
-    tags: ["music", "audio", "recording", "studio"],
-    intents: ["music", "audio", "record"]
+    url: "https://elevenlabs.io",
+    keywords: [
+      "audio",
+      "voice",
+      "ai",
+      "text to speech"
+    ]
   }
 
 ];
 
 
 /* =========================================================
-   5. DOM HELPERS
+   STORAGE
    ========================================================= */
 
-const $ = (id) => document.getElementById(id);
+const STORAGE = {
+  favorites: "tztools_v76_favorites",
+  recent: "tztools_v76_recent",
+  compare: "tztools_v76_compare",
+  theme: "tztools_v76_theme"
+};
 
-function escapeHTML(value) {
-  return String(value ?? "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
+let favorites =
+  JSON.parse(localStorage.getItem(STORAGE.favorites)) || [];
+
+let recentlyUsed =
+  JSON.parse(localStorage.getItem(STORAGE.recent)) || [];
+
+let compareList =
+  JSON.parse(localStorage.getItem(STORAGE.compare)) || [];
 
 
 /* =========================================================
-   6. VIEW SYSTEM
+   DOM
    ========================================================= */
 
-function switchView(viewName) {
-  state.currentView = viewName;
+const $ = id => document.getElementById(id);
 
-  const views = document.querySelectorAll(".app-view");
+const home = $("home");
+const customerService = $("customerService");
+const me = $("me");
+const dashboard = $("dashboard");
 
-  views.forEach((view) => {
-    view.classList.remove("active");
-    view.hidden = true;
-  });
+const homeNavbar = $("homeNavbar");
 
-  const targetMap = {
-    home: "home",
-    results: "searchResultsView",
-    support: "customerService",
-    me: "me",
-    dashboard: "dashboard"
-  };
+const searchInput = $("searchInput");
+const searchButton = $("searchButton");
+const searchClear = $("searchClear");
+const suggestions = $("suggestions");
 
-  const targetId = targetMap[viewName] || "home";
-  const target = $(targetId);
+const searchResultsView = $("searchResultsView");
+const resultsTitle = $("resultsTitle");
+const resultsSubtitle = $("resultsSubtitle");
+const resultsCount = $("resultsCount");
+const toolsGrid = $("toolsGrid");
+const noResults = $("noResults");
+
+const resultsCategoryFilter =
+  $("resultsCategoryFilter");
+
+const bottomNavigation =
+  $("bottomNavigation");
+
+const navAccountButton =
+  $("navAccountButton");
+
+const profileAvatar =
+  $("profileAvatar");
+
+const profileName =
+  $("profileName");
+
+const profileEmail =
+  $("profileEmail");
+
+const accountButton =
+  $("accountButton");
+
+const themeSettingButton =
+  $("themeSettingButton");
+
+const themeStatus =
+  $("themeStatus");
+
+const aboutButton =
+  $("aboutButton");
+
+const aboutPanel =
+  $("aboutPanel");
+
+const aboutClose =
+  $("aboutClose");
+
+const accountSettingsButton =
+  $("accountSettingsButton");
+
+const favoriteCount =
+  $("favoriteCount");
+
+const recentCount =
+  $("recentCount");
+
+const comparisonCount =
+  $("comparisonCount");
+
+const favoritesGrid =
+  $("favoritesGrid");
+
+const favoritesEmpty =
+  $("favoritesEmpty");
+
+const recentGrid =
+  $("recentGrid");
+
+const recentEmpty =
+  $("recentEmpty");
+
+const comparisonList =
+  $("comparisonList");
+
+const comparisonEmpty =
+  $("comparisonEmpty");
+
+const compareBar =
+  $("compareBar");
+
+const compareCount =
+  $("compareCount");
+
+const clearCompareButton =
+  $("clearCompareButton");
+
+const openCompareButton =
+  $("openCompareButton");
+
+const toastContainer =
+  $("toastContainer");
+
+
+/* =========================================================
+   SIMPLE NAVIGATION
+   ========================================================= */
+
+function showView(viewId) {
+
+  document
+    .querySelectorAll(".app-view")
+    .forEach(view => {
+      view.classList.remove("active");
+    });
+
+  const target = $(viewId);
 
   if (target) {
-    target.hidden = false;
     target.classList.add("active");
   }
 
-  const navbar = $("homeNavbar");
-
-  if (navbar) {
-    navbar.hidden = viewName !== "home";
+  if (homeNavbar) {
+    homeNavbar.style.display =
+      viewId === "home"
+        ? ""
+        : "none";
   }
-
-  document.querySelectorAll(".bottom-nav-item").forEach((item) => {
-    const targetView = item.dataset.viewTarget;
-
-    item.classList.toggle(
-      "active",
-      targetView === viewName
-    );
-  });
 
   window.scrollTo({
     top: 0,
     behavior: "smooth"
   });
 
-  if (viewName === "dashboard") {
+  updateBottomNav(viewId);
+
+  if (viewId === "dashboard") {
     renderDashboard();
   }
+}
 
-  if (viewName === "me") {
-    renderMe();
-  }
+
+function updateBottomNav(viewId) {
+
+  document
+    .querySelectorAll(".bottom-nav-item")
+    .forEach(item => {
+
+      const target =
+        item.dataset.viewTarget;
+
+      item.classList.toggle(
+        "active",
+        target === viewId
+      );
+
+    });
 }
 
 
 /* =========================================================
-   7. THEME
+   BOTTOM NAV
    ========================================================= */
 
-function applyTheme() {
-  document.body.classList.toggle("dark-mode", state.darkMode);
-  document.documentElement.classList.toggle("dark-mode", state.darkMode);
+document
+  .querySelectorAll("[data-view-target]")
+  .forEach(button => {
 
-  localStorage.setItem(
-    STORAGE_KEYS.theme,
-    state.darkMode ? "dark" : "light"
-  );
+    button.addEventListener("click", () => {
 
-  const status = $("themeStatus");
+      const target =
+        button.dataset.viewTarget;
 
-  if (status) {
-    status.textContent = state.darkMode ? "On" : "Off";
-  }
-}
+      if (target) {
+        showView(target);
+      }
 
-function toggleTheme() {
-  state.darkMode = !state.darkMode;
-  applyTheme();
+    });
+
+  });
+
+
+/* =========================================================
+   FORCE CORRECT NAV ORDER
+   ========================================================= */
+
+if (bottomNavigation) {
+
+  const navItems = [
+    ...bottomNavigation.querySelectorAll(
+      ".bottom-nav-item"
+    )
+  ];
+
+  const desiredOrder = [
+    "home",
+    "customerService",
+    "dashboard",
+    "me"
+  ];
+
+  desiredOrder.forEach(target => {
+
+    const item =
+      navItems.find(
+        element =>
+          element.dataset.viewTarget === target
+      );
+
+    if (item) {
+      bottomNavigation.appendChild(item);
+    }
+
+  });
+
 }
 
 
 /* =========================================================
-   8. SMART SEARCH ENGINE
+   REMOVE TOP ACCOUNT BUTTON
+   ========================================================= */
+
+if (navAccountButton) {
+
+  /*
+     V7.6:
+     Account belongs inside ME.
+     We don't need a random Sign In button
+     sitting at the top of the home page.
+  */
+
+  navAccountButton.style.display = "none";
+
+}
+
+
+/* =========================================================
+   HOME
+   ========================================================= */
+
+function resetHome() {
+
+  if (searchInput) {
+    searchInput.value = "";
+  }
+
+  if (searchClear) {
+    searchClear.style.display = "none";
+  }
+
+  if (suggestions) {
+    suggestions.classList.remove("open");
+    suggestions.innerHTML = "";
+  }
+
+}
+
+
+/* =========================================================
+   INTENT SYSTEM
    ========================================================= */
 
 const intentGroups = {
@@ -845,43 +942,29 @@ const intentGroups = {
   logo: [
     "logo",
     "logos",
+    "brand logo",
     "make a logo",
     "create a logo",
-    "design a logo",
-    "brand logo",
-    "logo maker"
-  ],
-
-  design: [
-    "design",
-    "graphic",
-    "graphics",
-    "poster",
-    "flyer",
-    "banner",
-    "social media design"
+    "design a logo"
   ],
 
   video: [
     "video",
-    "videos",
     "edit video",
+    "edit a video",
     "video editing",
-    "movie",
+    "youtube video",
     "reels",
-    "shorts",
-    "tiktok"
+    "shorts"
   ],
 
   website: [
     "website",
     "web site",
-    "webpage",
-    "site",
+    "build website",
     "build a website",
-    "make a website",
-    "create a website",
-    "landing page"
+    "create website",
+    "make website"
   ],
 
   study: [
@@ -892,2012 +975,1922 @@ const intentGroups = {
     "learning",
     "revision",
     "revise",
-    "homework",
-    "exam"
+    "homework"
   ],
 
   math: [
     "math",
-    "mathematics",
-    "calculate",
+    "maths",
+    "calculation",
     "equation",
-    "algebra",
-    "graph",
-    "calculator"
-  ],
-
-  writing: [
-    "write",
-    "writing",
-    "essay",
-    "article",
-    "grammar",
-    "spell",
-    "paraphrase",
-    "summarize"
-  ],
-
-  ai: [
-    "ai",
-    "artificial intelligence",
-    "ai tool",
-    "assistant",
-    "chatbot"
+    "algebra"
   ],
 
   image: [
     "image",
     "photo",
     "picture",
-    "pictures",
     "background",
-    "remove background",
-    "edit photo"
+    "remove background"
+  ],
+
+  writing: [
+    "write",
+    "writing",
+    "essay",
+    "grammar",
+    "rewrite",
+    "paraphrase"
   ],
 
   pdf: [
     "pdf",
-    "document",
-    "documents",
     "merge pdf",
-    "compress pdf",
-    "convert pdf"
+    "split pdf",
+    "compress pdf"
   ],
 
   audio: [
     "audio",
-    "sound",
     "voice",
     "record",
-    "podcast",
-    "music",
-    "song"
+    "music"
+  ],
+
+  ai: [
+    "ai",
+    "artificial intelligence",
+    "chatbot",
+    "assistant"
   ],
 
   productivity: [
     "productivity",
     "organize",
-    "organization",
-    "tasks",
-    "todo",
     "notes",
-    "planning"
+    "planning",
+    "tasks"
   ]
 };
 
+
 function normalizeText(text) {
+
   return String(text || "")
     .toLowerCase()
     .replace(/[^\w\s]/g, " ")
     .replace(/\s+/g, " ")
     .trim();
+
 }
 
-function detectIntents(query) {
-  const normalized = normalizeText(query);
 
-  const detected = [];
+function detectIntent(query) {
 
-  Object.entries(intentGroups).forEach(
-    ([intent, phrases]) => {
+  const text =
+    normalizeText(query);
 
-      const matched = phrases.some((phrase) => {
-        return normalized.includes(normalizeText(phrase));
+  const intents = [];
+
+  Object.entries(intentGroups)
+    .forEach(([intent, phrases]) => {
+
+      phrases.forEach(phrase => {
+
+        if (
+          text.includes(
+            normalizeText(phrase)
+          )
+        ) {
+          intents.push(intent);
+        }
+
       });
 
-      if (matched) {
-        detected.push(intent);
-      }
-    }
-  );
+    });
 
-  return detected;
+  return [
+    ...new Set(intents)
+  ];
+
 }
 
-function scoreTool(tool, query, detectedIntents) {
-  const normalizedQuery = normalizeText(query);
+
+/* =========================================================
+   SMART SCORING
+   ========================================================= */
+
+function scoreTool(tool, query) {
+
+  const text =
+    normalizeText(query);
+
+  const intents =
+    detectIntent(text);
 
   let score = 0;
 
-  const words = normalizedQuery
-    .split(" ")
-    .filter(Boolean);
+  const name =
+    normalizeText(tool.name);
 
-  /* Exact name match */
-  if (
-    normalizeText(tool.name) === normalizedQuery
-  ) {
-    score += 100;
+  const description =
+    normalizeText(tool.description);
+
+  const keywords =
+    tool.keywords.map(normalizeText);
+
+  /* Exact name */
+
+  if (text === name) {
+    score += 150;
   }
 
-  /* Name contains query */
+  /* Name match */
+
   if (
-    normalizeText(tool.name).includes(normalizedQuery)
+    name.includes(text) &&
+    text.length > 2
   ) {
-    score += 50;
+    score += 70;
   }
-
-  /* Category match */
-  if (
-    normalizeText(tool.category).includes(normalizedQuery)
-  ) {
-    score += 30;
-  }
-
-  /* Tags */
-  tool.tags.forEach((tag) => {
-    const normalizedTag = normalizeText(tag);
-
-    if (normalizedQuery.includes(normalizedTag)) {
-      score += 18;
-    }
-
-    words.forEach((word) => {
-      if (
-        word.length > 2 &&
-        normalizedTag.includes(word)
-      ) {
-        score += 5;
-      }
-    });
-  });
-
-  /* Intent match */
-  detectedIntents.forEach((intent) => {
-    if (tool.intents.includes(intent)) {
-      score += 30;
-    }
-  });
 
   /* Description */
-  const description = normalizeText(tool.description);
 
-  words.forEach((word) => {
-    if (
-      word.length > 2 &&
-      description.includes(word)
-    ) {
-      score += 3;
+  if (
+    description.includes(text) &&
+    text.length > 2
+  ) {
+    score += 25;
+  }
+
+  /* Keywords */
+
+  keywords.forEach(keyword => {
+
+    if (text.includes(keyword)) {
+      score += 15;
     }
+
+    if (
+      keyword.includes(text) &&
+      text.length > 2
+    ) {
+      score += 8;
+    }
+
   });
+
+
+  /* Intent */
+
+  intents.forEach(intent => {
+
+    if (
+      intent === "logo" &&
+      keywords.includes("logo")
+    ) {
+      score += 60;
+    }
+
+    if (
+      intent === "video" &&
+      tool.category === "Video"
+    ) {
+      score += 60;
+    }
+
+    if (
+      intent === "website" &&
+      tool.category === "Websites"
+    ) {
+      score += 60;
+    }
+
+    if (
+      intent === "study" &&
+      tool.category === "Students"
+    ) {
+      score += 60;
+    }
+
+    if (
+      intent === "math" &&
+      keywords.includes("math")
+    ) {
+      score += 65;
+    }
+
+    if (
+      intent === "image" &&
+      tool.category === "Images"
+    ) {
+      score += 50;
+    }
+
+    if (
+      intent === "writing" &&
+      tool.category === "Writing"
+    ) {
+      score += 50;
+    }
+
+    if (
+      intent === "pdf" &&
+      tool.category === "PDF"
+    ) {
+      score += 60;
+    }
+
+    if (
+      intent === "audio" &&
+      tool.category === "Audio"
+    ) {
+      score += 60;
+    }
+
+    if (
+      intent === "ai" &&
+      tool.category === "AI"
+    ) {
+      score += 50;
+    }
+
+    if (
+      intent === "productivity" &&
+      tool.category === "Productivity"
+    ) {
+      score += 50;
+    }
+
+  });
+
 
   return score;
+
 }
+
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
 
 function searchTools(query) {
-  const normalized = normalizeText(query);
 
-  if (!normalized) {
-    return [];
+  const clean =
+    normalizeText(query);
+
+  if (!clean) {
+    return tools.slice();
   }
 
-  const detectedIntents = detectIntents(normalized);
-
-  const scored = tools.map((tool) => ({
-    tool,
-    score: scoreTool(
-      tool,
-      normalized,
-      detectedIntents
-    )
-  }));
-
-  scored.sort((a, b) => {
-
-    if (b.score !== a.score) {
-      return b.score - a.score;
-    }
-
-    return b.tool.rating - a.tool.rating;
-  });
-
-  let results = scored
-    .filter((item) => item.score > 0)
-    .map((item) => item.tool);
+  const ranked =
+    tools
+      .map(tool => ({
+        tool,
+        score: scoreTool(tool, clean)
+      }))
+      .filter(item => item.score > 0)
+      .sort(
+        (a, b) =>
+          b.score - a.score
+      );
 
   /*
-    If the query is understandable but only a few
-    tools matched, show closely related tools.
+     If the search is broad,
+     still give useful results.
   */
-  if (
-    detectedIntents.length > 0 &&
-    results.length < 10
-  ) {
-    const related = tools.filter((tool) =>
-      detectedIntents.some((intent) =>
-        tool.intents.includes(intent)
-      )
-    );
 
-    results = [
-      ...results,
-      ...related.filter(
-        (tool) => !results.includes(tool)
+  if (!ranked.length) {
+
+    return tools
+      .slice()
+      .sort(
+        (a, b) =>
+          b.rating - a.rating
       )
-    ];
+      .slice(0, 10);
+
   }
 
-  return results.slice(0, 10);
+  return ranked
+    .slice(0, 10)
+    .map(item => item.tool);
+
 }
 
 
 /* =========================================================
-   9. SEARCH UI
+   TOOL CARD
    ========================================================= */
 
-function updateSuggestions() {
-  const input = $("searchInput");
-  const suggestions = $("suggestions");
-
-  if (!input || !suggestions) return;
-
-  const query = input.value.trim();
-
-  if (!query) {
-    suggestions.innerHTML = "";
-    suggestions.hidden = true;
-    return;
-  }
-
-  const results = searchTools(query).slice(0, 5);
-
-  if (!results.length) {
-    suggestions.innerHTML = "";
-    suggestions.hidden = true;
-    return;
-  }
-
-  suggestions.innerHTML = results
-    .map(
-      (tool) => `
-        <button
-          type="button"
-          class="suggestion-item"
-          data-suggestion="${escapeHTML(tool.name)}"
-        >
-          <span>${escapeHTML(tool.icon)}</span>
-          <span>${escapeHTML(tool.name)}</span>
-          <small>${escapeHTML(tool.category)}</small>
-        </button>
-      `
-    )
-    .join("");
-
-  suggestions.hidden = false;
-}
-
-function performSearch(query) {
-  const cleanQuery = query.trim();
-
-  if (!cleanQuery) return;
-
-  state.currentQuery = cleanQuery;
-
-  const results = searchTools(cleanQuery);
-
-  state.currentResults = results;
-
-  const title = $("resultsTitle");
-  const subtitle = $("resultsSubtitle");
-
-  if (title) {
-    title.textContent = `Tools for "${cleanQuery}"`;
-  }
-
-  if (subtitle) {
-    subtitle.textContent =
-      results.length
-        ? "Here are some tools that can help you get there."
-        : "We couldn't find a strong match yet.";
-  }
-
-  renderResults(results);
-
-  switchView("results");
-}
-
-function renderResults(results) {
-  const grid = $("toolsGrid");
-  const count = $("resultsCount");
-  const noResults = $("noResults");
-
-  if (!grid) return;
-
-  if (count) {
-    count.textContent = `${results.length} ${
-      results.length === 1 ? "tool" : "tools"
-    } found`;
-  }
-
-  if (!results.length) {
-    grid.innerHTML = "";
-
-    if (noResults) {
-      noResults.hidden = false;
-    }
-
-    return;
-  }
-
-  if (noResults) {
-    noResults.hidden = true;
-  }
-
-  grid.innerHTML = results
-    .map(renderToolCard)
-    .join("");
+function isFavorite(id) {
+  return favorites.includes(id);
 }
 
 
-/* =========================================================
-   10. TOOL CARDS
-   ========================================================= */
-
-function isFavorite(toolName) {
-  return state.favorites.includes(toolName);
+function isCompared(id) {
+  return compareList.includes(id);
 }
 
-function isCompared(toolName) {
-  return state.comparisons.includes(toolName);
-}
 
-function renderToolCard(tool) {
+function createToolCard(tool) {
 
-  const favorite = isFavorite(tool.name);
-  const compared = isCompared(tool.name);
+  const favorite =
+    isFavorite(tool.id);
+
+  const compared =
+    isCompared(tool.id);
 
   return `
+
     <article
       class="tool-card"
-      data-tool-name="${escapeHTML(tool.name)}"
+      data-tool-id="${tool.id}"
     >
 
       <div class="tool-card-top">
 
         <div class="tool-icon">
-          ${escapeHTML(tool.icon)}
+          ${tool.icon}
         </div>
 
-        <div class="tool-info">
+        <span class="tool-category">
+          ${tool.category}
+        </span>
 
-          <span class="tool-category">
-            ${escapeHTML(tool.category)}
+      </div>
+
+
+      <div class="tool-card-body">
+
+        <h3 class="tool-name">
+          ${tool.name}
+        </h3>
+
+        <p class="tool-description">
+          ${tool.description}
+        </p>
+
+
+        <div class="tool-meta">
+
+          <span>
+            ★ ${tool.rating}
           </span>
 
-          <h3 class="tool-name">
-            ${escapeHTML(tool.name)}
-          </h3>
+          <span>
+            ${tool.pricing}
+          </span>
 
         </div>
 
-      </div>
 
-      <p class="tool-description">
-        ${escapeHTML(tool.description)}
-      </p>
+        <div class="tool-actions">
 
-      <div class="tool-meta">
+          <button
+            class="icon-action favorite-button
+              ${favorite ? "active" : ""}"
+            data-action="favorite"
+            data-tool-id="${tool.id}"
+            title="Favorite"
+            aria-label="Favorite ${tool.name}"
+          >
+            ${favorite ? "♥" : "♡"}
+          </button>
 
-        <span class="tool-rating">
-          ⭐ ${tool.rating.toFixed(1)}
-        </span>
 
-        <span class="tool-price">
-          ${escapeHTML(tool.pricing)}
-        </span>
+          <button
+            class="icon-action compare-button
+              ${compared ? "active" : ""}"
+            data-action="compare"
+            data-tool-id="${tool.id}"
+            title="Compare"
+            aria-label="Compare ${tool.name}"
+          >
+            ✓
+          </button>
 
-      </div>
 
-      <div class="tool-actions">
+          <a
+            class="visit-button"
+            href="${tool.url}"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-tool-id="${tool.id}"
+          >
+            Visit Tool
+            <span>↗</span>
+          </a>
 
-        <button
-          type="button"
-          class="favorite-button ${
-            favorite ? "active" : ""
-          }"
-          data-action="favorite"
-          data-tool="${escapeHTML(tool.name)}"
-          aria-label="Favorite ${escapeHTML(tool.name)}"
-        >
-          ${favorite ? "❤️" : "🤍"}
-        </button>
-
-        <button
-          type="button"
-          class="compare-button ${
-            compared ? "active" : ""
-          }"
-          data-action="compare"
-          data-tool="${escapeHTML(tool.name)}"
-        >
-          ${compared ? "✓ Compared" : "⚖ Compare"}
-        </button>
-
-        <button
-          type="button"
-          class="visit-button"
-          data-action="visit"
-          data-tool="${escapeHTML(tool.name)}"
-        >
-          Visit Tool →
-        </button>
+        </div>
 
       </div>
 
     </article>
+
   `;
+
 }
 
 
 /* =========================================================
-   11. TOOL LOOKUP
+   RENDER RESULTS
    ========================================================= */
 
-function getToolByName(name) {
-  return tools.find(
-    (tool) => tool.name === name
-  );
-}
+function renderTools(list) {
 
+  if (!toolsGrid) return;
 
-/* =========================================================
-   12. FAVORITES
-   ========================================================= */
+  if (!list.length) {
 
-async function toggleFavorite(toolName) {
+    toolsGrid.innerHTML = "";
 
-  const index = state.favorites.indexOf(toolName);
-
-  if (index >= 0) {
-    state.favorites.splice(index, 1);
-  } else {
-    state.favorites.unshift(toolName);
-  }
-
-  saveStorage(
-    STORAGE_KEYS.favorites,
-    state.favorites
-  );
-
-  if (state.currentResults.length) {
-    renderResults(state.currentResults);
-  }
-
-  renderDashboard();
-
-  await syncFavoriteToSupabase(toolName);
-}
-
-async function syncFavoriteToSupabase(toolName) {
-
-  if (!supabaseClient || !state.currentUser) {
-    return;
-  }
-
-  try {
-
-    if (state.favorites.includes(toolName)) {
-
-      await supabaseClient
-        .from("favorites")
-        .upsert({
-          user_id: state.currentUser.id,
-          tool_name: toolName
-        });
-
-    } else {
-
-      await supabaseClient
-        .from("favorites")
-        .delete()
-        .eq("user_id", state.currentUser.id)
-        .eq("tool_name", toolName);
-
+    if (noResults) {
+      noResults.style.display = "block";
     }
 
-  } catch (error) {
-    console.warn(
-      "Favorite sync error:",
-      error
-    );
-  }
-}
-
-
-/* =========================================================
-   13. RECENTLY USED
-   ========================================================= */
-
-async function addRecent(toolName) {
-
-  state.recent = state.recent.filter(
-    (name) => name !== toolName
-  );
-
-  state.recent.unshift(toolName);
-
-  state.recent = state.recent.slice(0, 10);
-
-  saveStorage(
-    STORAGE_KEYS.recent,
-    state.recent
-  );
-
-  renderDashboard();
-
-  if (!supabaseClient || !state.currentUser) {
     return;
+
   }
 
-  try {
-
-    await supabaseClient
-      .from("recently_used")
-      .upsert(
-        {
-          user_id: state.currentUser.id,
-          tool_name: toolName,
-          visited_at: new Date().toISOString()
-        },
-        {
-          onConflict: "user_id,tool_name"
-        }
-      );
-
-  } catch (error) {
-
-    console.warn(
-      "Recent sync error:",
-      error
-    );
+  if (noResults) {
+    noResults.style.display = "none";
   }
+
+  toolsGrid.innerHTML =
+    list
+      .map(createToolCard)
+      .join("");
+
 }
 
 
 /* =========================================================
-   14. VISIT TOOL
+   SEARCH SUBMIT
    ========================================================= */
 
-async function visitTool(toolName) {
+function performSearch() {
 
-  const tool = getToolByName(toolName);
+  if (!searchInput) return;
 
-  if (!tool) return;
+  const query =
+    searchInput.value.trim();
 
-  await addRecent(tool.name);
-
-  window.open(
-    tool.url,
-    "_blank",
-    "noopener,noreferrer"
-  );
-
-  showToast(
-    `${tool.name} opened in a new tab.`
-  );
-}
-
-
-/* =========================================================
-   15. TOOL MODAL
-   ========================================================= */
-
-function openToolModal(toolName) {
-
-  const tool = getToolByName(toolName);
-
-  if (!tool) return;
-
-  state.currentTool = tool;
-
-  const modal = $("toolModal");
-
-  if (!modal) return;
-
-  if ($("toolModalIcon")) {
-    $("toolModalIcon").textContent = tool.icon;
-  }
-
-  if ($("toolModalCategory")) {
-    $("toolModalCategory").textContent =
-      tool.category;
-  }
-
-  if ($("toolModalTitle")) {
-    $("toolModalTitle").textContent =
-      tool.name;
-  }
-
-  if ($("toolModalDescription")) {
-    $("toolModalDescription").textContent =
-      tool.description;
-  }
-
-  if ($("toolModalMeta")) {
-    $("toolModalMeta").innerHTML = `
-      <span>⭐ ${tool.rating.toFixed(1)}</span>
-      <span>${escapeHTML(tool.pricing)}</span>
-    `;
-  }
-
-  updateModalFavoriteButton();
-
-  modal.hidden = false;
-  modal.classList.add("open");
-}
-
-function closeToolModal() {
-
-  const modal = $("toolModal");
-
-  if (!modal) return;
-
-  modal.classList.remove("open");
-  modal.hidden = true;
-
-  state.currentTool = null;
-}
-
-function updateModalFavoriteButton() {
-
-  const button = $("modalFavoriteButton");
-
-  if (!button || !state.currentTool) {
-    return;
-  }
-
-  const favorite = isFavorite(
-    state.currentTool.name
-  );
-
-  button.textContent = favorite
-    ? "❤️ Remove Favorite"
-    : "🤍 Add Favorite";
-}
-
-
-/* =========================================================
-   16. COMPARE
-   ========================================================= */
-
-function toggleCompare(toolName) {
-
-  const index =
-    state.comparisons.indexOf(toolName);
-
-  if (index >= 0) {
-
-    state.comparisons.splice(index, 1);
-
-  } else {
-
-    if (state.comparisons.length >= 3) {
-
-      showToast(
-        "You can compare up to 3 tools."
-      );
-
-      return;
-    }
-
-    state.comparisons.push(toolName);
-  }
-
-  saveStorage(
-    STORAGE_KEYS.compare,
-    state.comparisons
-  );
-
-  updateCompareBar();
-
-  if (state.currentResults.length) {
-    renderResults(state.currentResults);
-  }
-
-  showToast(
-    index >= 0
-      ? "Removed from comparison."
-      : "Added to comparison."
-  );
-}
-
-function updateCompareBar() {
-
-  const bar = $("compareBar");
-  const count = $("compareCount");
-
-  if (count) {
-    count.textContent =
-      state.comparisons.length;
-  }
-
-  if (bar) {
-    bar.hidden =
-      state.comparisons.length === 0;
-  }
-}
-
-function clearCompare() {
-
-  state.comparisons = [];
-
-  saveStorage(
-    STORAGE_KEYS.compare,
-    state.comparisons
-  );
-
-  updateCompareBar();
-
-  if (state.currentResults.length) {
-    renderResults(state.currentResults);
-  }
-}
-
-function openComparisonModal() {
-
-  const modal = $("comparisonModal");
-
-  if (!modal) return;
-
-  const selectedTools =
-    state.comparisons
-      .map(getToolByName)
-      .filter(Boolean);
-
-  if ($("comparisonModalTitle")) {
-    $("comparisonModalTitle").textContent =
-      "Compare Tools";
-  }
-
-  if ($("comparisonContent")) {
-
-    if (!selectedTools.length) {
-
-      $("comparisonContent").innerHTML = `
-        <p>No tools selected yet.</p>
-      `;
-
-    } else {
-
-      $("comparisonContent").innerHTML = `
-        <div class="comparison-table">
-
-          ${selectedTools
-            .map(
-              (tool) => `
-                <div class="comparison-column">
-
-                  <div class="tool-icon">
-                    ${escapeHTML(tool.icon)}
-                  </div>
-
-                  <h3>
-                    ${escapeHTML(tool.name)}
-                  </h3>
-
-                  <p>
-                    ${escapeHTML(tool.description)}
-                  </p>
-
-                  <strong>
-                    ⭐ ${tool.rating.toFixed(1)}
-                  </strong>
-
-                  <span>
-                    ${escapeHTML(tool.pricing)}
-                  </span>
-
-                  <button
-                    class="visit-button"
-                    data-action="visit"
-                    data-tool="${escapeHTML(tool.name)}"
-                  >
-                    Visit Tool →
-                  </button>
-
-                </div>
-              `
-            )
-            .join("")}
-
-        </div>
-      `;
-    }
-  }
-
-  modal.hidden = false;
-  modal.classList.add("open");
-}
-
-function closeComparisonModal() {
-
-  const modal = $("comparisonModal");
-
-  if (!modal) return;
-
-  modal.classList.remove("open");
-  modal.hidden = true;
-}
-
-
-/* =========================================================
-   17. SAVE COMPARISON
-   ========================================================= */
-
-async function saveCurrentComparison() {
-
-  if (!state.comparisons.length) {
+  if (!query) {
 
     showToast(
-      "Add tools to compare first."
+      "Type what you want to do."
     );
 
     return;
+
   }
 
-  const name =
-    `Comparison ${new Date().toLocaleDateString()}`;
+  const results =
+    searchTools(query);
 
-  if (supabaseClient && state.currentUser) {
+  showView("searchResultsView");
 
-    try {
-
-      const { error } =
-        await supabaseClient
-          .from("saved_comparisons")
-          .insert({
-            user_id: state.currentUser.id,
-            name,
-            tools: state.comparisons
-          });
-
-      if (error) throw error;
-
-      showToast(
-        "Comparison saved to your account."
-      );
-
-    } catch (error) {
-
-      console.warn(
-        "Comparison save error:",
-        error
-      );
-
-      showToast(
-        "Could not save comparison online."
-      );
-    }
-
-  } else {
-
-    showToast(
-      "Log in to save comparisons online."
-    );
+  if (resultsTitle) {
+    resultsTitle.textContent =
+      `Tools for "${query}"`;
   }
+
+  if (resultsSubtitle) {
+    resultsSubtitle.textContent =
+      "Here are some tools that could help.";
+  }
+
+  if (resultsCount) {
+    resultsCount.textContent =
+      `${results.length} tools`;
+  }
+
+  renderTools(results);
+
 }
 
 
 /* =========================================================
-   18. DASHBOARD
+   SEARCH EVENTS
    ========================================================= */
 
-function renderDashboard() {
+if (searchButton) {
 
-  const favoriteCount = $("favoriteCount");
-  const recentCount = $("recentCount");
-  const comparisonCount = $("comparisonCount");
-
-  if (favoriteCount) {
-    favoriteCount.textContent =
-      state.favorites.length;
-  }
-
-  if (recentCount) {
-    recentCount.textContent =
-      state.recent.length;
-  }
-
-  if (comparisonCount) {
-    comparisonCount.textContent =
-      state.comparisons.length;
-  }
-
-  renderDashboardTools(
-    state.favorites,
-    "favoritesGrid",
-    "favoritesEmpty"
+  searchButton.addEventListener(
+    "click",
+    performSearch
   );
 
-  renderDashboardTools(
-    state.recent,
-    "recentGrid",
-    "recentEmpty"
-  );
-
-  renderSavedComparisons();
-}
-
-function renderDashboardTools(
-  names,
-  gridId,
-  emptyId
-) {
-
-  const grid = $(gridId);
-  const empty = $(emptyId);
-
-  if (!grid) return;
-
-  const selectedTools =
-    names
-      .map(getToolByName)
-      .filter(Boolean);
-
-  if (!selectedTools.length) {
-
-    grid.innerHTML = "";
-
-    if (empty) {
-      empty.hidden = false;
-    }
-
-    return;
-  }
-
-  if (empty) {
-    empty.hidden = true;
-  }
-
-  grid.innerHTML = selectedTools
-    .map(renderToolCard)
-    .join("");
-}
-
-function renderSavedComparisons() {
-
-  const list = $("comparisonList");
-  const empty = $("comparisonEmpty");
-
-  if (!list) return;
-
-  if (
-    !state.currentUser ||
-    !supabaseClient
-  ) {
-
-    list.innerHTML = "";
-
-    if (empty) {
-      empty.hidden = false;
-      empty.textContent =
-        "Log in to save comparisons.";
-    }
-
-    return;
-  }
-
-  /*
-    Saved online comparisons are loaded separately
-    when the user logs in.
-  */
 }
 
 
-/* =========================================================
-   19. ME PAGE
-   ========================================================= */
+if (searchInput) {
 
-function renderMe() {
-
-  const name = $("profileName");
-  const email = $("profileEmail");
-  const avatar = $("profileAvatar");
-
-  if (!state.currentUser) {
-
-    if (name) {
-      name.textContent = "Guest";
-    }
-
-    if (email) {
-      email.textContent =
-        "Log in to unlock your account";
-    }
-
-    if (avatar) {
-      avatar.textContent = "👤";
-    }
-
-    return;
-  }
-
-  if (name) {
-    name.textContent =
-      state.profile?.display_name ||
-      state.currentUser.email?.split("@")[0] ||
-      "User";
-  }
-
-  if (email) {
-    email.textContent =
-      state.currentUser.email || "";
-  }
-
-  if (avatar) {
-    avatar.textContent = "👤";
-  }
-}
-
-
-/* =========================================================
-   20. AUTH MODAL
-   ========================================================= */
-
-function openAuthModal() {
-
-  const modal = $("authModal");
-
-  if (!modal) return;
-
-  updateAuthPanel();
-
-  modal.hidden = false;
-  modal.classList.add("open");
-}
-
-function closeAuthModal() {
-
-  const modal = $("authModal");
-
-  if (!modal) return;
-
-  modal.classList.remove("open");
-  modal.hidden = true;
-}
-
-function switchAuthTab(tab) {
-
-  const loginTab = $("loginTab");
-  const signupTab = $("signupTab");
-
-  const loginForm = $("loginForm");
-  const signupForm = $("signupForm");
-
-  if (tab === "login") {
-
-    loginTab?.classList.add("active");
-    signupTab?.classList.remove("active");
-
-    if (loginForm) {
-      loginForm.hidden = false;
-    }
-
-    if (signupForm) {
-      signupForm.hidden = true;
-    }
-
-  } else {
-
-    signupTab?.classList.add("active");
-    loginTab?.classList.remove("active");
-
-    if (signupForm) {
-      signupForm.hidden = false;
-    }
-
-    if (loginForm) {
-      loginForm.hidden = true;
-    }
-  }
-}
-
-function updateAuthPanel() {
-
-  const loggedInPanel =
-    $("loggedInPanel");
-
-  const loginForm =
-    $("loginForm");
-
-  const signupForm =
-    $("signupForm");
-
-  const tabs =
-    document.querySelector(".auth-tabs");
-
-  const loggedIn =
-    Boolean(state.currentUser);
-
-  if (loggedInPanel) {
-    loggedInPanel.hidden = !loggedIn;
-  }
-
-  if (loginForm) {
-    loginForm.hidden = loggedIn;
-  }
-
-  if (signupForm) {
-    signupForm.hidden = loggedIn;
-  }
-
-  if (tabs) {
-    tabs.hidden = loggedIn;
-  }
-
-  if (loggedIn) {
-
-    if ($("loggedInEmail")) {
-      $("loggedInEmail").textContent =
-        state.currentUser.email || "";
-    }
-
-    if ($("loggedInName")) {
-      $("loggedInName").textContent =
-        state.profile?.display_name ||
-        state.currentUser.email?.split("@")[0] ||
-        "User";
-    }
-
-    if ($("loggedInAvatar")) {
-      $("loggedInAvatar").textContent = "👤";
-    }
-  }
-}
-
-async function loginUser(event) {
-
-  event.preventDefault();
-
-  const message = $("loginMessage");
-
-  if (!supabaseClient) {
-
-    if (message) {
-      message.textContent =
-        "Add your Supabase publishable key in script.js first.";
-    }
-
-    return;
-  }
-
-  const email =
-    $("loginEmail")?.value.trim();
-
-  const password =
-    $("loginPassword")?.value;
-
-  if (!email || !password) {
-
-    if (message) {
-      message.textContent =
-        "Please enter your email and password.";
-    }
-
-    return;
-  }
-
-  if (message) {
-    message.textContent =
-      "Logging in...";
-  }
-
-  try {
-
-    const { data, error } =
-      await supabaseClient.auth
-        .signInWithPassword({
-          email,
-          password
-        });
-
-    if (error) throw error;
-
-    state.currentUser = data.user;
-
-    await loadUserData();
-
-    if (message) {
-      message.textContent =
-        "Logged in successfully.";
-    }
-
-    updateAuthPanel();
-    renderMe();
-    showToast("Welcome back! 👋");
-
-  } catch (error) {
-
-    console.error(error);
-
-    if (message) {
-      message.textContent =
-        error.message ||
-        "Login failed.";
-    }
-  }
-}
-
-async function signupUser(event) {
-
-  event.preventDefault();
-
-  const message = $("signupMessage");
-
-  if (!supabaseClient) {
-
-    if (message) {
-      message.textContent =
-        "Add your Supabase publishable key in script.js first.";
-    }
-
-    return;
-  }
-
-  const name =
-    $("signupName")?.value.trim();
-
-  const email =
-    $("signupEmail")?.value.trim();
-
-  const password =
-    $("signupPassword")?.value;
-
-  if (!name || !email || !password) {
-
-    if (message) {
-      message.textContent =
-        "Please fill in all fields.";
-    }
-
-    return;
-  }
-
-  if (password.length < 6) {
-
-    if (message) {
-      message.textContent =
-        "Password must be at least 6 characters.";
-    }
-
-    return;
-  }
-
-  if (message) {
-    message.textContent =
-      "Creating account...";
-  }
-
-  try {
-
-    const { data, error } =
-      await supabaseClient.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            display_name: name
-          }
-        }
-      });
-
-    if (error) throw error;
-
-    if (data.session) {
-
-      state.currentUser = data.user;
-
-      await loadUserData();
-
-      updateAuthPanel();
-      renderMe();
-
-      showToast(
-        "Account created! 🎉"
-      );
-
-    } else {
-
-      if (message) {
-        message.textContent =
-          "Account created. Check your email to confirm your account.";
-      }
-    }
-
-  } catch (error) {
-
-    console.error(error);
-
-    if (message) {
-      message.textContent =
-        error.message ||
-        "Could not create account.";
-    }
-  }
-}
-
-async function logoutUser() {
-
-  if (supabaseClient) {
-
-    try {
-      await supabaseClient.auth.signOut();
-    } catch (error) {
-      console.warn(
-        "Logout error:",
-        error
-      );
-    }
-  }
-
-  state.currentUser = null;
-  state.profile = null;
-
-  updateAuthPanel();
-  renderMe();
-
-  closeAuthModal();
-
-  showToast(
-    "You've been logged out."
-  );
-}
-
-
-/* =========================================================
-   21. LOAD USER DATA
-   ========================================================= */
-
-async function loadUserData() {
-
-  if (
-    !supabaseClient ||
-    !state.currentUser
-  ) {
-    return;
-  }
-
-  try {
-
-    const profileResponse =
-      await supabaseClient
-        .from("profiles")
-        .select("*")
-        .eq("id", state.currentUser.id)
-        .maybeSingle();
-
-    if (!profileResponse.error) {
-      state.profile =
-        profileResponse.data;
-    }
-
-    /* Favorites */
-
-    const favoritesResponse =
-      await supabaseClient
-        .from("favorites")
-        .select("tool_name")
-        .eq("user_id", state.currentUser.id);
-
-    if (!favoritesResponse.error) {
-
-      const onlineFavorites =
-        favoritesResponse.data
-          .map((row) => row.tool_name);
-
-      state.favorites = [
-        ...new Set([
-          ...state.favorites,
-          ...onlineFavorites
-        ])
-      ];
-
-      saveStorage(
-        STORAGE_KEYS.favorites,
-        state.favorites
-      );
-    }
-
-    /* Recent */
-
-    const recentResponse =
-      await supabaseClient
-        .from("recently_used")
-        .select("tool_name, visited_at")
-        .eq("user_id", state.currentUser.id)
-        .order("visited_at", {
-          ascending: false
-        });
-
-    if (!recentResponse.error) {
-
-      const onlineRecent =
-        recentResponse.data
-          .map((row) => row.tool_name);
-
-      state.recent = [
-        ...new Set([
-          ...onlineRecent,
-          ...state.recent
-        ])
-      ].slice(0, 10);
-
-      saveStorage(
-        STORAGE_KEYS.recent,
-        state.recent
-      );
-    }
-
-    renderDashboard();
-    renderMe();
-
-  } catch (error) {
-
-    console.warn(
-      "Could not load user data:",
-      error
-    );
-  }
-}
-
-
-/* =========================================================
-   22. SUPABASE AUTH INITIALIZATION
-   ========================================================= */
-
-async function initializeAuth() {
-
-  if (!supabaseClient) {
-    renderMe();
-    return;
-  }
-
-  try {
-
-    const {
-      data: {
-        session
-      }
-    } =
-      await supabaseClient.auth.getSession();
-
-    if (session?.user) {
-
-      state.currentUser =
-        session.user;
-
-      await loadUserData();
-    }
-
-    supabaseClient.auth.onAuthStateChange(
-      async (_event, sessionData) => {
-
-        state.currentUser =
-          sessionData?.user || null;
-
-        if (state.currentUser) {
-          await loadUserData();
-        } else {
-          state.profile = null;
-        }
-
-        updateAuthPanel();
-        renderMe();
-        renderDashboard();
-      }
-    );
-
-  } catch (error) {
-
-    console.warn(
-      "Auth initialization error:",
-      error
-    );
-  }
-}
-
-
-/* =========================================================
-   23. TOASTS
-   ========================================================= */
-
-function showToast(message) {
-
-  const container =
-    $("toastContainer");
-
-  if (!container) return;
-
-  const toast =
-    document.createElement("div");
-
-  toast.className = "toast";
-
-  toast.textContent = message;
-
-  container.appendChild(toast);
-
-  setTimeout(() => {
-
-    toast.classList.add("hide");
-
-    setTimeout(() => {
-      toast.remove();
-    }, 300);
-
-  }, 2500);
-}
-
-
-/* =========================================================
-   24. EVENT LISTENERS
-   ========================================================= */
-
-function initializeEvents() {
-
-  /* Search */
-
-  $("searchForm")?.addEventListener(
-    "submit",
-    (event) => {
-
-      event.preventDefault();
-
-      const input = $("searchInput");
-
-      if (!input) return;
-
-      performSearch(input.value);
-
-      const suggestions =
-        $("suggestions");
-
-      if (suggestions) {
-        suggestions.hidden = true;
-      }
-    }
-  );
-
-  $("searchInput")?.addEventListener(
+  searchInput.addEventListener(
     "input",
-    updateSuggestions
+    () => {
+
+      if (searchClear) {
+
+        searchClear.style.display =
+          searchInput.value
+            ? "flex"
+            : "none";
+
+      }
+
+      renderSuggestions(
+        searchInput.value
+      );
+
+    }
   );
 
-  $("searchClear")?.addEventListener(
+
+  searchInput.addEventListener(
+    "keydown",
+    event => {
+
+      if (event.key === "Enter") {
+        performSearch();
+      }
+
+      if (event.key === "Escape") {
+
+        if (suggestions) {
+          suggestions.classList.remove(
+            "open"
+          );
+        }
+
+      }
+
+    }
+  );
+
+}
+
+
+if (searchClear) {
+
+  searchClear.addEventListener(
     "click",
     () => {
 
-      const input =
-        $("searchInput");
-
-      if (input) {
-        input.value = "";
-        input.focus();
+      if (searchInput) {
+        searchInput.value = "";
+        searchInput.focus();
       }
 
-      updateSuggestions();
+      searchClear.style.display =
+        "none";
+
+      if (suggestions) {
+        suggestions.classList.remove(
+          "open"
+        );
+      }
+
     }
   );
 
+}
 
-  /* Quick searches */
 
-  document.querySelectorAll(
-    ".quick-search"
-  ).forEach((button) => {
+/* =========================================================
+   SEARCH SUGGESTIONS
+   ========================================================= */
 
-    button.addEventListener(
-      "click",
-      () => {
+function renderSuggestions(query) {
 
-        const query =
-          button.dataset.query;
+  if (!suggestions) return;
 
-        const input =
-          $("searchInput");
+  const clean =
+    normalizeText(query);
 
-        if (input) {
-          input.value = query;
-        }
+  if (!clean) {
 
-        performSearch(query);
-      }
+    suggestions.innerHTML = "";
+
+    suggestions.classList.remove(
+      "open"
     );
-  });
+
+    return;
+
+  }
+
+  const matches =
+    tools
+      .filter(tool => {
+
+        const searchable =
+          normalizeText(`
+            ${tool.name}
+            ${tool.description}
+            ${tool.category}
+            ${tool.keywords.join(" ")}
+          `);
+
+        return searchable.includes(clean);
+
+      })
+      .slice(0, 5);
 
 
-  /* Suggestions */
+  if (!matches.length) {
 
-  $("suggestions")?.addEventListener(
+    suggestions.innerHTML = "";
+
+    suggestions.classList.remove(
+      "open"
+    );
+
+    return;
+
+  }
+
+
+  suggestions.innerHTML =
+    matches
+      .map(tool => `
+
+        <button
+          class="suggestion"
+          data-tool-suggestion="${tool.id}"
+        >
+
+          <span class="suggestion-icon">
+            ${tool.icon}
+          </span>
+
+          <span>
+            ${tool.name}
+          </span>
+
+        </button>
+
+      `)
+      .join("");
+
+
+  suggestions.classList.add("open");
+
+}
+
+
+/* =========================================================
+   SUGGESTION CLICK
+   ========================================================= */
+
+if (suggestions) {
+
+  suggestions.addEventListener(
     "click",
-    (event) => {
+    event => {
 
       const button =
         event.target.closest(
-          "[data-suggestion]"
+          "[data-tool-suggestion]"
         );
 
       if (!button) return;
 
-      const query =
-        button.dataset.suggestion;
+      const id =
+        button.dataset.toolSuggestion;
 
-      const input =
-        $("searchInput");
-
-      if (input) {
-        input.value = query;
-      }
-
-      performSearch(query);
-    }
-  );
-
-
-  /* Bottom navigation */
-
-  document.querySelectorAll(
-    ".bottom-nav-item"
-  ).forEach((item) => {
-
-    item.addEventListener(
-      "click",
-      () => {
-
-        const target =
-          item.dataset.viewTarget;
-
-        switchView(target);
-      }
-    );
-  });
-
-
-  /* Generic view buttons */
-
-  document.querySelectorAll(
-    "[data-view-target]"
-  ).forEach((element) => {
-
-    if (
-      element.classList.contains(
-        "bottom-nav-item"
-      )
-    ) {
-      return;
-    }
-
-    element.addEventListener(
-      "click",
-      () => {
-
-        switchView(
-          element.dataset.viewTarget
+      const tool =
+        tools.find(
+          item => item.id === id
         );
-      }
-    );
-  });
 
+      if (!tool) return;
 
-  /* Results back */
-
-  $("resultsBackButton")?.addEventListener(
-    "click",
-    () => switchView("home")
-  );
-
-  $("emptyStateHomeButton")?.addEventListener(
-    "click",
-    () => switchView("home")
-  );
-
-
-  /* Category filter */
-
-  $("resultsCategoryFilter")?.addEventListener(
-    "change",
-    (event) => {
-
-      const category =
-        event.target.value;
-
-      let results =
-        state.currentResults;
-
-      if (category !== "all") {
-
-        results =
-          state.currentResults.filter(
-            (tool) =>
-              tool.category === category
-          );
+      if (searchInput) {
+        searchInput.value =
+          tool.name;
       }
 
-      renderResults(results);
-    }
-  );
-
-
-  /* Tool grid */
-
-  $("toolsGrid")?.addEventListener(
-    "click",
-    handleToolAction
-  );
-
-  $("favoritesGrid")?.addEventListener(
-    "click",
-    handleToolAction
-  );
-
-  $("recentGrid")?.addEventListener(
-    "click",
-    handleToolAction
-  );
-
-  $("comparisonContent")?.addEventListener(
-    "click",
-    handleToolAction
-  );
-
-
-  /* Tool modal */
-
-  $("toolModalClose")?.addEventListener(
-    "click",
-    closeToolModal
-  );
-
-  $("toolModalBackdrop")?.addEventListener(
-    "click",
-    closeToolModal
-  );
-
-  $("visitToolButton")?.addEventListener(
-    "click",
-    async () => {
-
-      if (!state.currentTool) return;
-
-      await visitTool(
-        state.currentTool.name
+      suggestions.classList.remove(
+        "open"
       );
 
-      closeToolModal();
+      performSearch();
+
     }
   );
 
-  $("modalFavoriteButton")?.addEventListener(
-    "click",
-    async () => {
-
-      if (!state.currentTool) return;
-
-      await toggleFavorite(
-        state.currentTool.name
-      );
-
-      updateModalFavoriteButton();
-    }
-  );
-
-
-  /* Compare */
-
-  $("clearCompareButton")?.addEventListener(
-    "click",
-    clearCompare
-  );
-
-  $("openCompareButton")?.addEventListener(
-    "click",
-    openComparisonModal
-  );
-
-  $("comparisonModalClose")?.addEventListener(
-    "click",
-    closeComparisonModal
-  );
-
-  $("closeComparisonButton")?.addEventListener(
-    "click",
-    closeComparisonModal
-  );
-
-  $("comparisonModalBackdrop")?.addEventListener(
-    "click",
-    closeComparisonModal
-  );
-
-  $("saveComparisonButton")?.addEventListener(
-    "click",
-    saveCurrentComparison
-  );
-
-
-  /* Me */
-
-  $("themeSettingButton")?.addEventListener(
-    "click",
-    toggleTheme
-  );
-
-  $("accountButton")?.addEventListener(
-    "click",
-    openAuthModal
-  );
-
-  $("accountSettingsButton")?.addEventListener(
-    "click",
-    openAuthModal
-  );
-
-  $("navAccountButton")?.addEventListener(
-    "click",
-    openAuthModal
-  );
-
-
-  /* About */
-
-  $("aboutButton")?.addEventListener(
-    "click",
-    () => {
-
-      const panel =
-        $("aboutPanel");
-
-      if (!panel) return;
-
-      panel.hidden =
-        !panel.hidden;
-    }
-  );
-
-  $("aboutClose")?.addEventListener(
-    "click",
-    () => {
-
-      const panel =
-        $("aboutPanel");
-
-      if (panel) {
-        panel.hidden = true;
-      }
-    }
-  );
-
-
-  /* Auth */
-
-  $("authModalClose")?.addEventListener(
-    "click",
-    closeAuthModal
-  );
-
-  $("authModalBackdrop")?.addEventListener(
-    "click",
-    closeAuthModal
-  );
-
-  $("loginTab")?.addEventListener(
-    "click",
-    () => switchAuthTab("login")
-  );
-
-  $("signupTab")?.addEventListener(
-    "click",
-    () => switchAuthTab("signup")
-  );
-
-  $("loginForm")?.addEventListener(
-    "submit",
-    loginUser
-  );
-
-  $("signupForm")?.addEventListener(
-    "submit",
-    signupUser
-  );
-
-  $("logoutButton")?.addEventListener(
-    "click",
-    logoutUser
-  );
-
-
-  /* Escape closes modals */
-
-  document.addEventListener(
-    "keydown",
-    (event) => {
-
-      if (event.key !== "Escape") {
-        return;
-      }
-
-      closeToolModal();
-      closeComparisonModal();
-      closeAuthModal();
-    }
-  );
 }
 
 
 /* =========================================================
-   25. TOOL ACTION HANDLER
+   FAVORITES
    ========================================================= */
 
-async function handleToolAction(event) {
+function toggleFavorite(id) {
 
-  const button =
-    event.target.closest(
-      "[data-action]"
+  if (favorites.includes(id)) {
+
+    favorites =
+      favorites.filter(
+        item => item !== id
+      );
+
+    showToast(
+      "Removed from favorites."
     );
 
-  if (!button) return;
+  } else {
 
-  const action =
-    button.dataset.action;
+    favorites.unshift(id);
 
-  const toolName =
-    button.dataset.tool;
+    showToast(
+      "Added to favorites."
+    );
 
-  if (!toolName) return;
-
-  if (action === "favorite") {
-
-    await toggleFavorite(toolName);
-
-  } else if (action === "compare") {
-
-    toggleCompare(toolName);
-
-  } else if (action === "visit") {
-
-    await visitTool(toolName);
   }
-}
 
+  saveLocalData();
 
-/* =========================================================
-   26. INITIALIZE APP
-   ========================================================= */
+  updateCounts();
 
-function initializeApp() {
-
-  console.log(
-    `TzTools V7.5 loaded — ${tools.length} tools`
-  );
-
-  applyTheme();
-
-  initializeEvents();
-
-  updateCompareBar();
-
-  switchView("home");
-
-  renderMe();
+  refreshVisibleCards();
 
   renderDashboard();
 
-  initializeAuth();
 }
 
 
 /* =========================================================
-   START
+   COMPARE
    ========================================================= */
 
-if (document.readyState === "loading") {
+function toggleCompare(id) {
 
-  document.addEventListener(
-    "DOMContentLoaded",
-    initializeApp
+  if (compareList.includes(id)) {
+
+    compareList =
+      compareList.filter(
+        item => item !== id
+      );
+
+    showToast(
+      "Removed from comparison."
+    );
+
+  } else {
+
+    if (compareList.length >= 3) {
+
+      showToast(
+        "Compare up to 3 tools."
+      );
+
+      return;
+
+    }
+
+    compareList.push(id);
+
+    showToast(
+      "Added to comparison."
+    );
+
+  }
+
+  saveLocalData();
+
+  updateCounts();
+
+  refreshVisibleCards();
+
+}
+
+
+/* =========================================================
+   CARD ACTIONS
+   ========================================================= */
+
+document.addEventListener(
+  "click",
+  event => {
+
+    const actionButton =
+      event.target.closest(
+        "[data-action]"
+      );
+
+    if (actionButton) {
+
+      const id =
+        actionButton.dataset.toolId;
+
+      const action =
+        actionButton.dataset.action;
+
+      if (action === "favorite") {
+        toggleFavorite(id);
+      }
+
+      if (action === "compare") {
+        toggleCompare(id);
+      }
+
+      return;
+
+    }
+
+
+    const visit =
+      event.target.closest(
+        ".visit-button"
+      );
+
+    if (visit) {
+
+      const id =
+        visit.dataset.toolId;
+
+      addRecentlyUsed(id);
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   RECENTLY USED
+   ========================================================= */
+
+function addRecentlyUsed(id) {
+
+  recentlyUsed =
+    recentlyUsed.filter(
+      item => item !== id
+    );
+
+  recentlyUsed.unshift(id);
+
+  recentlyUsed =
+    recentlyUsed.slice(0, 8);
+
+  saveLocalData();
+
+  updateCounts();
+
+}
+
+
+/* =========================================================
+   DASHBOARD
+   ========================================================= */
+
+function renderDashboard() {
+
+  renderFavoriteTools();
+
+  renderRecentTools();
+
+  renderComparisonTools();
+
+  updateCounts();
+
+}
+
+
+function getToolsByIds(ids) {
+
+  return ids
+    .map(
+      id =>
+        tools.find(
+          tool => tool.id === id
+        )
+    )
+    .filter(Boolean);
+
+}
+
+
+function renderFavoriteTools() {
+
+  if (!favoritesGrid) return;
+
+  const list =
+    getToolsByIds(favorites);
+
+  if (!list.length) {
+
+    favoritesGrid.innerHTML = "";
+
+    if (favoritesEmpty) {
+      favoritesEmpty.style.display =
+        "block";
+    }
+
+    return;
+
+  }
+
+  if (favoritesEmpty) {
+    favoritesEmpty.style.display =
+      "none";
+  }
+
+  favoritesGrid.innerHTML =
+    list
+      .map(createToolCard)
+      .join("");
+
+}
+
+
+function renderRecentTools() {
+
+  if (!recentGrid) return;
+
+  const list =
+    getToolsByIds(recentlyUsed);
+
+  if (!list.length) {
+
+    recentGrid.innerHTML = "";
+
+    if (recentEmpty) {
+      recentEmpty.style.display =
+        "block";
+    }
+
+    return;
+
+  }
+
+  if (recentEmpty) {
+    recentEmpty.style.display =
+      "none";
+  }
+
+  recentGrid.innerHTML =
+    list
+      .map(createToolCard)
+      .join("");
+
+}
+
+
+function renderComparisonTools() {
+
+  if (!comparisonList) return;
+
+  const list =
+    getToolsByIds(compareList);
+
+  if (!list.length) {
+
+    comparisonList.innerHTML = "";
+
+    if (comparisonEmpty) {
+      comparisonEmpty.style.display =
+        "block";
+    }
+
+    return;
+
+  }
+
+  if (comparisonEmpty) {
+    comparisonEmpty.style.display =
+      "none";
+  }
+
+  comparisonList.innerHTML =
+    list
+      .map(tool => `
+
+        <div class="comparison-row">
+
+          <div class="comparison-tool">
+
+            <span class="tool-icon">
+              ${tool.icon}
+            </span>
+
+            <strong>
+              ${tool.name}
+            </strong>
+
+          </div>
+
+          <span>
+            ${tool.category}
+          </span>
+
+          <span>
+            ★ ${tool.rating}
+          </span>
+
+          <span>
+            ${tool.pricing}
+          </span>
+
+        </div>
+
+      `)
+      .join("");
+
+}
+
+
+/* =========================================================
+   COUNTS
+   ========================================================= */
+
+function updateCounts() {
+
+  if (favoriteCount) {
+    favoriteCount.textContent =
+      favorites.length;
+  }
+
+  if (recentCount) {
+    recentCount.textContent =
+      recentlyUsed.length;
+  }
+
+  if (comparisonCount) {
+    comparisonCount.textContent =
+      compareList.length;
+  }
+
+  if (compareCount) {
+    compareCount.textContent =
+      compareList.length;
+  }
+
+  if (compareBar) {
+
+    compareBar.classList.toggle(
+      "show",
+      compareList.length > 0
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   CLEAR COMPARISON
+   ========================================================= */
+
+if (clearCompareButton) {
+
+  clearCompareButton.addEventListener(
+    "click",
+    () => {
+
+      compareList = [];
+
+      saveLocalData();
+
+      updateCounts();
+
+      refreshVisibleCards();
+
+      showToast(
+        "Comparison cleared."
+      );
+
+    }
   );
 
-} else {
-
-  initializeApp();
 }
+
+
+if (openCompareButton) {
+
+  openCompareButton.addEventListener(
+    "click",
+    () => {
+
+      showView("dashboard");
+
+      setTimeout(() => {
+
+        const section =
+          document.querySelector(
+            ".comparison-section"
+          );
+
+        if (section) {
+          section.scrollIntoView({
+            behavior: "smooth"
+          });
+        }
+
+      }, 100);
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   REFRESH CARDS
+   ========================================================= */
+
+function refreshVisibleCards() {
+
+  const activeView =
+    document.querySelector(
+      ".app-view.active"
+    );
+
+  if (!activeView) return;
+
+  const grid =
+    activeView.querySelector(
+      ".tools-grid"
+    );
+
+  if (!grid) return;
+
+  const cards =
+    grid.querySelectorAll(
+      ".tool-card"
+    );
+
+  cards.forEach(card => {
+
+    const id =
+      card.dataset.toolId;
+
+    const tool =
+      tools.find(
+        item => item.id === id
+      );
+
+    if (tool) {
+
+      const newCard =
+        document.createElement(
+          "div"
+        );
+
+      newCard.innerHTML =
+        createToolCard(tool);
+
+      card.replaceWith(
+        newCard.firstElementChild
+      );
+
+    }
+
+  });
+
+}
+
+
+/* =========================================================
+   LOCAL STORAGE
+   ========================================================= */
+
+function saveLocalData() {
+
+  localStorage.setItem(
+    STORAGE.favorites,
+    JSON.stringify(favorites)
+  );
+
+  localStorage.setItem(
+    STORAGE.recent,
+    JSON.stringify(recentlyUsed)
+  );
+
+  localStorage.setItem(
+    STORAGE.compare,
+    JSON.stringify(compareList)
+  );
+
+}
+
+
+/* =========================================================
+   DARK MODE
+   ========================================================= */
+
+function applyTheme() {
+
+  const saved =
+    localStorage.getItem(
+      STORAGE.theme
+    );
+
+  const dark =
+    saved === "dark";
+
+  document.body.classList.toggle(
+    "dark",
+    dark
+  );
+
+  if (themeStatus) {
+    themeStatus.textContent =
+      dark
+        ? "On"
+        : "Off";
+  }
+
+}
+
+
+applyTheme();
+
+
+if (themeSettingButton) {
+
+  themeSettingButton.addEventListener(
+    "click",
+    () => {
+
+      const dark =
+        document.body.classList.toggle(
+          "dark"
+        );
+
+      localStorage.setItem(
+        STORAGE.theme,
+        dark ? "dark" : "light"
+      );
+
+      if (themeStatus) {
+        themeStatus.textContent =
+          dark
+            ? "On"
+            : "Off";
+      }
+
+      showToast(
+        dark
+          ? "Dark mode on."
+          : "Dark mode off."
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   ABOUT PANEL
+   ========================================================= */
+
+if (aboutButton) {
+
+  aboutButton.addEventListener(
+    "click",
+    () => {
+
+      if (aboutPanel) {
+        aboutPanel.classList.add(
+          "open"
+        );
+      }
+
+    }
+  );
+
+}
+
+
+if (aboutClose) {
+
+  aboutClose.addEventListener(
+    "click",
+    () => {
+
+      if (aboutPanel) {
+        aboutPanel.classList.remove(
+          "open"
+        );
+      }
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   AUTH MODAL
+   ========================================================= */
+
+const authModal =
+  $("authModal");
+
+const authBackdrop =
+  $("authModalBackdrop");
+
+const loginTab =
+  $("loginTab");
+
+const signupTab =
+  $("signupTab");
+
+const loginForm =
+  $("loginForm");
+
+const signupForm =
+  $("signupForm");
+
+const loggedInPanel =
+  $("loggedInPanel");
+
+const authClose =
+  $("authModalClose");
+
+const loginEmail =
+  $("loginEmail");
+
+const loginPassword =
+  $("loginPassword");
+
+const signupName =
+  $("signupName");
+
+const signupEmail =
+  $("signupEmail");
+
+const signupPassword =
+  $("signupPassword");
+
+const logoutButton =
+  $("logoutButton");
+
+
+function openAuthModal() {
+
+  if (!authModal) return;
+
+  authModal.classList.add(
+    "open"
+  );
+
+  updateAuthUI();
+
+}
+
+
+function closeAuthModal() {
+
+  if (!authModal) return;
+
+  authModal.classList.remove(
+    "open"
+  );
+
+}
+
+
+function switchAuthMode(mode) {
+
+  if (mode === "login") {
+
+    if (loginTab) {
+      loginTab.classList.add(
+        "active"
+      );
+    }
+
+    if (signupTab) {
+      signupTab.classList.remove(
+        "active"
+      );
+    }
+
+    if (loginForm) {
+      loginForm.style.display =
+        "block";
+    }
+
+    if (signupForm) {
+      signupForm.style.display =
+        "none";
+    }
+
+  } else {
+
+    if (loginTab) {
+      loginTab.classList.remove(
+        "active"
+      );
+    }
+
+    if (signupTab) {
+      signupTab.classList.add(
+        "active"
+      );
+    }
+
+    if (loginForm) {
+      loginForm.style.display =
+        "none";
+    }
+
+    if (signupForm) {
+      signupForm.style.display =
+        "block";
+    }
+
+  }
+
+}
+
+
+if (loginTab) {
+
+  loginTab.addEventListener(
+    "click",
+    () => switchAuthMode("login")
+  );
+
+}
+
+
+if (signupTab) {
+
+  signupTab.addEventListener(
+    "click",
+    () => switchAuthMode("signup")
+  );
+
+}
+
+
+if (authClose) {
+
+  authClose.addEventListener(
+    "click",
+    closeAuthModal
+  );
+
+}
+
+
+if (authBackdrop) {
+
+  authBackdrop.addEventListener(
+    "click",
+    closeAuthModal
+  );
+
+}
+
+
+/* =========================================================
+   ACCOUNT BUTTON
+   ========================================================= */
+
+if (accountButton) {
+
+  accountButton.addEventListener(
+    "click",
+    openAuthModal
+  );
+
+}
+
+
+/* =========================================================
+   LOGIN
+   ========================================================= */
+
+if (loginForm) {
+
+  loginForm.addEventListener(
+    "submit",
+    async event => {
+
+      event.preventDefault();
+
+      if (
+        !supabaseClient
+      ) {
+
+        showToast(
+          "Connect Supabase first."
+        );
+
+        return;
+
+      }
+
+      const email =
+        loginEmail?.value.trim();
+
+      const password =
+        loginPassword?.value;
+
+      if (!email || !password) {
+
+        showToast(
+          "Enter your email and password."
+        );
+
+        return;
+
+      }
+
+      const {
+        error
+      } =
+        await supabaseClient.auth.signInWithPassword({
+          email,
+          password
+        });
+
+      if (error) {
+
+        showToast(
+          error.message
+        );
+
+        return;
+
+      }
+
+      showToast(
+        "Welcome back."
+      );
+
+      closeAuthModal();
+
+      updateAuthUI();
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   SIGN UP
+   ========================================================= */
+
+if (signupForm) {
+
+  signupForm.addEventListener(
+    "submit",
+    async event => {
+
+      event.preventDefault();
+
+      if (!supabaseClient) {
+
+        showToast(
+          "Connect Supabase first."
+        );
+
+        return;
+
+      }
+
+      const name =
+        signupName?.value.trim();
+
+      const email =
+        signupEmail?.value.trim();
+
+      const password =
+        signupPassword?.value;
+
+      if (
+        !name ||
+        !email ||
+        !password
+      ) {
+
+        showToast(
+          "Fill in all fields."
+        );
+
+        return;
+
+      }
+
+      if (password.length < 6) {
+
+        showToast(
+          "Password must be at least 6 characters."
+        );
+
+        return;
+
+      }
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              full_name: name
+            }
+          }
+        });
+
+      if (error) {
+
+        showToast(
+          error.message
+        );
+
+        return;
+
+      }
+
+      if (
+        data.user &&
+        data.session
+      ) {
+
+        showToast(
+          "Account created."
+        );
+
+      } else {
+
+        showToast(
+          "Check your email to confirm your account."
+        );
+
+      }
+
+      closeAuthModal();
+
+      updateAuthUI();
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   AUTH UI
+   ========================================================= */
+
+async function updateAuthUI() {
+
+  let user = null;
+
+  if (supabaseClient) {
+
+    const {
+      data
+    } =
+      await supabaseClient.auth.getUser();
+
+    user =
+      data?.user || null;
+
+  }
+
+
+  if (loggedInPanel) {
+
+    loggedInPanel.style.display =
+      user
+        ? "block"
+        : "none";
+
+  }
+
+  if (loginForm) {
+
+    loginForm.style.display =
+      user
+        ? "none"
+        : "block";
+
+  }
+
+  if (signupForm) {
+
+    signupForm.style.display =
+      "none";
+
+  }
+
+
+  if (user) {
+
+    const name =
+      user.user_metadata?.full_name ||
+      user.email?.split("@")[0] ||
+      "User";
+
+    if (profileName) {
+      profileName.textContent =
+        name;
+    }
+
+    if (profileEmail) {
+      profileEmail.textContent =
+        user.email || "";
+    }
+
+    if (profileAvatar) {
+      profileAvatar.textContent =
+        name
+          .charAt(0)
+          .toUpperCase();
+    }
+
+  } else {
+
+    if (profileName) {
+      profileName.textContent =
+        "Guest";
+    }
+
+    if (profileEmail) {
+      profileEmail.textContent =
+        "Sign in to sync your tools";
+    }
+
+    if (profileAvatar) {
+      profileAvatar.textContent =
+        "G";
+    }
+
+  }
+
+}
+
+
+/* =========================================================
+   LOGOUT
+   ========================================================= */
+
+if (logoutButton) {
+
+  logoutButton.addEventListener(
+    "click",
+    async () => {
+
+      if (supabaseClient) {
+        await supabaseClient.auth.signOut();
+      }
+
+      showToast(
+        "Signed out."
+      );
+
+      updateAuthUI();
+
+      closeAuthModal();
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   SUPABASE AUTH LISTENER
+   ========================================================= */
+
+if (supabaseClient) {
+
+  supabaseClient.auth.onAuthStateChange(
+    () => {
+      updateAuthUI();
+    }
+  );
+
+}
+
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+function showToast(message) {
+
+  if (!toastContainer) {
+    console.log(message);
+    return;
+  }
+
+  const toast =
+    document.createElement("div");
+
+  toast.className =
+    "toast";
+
+  toast.textContent =
+    message;
+
+  toastContainer.appendChild(
+    toast
+  );
+
+  setTimeout(() => {
+
+    toast.classList.add(
+      "hide"
+    );
+
+    setTimeout(() => {
+      toast.remove();
+    }, 250);
+
+  }, 2500);
+
+}
+
+
+/* =========================================================
+   ESC KEY
+   ========================================================= */
+
+document.addEventListener(
+  "keydown",
+  event => {
+
+    if (event.key !== "Escape") {
+      return;
+    }
+
+    closeAuthModal();
+
+    if (aboutPanel) {
+      aboutPanel.classList.remove(
+        "open"
+      );
+    }
+
+  }
+);
+
+
+/* =========================================================
+   CLOSE SUGGESTIONS WHEN CLICKING OUTSIDE
+   ========================================================= */
+
+document.addEventListener(
+  "click",
+  event => {
+
+    if (
+      suggestions &&
+      !suggestions.contains(event.target) &&
+      !searchInput?.contains(event.target)
+    ) {
+
+      suggestions.classList.remove(
+        "open"
+      );
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   INITIALISE
+   ========================================================= */
+
+function initialiseV76() {
+
+  applyTheme();
+
+  updateCounts();
+
+  renderDashboard();
+
+  updateAuthUI();
+
+  /*
+     Home is always the starting point.
+  */
+
+  showView("home");
+
+  console.log(
+    `TzTools V7.6 loaded — ${tools.length} tools`
+  );
+
+}
+
+
+initialiseV76();
