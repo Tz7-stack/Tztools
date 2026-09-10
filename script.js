@@ -934,116 +934,327 @@ function resetHome() {
 
 
 /* =========================================================
-   INTENT SYSTEM
+   TZTOOLS V8.0
+   INTELLIGENT SEARCH ENGINE
    ========================================================= */
 
 const intentGroups = {
 
-  logo: [
-    "logo",
-    "logos",
-    "brand logo",
-    "make a logo",
-    "create a logo",
-    "design a logo"
-  ],
+  logo: {
+    phrases: [
+      "logo",
+      "logos",
+      "brand logo",
+      "make a logo",
+      "create a logo",
+      "design a logo",
+      "company logo",
+      "business logo",
+      "brand identity"
+    ],
+    keywords: [
+      "logo",
+      "brand",
+      "branding"
+    ]
+  },
 
-  video: [
-    "video",
-    "edit video",
-    "edit a video",
-    "video editing",
-    "youtube video",
-    "reels",
-    "shorts"
-  ],
+  video: {
+    phrases: [
+      "video",
+      "videos",
+      "edit video",
+      "edit a video",
+      "video editing",
+      "youtube video",
+      "youtube videos",
+      "make a video",
+      "create a video",
+      "edit youtube",
+      "shorts",
+      "youtube shorts",
+      "reels",
+      "instagram reels",
+      "tiktok"
+    ],
+    keywords: [
+      "video",
+      "editing",
+      "edit",
+      "youtube",
+      "shorts",
+      "reels"
+    ]
+  },
 
-  website: [
-    "website",
-    "web site",
-    "build website",
-    "build a website",
-    "create website",
-    "make website"
-  ],
+  website: {
+    phrases: [
+      "website",
+      "web site",
+      "webpage",
+      "web page",
+      "build website",
+      "build a website",
+      "create website",
+      "create a website",
+      "make website",
+      "make a website",
+      "website builder",
+      "online store",
+      "landing page"
+    ],
+    keywords: [
+      "website",
+      "web",
+      "site",
+      "build",
+      "landing page"
+    ]
+  },
 
-  study: [
-    "study",
-    "studying",
-    "school",
-    "learn",
-    "learning",
-    "revision",
-    "revise",
-    "homework"
-  ],
+  study: {
+    phrases: [
+      "study",
+      "studying",
+      "school",
+      "learn",
+      "learning",
+      "revision",
+      "revise",
+      "homework",
+      "school work",
+      "schoolwork",
+      "student",
+      "students",
+      "exam",
+      "exams",
+      "test",
+      "tests"
+    ],
+    keywords: [
+      "study",
+      "school",
+      "learning",
+      "revision",
+      "homework"
+    ]
+  },
 
-  math: [
-    "math",
-    "maths",
-    "calculation",
-    "equation",
-    "algebra"
-  ],
+  math: {
+    phrases: [
+      "math",
+      "maths",
+      "mathematics",
+      "calculation",
+      "calculate",
+      "calculator",
+      "equation",
+      "equations",
+      "algebra",
+      "geometry",
+      "solve math",
+      "solve maths",
+      "math problem",
+      "maths problem"
+    ],
+    keywords: [
+      "math",
+      "maths",
+      "mathematics",
+      "calculation",
+      "equation",
+      "algebra"
+    ]
+  },
 
-  image: [
-    "image",
-    "photo",
-    "picture",
-    "background",
-    "remove background"
-  ],
+  image: {
+    phrases: [
+      "image",
+      "images",
+      "photo",
+      "photos",
+      "picture",
+      "pictures",
+      "edit photo",
+      "edit image",
+      "image editing",
+      "photo editing",
+      "background",
+      "remove background",
+      "remove a background",
+      "change background",
+      "compress image",
+      "compress photo"
+    ],
+    keywords: [
+      "image",
+      "images",
+      "photo",
+      "photos",
+      "picture",
+      "background"
+    ]
+  },
 
-  writing: [
-    "write",
-    "writing",
-    "essay",
-    "grammar",
-    "rewrite",
-    "paraphrase"
-  ],
+  writing: {
+    phrases: [
+      "write",
+      "writing",
+      "writer",
+      "essay",
+      "essays",
+      "grammar",
+      "spelling",
+      "rewrite",
+      "rewriting",
+      "paraphrase",
+      "paraphrasing",
+      "article",
+      "blog post",
+      "content"
+    ],
+    keywords: [
+      "writing",
+      "grammar",
+      "essay",
+      "rewrite",
+      "paraphrase",
+      "content"
+    ]
+  },
 
-  pdf: [
-    "pdf",
-    "merge pdf",
-    "split pdf",
-    "compress pdf"
-  ],
+  pdf: {
+    phrases: [
+      "pdf",
+      "pdfs",
+      "merge pdf",
+      "merge pdfs",
+      "split pdf",
+      "split pdfs",
+      "compress pdf",
+      "compress pdfs",
+      "edit pdf",
+      "edit pdfs",
+      "convert pdf",
+      "convert pdfs"
+    ],
+    keywords: [
+      "pdf",
+      "merge",
+      "split",
+      "compress",
+      "convert"
+    ]
+  },
 
-  audio: [
-    "audio",
-    "voice",
-    "record",
-    "music"
-  ],
+  audio: {
+    phrases: [
+      "audio",
+      "voice",
+      "voices",
+      "record",
+      "recording",
+      "record audio",
+      "music",
+      "sound",
+      "podcast",
+      "text to speech",
+      "voice generator"
+    ],
+    keywords: [
+      "audio",
+      "voice",
+      "record",
+      "music",
+      "sound",
+      "podcast"
+    ]
+  },
 
-  ai: [
-    "ai",
-    "artificial intelligence",
-    "chatbot",
-    "assistant"
-  ],
+  ai: {
+    phrases: [
+      "ai",
+      "artificial intelligence",
+      "chatbot",
+      "chat bot",
+      "assistant",
+      "ai assistant",
+      "ai tool",
+      "ai tools",
+      "generative ai",
+      "use ai"
+    ],
+    keywords: [
+      "ai",
+      "assistant",
+      "chatbot"
+    ]
+  },
 
-  productivity: [
-    "productivity",
-    "organize",
-    "notes",
-    "planning",
-    "tasks"
-  ]
+  productivity: {
+    phrases: [
+      "productivity",
+      "organize",
+      "organization",
+      "notes",
+      "note taking",
+      "planning",
+      "plan",
+      "tasks",
+      "task management",
+      "to do",
+      "todo",
+      "calendar",
+      "manage my work"
+    ],
+    keywords: [
+      "productivity",
+      "organize",
+      "notes",
+      "planning",
+      "tasks"
+    ]
+  }
+
 };
 
+
+/* =========================================================
+   TEXT NORMALIZATION
+   ========================================================= */
 
 function normalizeText(text) {
 
   return String(text || "")
     .toLowerCase()
-    .replace(/[^\w\s]/g, " ")
+    .replace(/['’]/g, "")
+    .replace(/[^a-z0-9\s]/g, " ")
     .replace(/\s+/g, " ")
     .trim();
 
 }
 
+
+/* =========================================================
+   SEARCH WORDS
+   ========================================================= */
+
+function getSearchWords(text) {
+
+  return [
+    ...new Set(
+      normalizeText(text)
+        .split(" ")
+        .filter(word => word.length > 1)
+    )
+  ];
+
+}
+
+
+/* =========================================================
+   INTENT DETECTION
+   ========================================================= */
 
 function detectIntent(query) {
 
@@ -1053,19 +1264,30 @@ function detectIntent(query) {
   const intents = [];
 
   Object.entries(intentGroups)
-    .forEach(([intent, phrases]) => {
+    .forEach(([intent, data]) => {
 
-      phrases.forEach(phrase => {
+      const phraseMatch =
+        data.phrases.some(
+          phrase =>
+            text.includes(
+              normalizeText(phrase)
+            )
+        );
 
-        if (
-          text.includes(
-            normalizeText(phrase)
-          )
-        ) {
-          intents.push(intent);
-        }
+      const wordMatch =
+        data.keywords.some(
+          keyword =>
+            text.includes(
+              normalizeText(keyword)
+            )
+        );
 
-      });
+      if (
+        phraseMatch ||
+        wordMatch
+      ) {
+        intents.push(intent);
+      }
 
     });
 
@@ -1077,7 +1299,23 @@ function detectIntent(query) {
 
 
 /* =========================================================
-   SMART SCORING
+   TOOL SEARCH TEXT
+   ========================================================= */
+
+function getToolSearchText(tool) {
+
+  return normalizeText(`
+    ${tool.name}
+    ${tool.description}
+    ${tool.category}
+    ${tool.keywords.join(" ")}
+  `);
+
+}
+
+
+/* =========================================================
+   SMART TOOL SCORING
    ========================================================= */
 
 function scoreTool(tool, query) {
@@ -1085,10 +1323,15 @@ function scoreTool(tool, query) {
   const text =
     normalizeText(query);
 
+  if (!text) {
+    return 0;
+  }
+
+  const queryWords =
+    getSearchWords(text);
+
   const intents =
     detectIntent(text);
-
-  let score = 0;
 
   const name =
     normalizeText(tool.name);
@@ -1096,133 +1339,272 @@ function scoreTool(tool, query) {
   const description =
     normalizeText(tool.description);
 
-  const keywords =
-    tool.keywords.map(normalizeText);
+  const category =
+    normalizeText(tool.category);
 
-  /* Exact name */
+  const keywords =
+    tool.keywords.map(
+      normalizeText
+    );
+
+  const searchable =
+    getToolSearchText(tool);
+
+  let score = 0;
+
+
+  /* ---------------------------------------------------------
+     EXACT TOOL NAME
+     --------------------------------------------------------- */
 
   if (text === name) {
-    score += 150;
+    score += 250;
   }
 
-  /* Name match */
+
+  /* ---------------------------------------------------------
+     TOOL NAME CONTAINS QUERY
+     --------------------------------------------------------- */
 
   if (
-    name.includes(text) &&
-    text.length > 2
+    text.length > 2 &&
+    name.includes(text)
   ) {
-    score += 70;
+    score += 100;
   }
 
-  /* Description */
+
+  /* ---------------------------------------------------------
+     QUERY APPEARS IN DESCRIPTION
+     --------------------------------------------------------- */
 
   if (
-    description.includes(text) &&
-    text.length > 2
+    text.length > 2 &&
+    description.includes(text)
   ) {
-    score += 25;
+    score += 45;
   }
 
-  /* Keywords */
 
-  keywords.forEach(keyword => {
+  /* ---------------------------------------------------------
+     CATEGORY MATCH
+     --------------------------------------------------------- */
 
-    if (text.includes(keyword)) {
-      score += 15;
+  if (
+    text === category ||
+    text.includes(category)
+  ) {
+    score += 45;
+  }
+
+
+  /* ---------------------------------------------------------
+     INDIVIDUAL WORD MATCHING
+     --------------------------------------------------------- */
+
+  queryWords.forEach(word => {
+
+    if (name === word) {
+      score += 80;
     }
 
     if (
-      keyword.includes(text) &&
-      text.length > 2
+      name.includes(word) &&
+      word.length >= 3
     ) {
-      score += 8;
+      score += 35;
     }
+
+    if (
+      description.includes(word)
+    ) {
+      score += 12;
+    }
+
+    if (
+      category.includes(word)
+    ) {
+      score += 25;
+    }
+
+    keywords.forEach(keyword => {
+
+      if (keyword === word) {
+        score += 35;
+      }
+
+      if (
+        keyword.includes(word) &&
+        word.length >= 3
+      ) {
+        score += 18;
+      }
+
+    });
 
   });
 
 
-  /* Intent */
+  /* ---------------------------------------------------------
+     INTENT MATCHING
+     --------------------------------------------------------- */
 
   intents.forEach(intent => {
 
-    if (
-      intent === "logo" &&
-      keywords.includes("logo")
-    ) {
-      score += 60;
-    }
+    const intentData =
+      intentGroups[intent];
+
+    if (!intentData) return;
+
+
+    /* Strong category matches */
 
     if (
       intent === "video" &&
       tool.category === "Video"
     ) {
-      score += 60;
+      score += 100;
     }
 
     if (
       intent === "website" &&
       tool.category === "Websites"
     ) {
-      score += 60;
+      score += 100;
     }
 
     if (
       intent === "study" &&
       tool.category === "Students"
     ) {
-      score += 60;
-    }
-
-    if (
-      intent === "math" &&
-      keywords.includes("math")
-    ) {
-      score += 65;
-    }
-
-    if (
-      intent === "image" &&
-      tool.category === "Images"
-    ) {
-      score += 50;
-    }
-
-    if (
-      intent === "writing" &&
-      tool.category === "Writing"
-    ) {
-      score += 50;
+      score += 100;
     }
 
     if (
       intent === "pdf" &&
       tool.category === "PDF"
     ) {
-      score += 60;
+      score += 100;
     }
 
     if (
       intent === "audio" &&
       tool.category === "Audio"
     ) {
-      score += 60;
+      score += 100;
     }
 
     if (
       intent === "ai" &&
       tool.category === "AI"
     ) {
-      score += 50;
+      score += 90;
     }
 
     if (
       intent === "productivity" &&
       tool.category === "Productivity"
     ) {
-      score += 50;
+      score += 90;
     }
 
+    if (
+      intent === "writing" &&
+      tool.category === "Writing"
+    ) {
+      score += 90;
+    }
+
+    if (
+      intent === "image" &&
+      (
+        tool.category === "Images" ||
+        tool.category === "Design"
+      )
+    ) {
+      score += 75;
+    }
+
+
+    /* Logo is keyword-specific */
+
+    if (
+      intent === "logo" &&
+      keywords.includes("logo")
+    ) {
+      score += 120;
+    }
+
+
+    /* Maths is keyword-specific */
+
+    if (
+      intent === "math" &&
+      (
+        keywords.includes("math") ||
+        keywords.includes("maths") ||
+        keywords.includes("calculation")
+      )
+    ) {
+      score += 120;
+    }
+
+
+    /* Intent keyword matches */
+
+    intentData.keywords.forEach(keyword => {
+
+      if (
+        keywords.includes(
+          normalizeText(keyword)
+        )
+      ) {
+        score += 30;
+      }
+
+    });
+
   });
+
+
+  /* ---------------------------------------------------------
+     FULL QUERY WORD COVERAGE BONUS
+     --------------------------------------------------------- */
+
+  if (queryWords.length > 1) {
+
+    let matchedWords = 0;
+
+    queryWords.forEach(word => {
+
+      if (
+        searchable.includes(word)
+      ) {
+        matchedWords++;
+      }
+
+    });
+
+    const coverage =
+      matchedWords / queryWords.length;
+
+    if (coverage >= 1) {
+      score += 70;
+    } else if (coverage >= 0.75) {
+      score += 45;
+    } else if (coverage >= 0.5) {
+      score += 20;
+    }
+
+  }
+
+
+  /* ---------------------------------------------------------
+     RATING TIE-BREAKER
+     --------------------------------------------------------- */
+
+  score +=
+    tool.rating * 2;
 
 
   return score;
@@ -1231,7 +1613,7 @@ function scoreTool(tool, query) {
 
 
 /* =========================================================
-   SEARCH
+   SMART SEARCH
    ========================================================= */
 
 function searchTools(query) {
@@ -1243,22 +1625,41 @@ function searchTools(query) {
     return tools.slice();
   }
 
+
   const ranked =
     tools
       .map(tool => ({
         tool,
-        score: scoreTool(tool, clean)
+        score: scoreTool(
+          tool,
+          clean
+        )
       }))
-      .filter(item => item.score > 0)
+      .filter(
+        item =>
+          item.score > 0
+      )
       .sort(
-        (a, b) =>
-          b.score - a.score
+        (a, b) => {
+
+          if (
+            b.score !== a.score
+          ) {
+            return b.score - a.score;
+          }
+
+          return (
+            b.tool.rating -
+            a.tool.rating
+          );
+
+        }
       );
 
-  /*
-     If the search is broad,
-     still give useful results.
-  */
+
+  /* ---------------------------------------------------------
+     NO MATCH FALLBACK
+     --------------------------------------------------------- */
 
   if (!ranked.length) {
 
@@ -1272,12 +1673,19 @@ function searchTools(query) {
 
   }
 
+
   return ranked
     .slice(0, 10)
-    .map(item => item.tool);
+    .map(
+      item => item.tool
+    );
 
 }
 
+
+
+
+   
 
 /* =========================================================
    TOOL CARD
