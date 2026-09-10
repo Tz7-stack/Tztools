@@ -3160,4 +3160,6 @@ function initialiseV76() {
 }
 
 
-initialiseV76();
+updateAuthUI().then(() => {
+  loadCloudData();
+});
