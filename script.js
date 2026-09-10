@@ -2176,7 +2176,143 @@ function saveLocalData() {
   );
 
 }
+/* =========================================================
+   SUPABASE CLOUD SYNC — V7.7
+   ========================================================= */
 
+async function getCurrentUser() {
+  if (!supabaseClient) return null;
+
+  const { data } =
+    await supabaseClient.auth.getUser();
+
+  return data?.user || null;
+}
+
+
+async function syncFavoritesToCloud() {
+  const user = await getCurrentUser();
+
+  if (!user) return;
+
+  const { data: existing } =
+    await supabaseClient
+      .from("favorites")
+      .select("tool_id")
+      .eq("user_id", user.id);
+
+  const cloudIds =
+    (existing || []).map(row => row.tool_id);
+
+  const missing =
+    favorites.filter(
+      id => !cloudIds.includes(id)
+    );
+
+  if (!missing.length) return;
+
+  await supabaseClient
+    .from("favorites")
+    .insert(
+      missing.map(tool_id => ({
+        user_id: user.id,
+        tool_id
+      }))
+    );
+}
+
+
+async function syncRecentToCloud() {
+  const user = await getCurrentUser();
+
+  if (!user) return;
+
+  const { data: existing } =
+    await supabaseClient
+      .from("recently_used")
+      .select("tool_id")
+      .eq("user_id", user.id);
+
+  const cloudIds =
+    (existing || []).map(row => row.tool_id);
+
+  const missing =
+    recentlyUsed.filter(
+      id => !cloudIds.includes(id)
+    );
+
+  if (!missing.length) return;
+
+  await supabaseClient
+    .from("recently_used")
+    .insert(
+      missing.map(tool_id => ({
+        user_id: user.id,
+        tool_id
+      }))
+    );
+}
+
+
+async function loadCloudData() {
+  const user = await getCurrentUser();
+
+  if (!user) return;
+
+  /* ---------- FAVORITES ---------- */
+
+  const { data: cloudFavorites } =
+    await supabaseClient
+      .from("favorites")
+      .select("tool_id")
+      .eq("user_id", user.id);
+
+  if (cloudFavorites) {
+    const cloudIds =
+      cloudFavorites.map(
+        row => row.tool_id
+      );
+
+    favorites = [
+      ...new Set([
+        ...cloudIds,
+        ...favorites
+      ])
+    ];
+  }
+
+
+  /* ---------- RECENTLY USED ---------- */
+
+  const { data: cloudRecent } =
+    await supabaseClient
+      .from("recently_used")
+      .select("tool_id")
+      .eq("user_id", user.id);
+
+  if (cloudRecent) {
+    const cloudIds =
+      cloudRecent.map(
+        row => row.tool_id
+      );
+
+    recentlyUsed = [
+      ...new Set([
+        ...recentlyUsed,
+        ...cloudIds
+      ])
+    ].slice(0, 8);
+  }
+
+
+  saveLocalData();
+
+  await syncFavoritesToCloud();
+  await syncRecentToCloud();
+
+  updateCounts();
+  renderDashboard();
+}
 
 /* =========================================================
    DARK MODE
