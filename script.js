@@ -3033,17 +3033,12 @@ document.addEventListener(
    ========================================================= */
 
 if (supabaseClient) {
-
   supabaseClient.auth.onAuthStateChange(
     async () => {
-
       await updateAuthUI();
-
       await loadCloudData();
-
     }
   );
-
 }
 
 
