@@ -1825,7 +1825,6 @@ document.addEventListener(
    ========================================================= */
 
 function addRecentlyUsed(id) {
-
   recentlyUsed =
     recentlyUsed.filter(
       item => item !== id
@@ -1838,8 +1837,9 @@ function addRecentlyUsed(id) {
 
   saveLocalData();
 
-  updateCounts();
+  syncRecentToCloud();
 
+  updateCounts();
 }
 
 
