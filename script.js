@@ -1760,7 +1760,7 @@ function toggleCompare(id) {
   }
 
   saveLocalData();
-
+ syncRecentToCloud();
   updateCounts();
 
   refreshVisibleCards();
