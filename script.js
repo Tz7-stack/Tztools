@@ -2967,8 +2967,12 @@ document.addEventListener(
 if (supabaseClient) {
 
   supabaseClient.auth.onAuthStateChange(
-    () => {
-      updateAuthUI();
+    async () => {
+
+      await updateAuthUI();
+
+      await loadCloudData();
+
     }
   );
 
