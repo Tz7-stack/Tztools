@@ -2177,48 +2177,203 @@ function saveLocalData() {
 
 }
 /* =========================================================
-   SUPABASE CLOUD SYNC — V7.7
+   SUPABASE CLOUD SYNC — V7.7 FIXED
    ========================================================= */
 
 async function getCurrentUser() {
   if (!supabaseClient) return null;
 
-  const { data } =
+  const { data, error } =
     await supabaseClient.auth.getUser();
+
+  if (error) {
+    console.error("Get user error:", error);
+    return null;
+  }
 
   return data?.user || null;
 }
 
+
+/* =========================================================
+   FAVORITES → CLOUD
+   ========================================================= */
 
 async function syncFavoritesToCloud() {
   const user = await getCurrentUser();
 
   if (!user) return;
 
-  const { data: existing } =
+  const { data: existing, error } =
     await supabaseClient
       .from("favorites")
-      .select("tool_id")
+      .select("tool_name")
       .eq("user_id", user.id);
 
-  const cloudIds =
-    (existing || []).map(row => row.tool_id);
+  if (error) {
+    console.error(
+      "Cloud favorites read error:",
+      error
+    );
+    return;
+  }
+
+  const cloudNames =
+    (existing || []).map(row => row.tool_name);
 
   const missing =
     favorites.filter(
-      id => !cloudIds.includes(id)
+      name => !cloudNames.includes(name)
     );
 
   if (!missing.length) return;
 
-  await supabaseClient
-    .from("favorites")
-    .insert(
-      missing.map(tool_id => ({
-        user_id: user.id,
-        tool_id
-      }))
+  const { error: insertError } =
+    await supabaseClient
+      .from("favorites")
+      .insert(
+        missing.map(tool_name => ({
+          user_id: user.id,
+          tool_name
+        }))
+      );
+
+  if (insertError) {
+    console.error(
+      "Cloud favorites insert error:",
+      insertError
     );
+  }
+}
+
+
+/* =========================================================
+   RECENTLY USED → CLOUD
+   ========================================================= */
+
+async function syncRecentToCloud() {
+  const user = await getCurrentUser();
+
+  if (!user) return;
+
+  const { data: existing, error } =
+    await supabaseClient
+      .from("recently_used")
+      .select("tool_name")
+      .eq("user_id", user.id);
+
+  if (error) {
+    console.error(
+      "Cloud recent read error:",
+      error
+    );
+    return;
+  }
+
+  const cloudNames =
+    (existing || []).map(row => row.tool_name);
+
+  const missing =
+    recentlyUsed.filter(
+      name => !cloudNames.includes(name)
+    );
+
+  if (!missing.length) return;
+
+  const { error: insertError } =
+    await supabaseClient
+      .from("recently_used")
+      .insert(
+        missing.map(tool_name => ({
+          user_id: user.id,
+          tool_name
+        }))
+      );
+
+  if (insertError) {
+    console.error(
+      "Cloud recent insert error:",
+      insertError
+    );
+  }
+}
+
+
+/* =========================================================
+   LOAD CLOUD DATA
+   ========================================================= */
+
+async function loadCloudData() {
+  const user = await getCurrentUser();
+
+  if (!user) return;
+
+
+  /* ---------- FAVORITES ---------- */
+
+  const { data: cloudFavorites, error: favoritesError } =
+    await supabaseClient
+      .from("favorites")
+      .select("tool_name")
+      .eq("user_id", user.id);
+
+  if (favoritesError) {
+    console.error(
+      "Load cloud favorites error:",
+      favoritesError
+    );
+  } else if (cloudFavorites) {
+
+    const cloudNames =
+      cloudFavorites.map(
+        row => row.tool_name
+      );
+
+    favorites = [
+      ...new Set([
+        ...cloudNames,
+        ...favorites
+      ])
+    ];
+  }
+
+
+  /* ---------- RECENTLY USED ---------- */
+
+  const { data: cloudRecent, error: recentError } =
+    await supabaseClient
+      .from("recently_used")
+      .select("tool_name")
+      .eq("user_id", user.id);
+
+  if (recentError) {
+    console.error(
+      "Load cloud recent error:",
+      recentError
+    );
+  } else if (cloudRecent) {
+
+    const cloudNames =
+      cloudRecent.map(
+        row => row.tool_name
+      );
+
+    recentlyUsed = [
+      ...new Set([
+        ...recentlyUsed,
+        ...cloudNames
+      ])
+    ].slice(0, 8);
+  }
+
+
+  saveLocalData();
+
+  await syncFavoritesToCloud();
+  await syncRecentToCloud();
+
+  updateCounts();
+  renderDashboard();
 }
 
 
@@ -2258,62 +2413,8 @@ async function loadCloudData() {
   const user = await getCurrentUser();
 
   if (!user) return;
-
-  /* ---------- FAVORITES ---------- */
-
-  const { data: cloudFavorites } =
-    await supabaseClient
-      .from("favorites")
-      .select("tool_id")
-      .eq("user_id", user.id);
-
-  if (cloudFavorites) {
-    const cloudIds =
-      cloudFavorites.map(
-        row => row.tool_id
-      );
-
-    favorites = [
-      ...new Set([
-        ...cloudIds,
-        ...favorites
-      ])
-    ];
-  }
-
-
-  /* ---------- RECENTLY USED ---------- */
-
-  const { data: cloudRecent } =
-    await supabaseClient
-      .from("recently_used")
-      .select("tool_id")
-      .eq("user_id", user.id);
-
-  if (cloudRecent) {
-    const cloudIds =
-      cloudRecent.map(
-        row => row.tool_id
-      );
-
-    recentlyUsed = [
-      ...new Set([
-        ...recentlyUsed,
-        ...cloudIds
-      ])
-    ].slice(0, 8);
-  }
-
-
-  saveLocalData();
-
-  await syncFavoritesToCloud();
-  await syncRecentToCloud();
-
-  updateCounts();
-  renderDashboard();
 }
-
+  
 /* =========================================================
    DARK MODE
    ========================================================= */
