@@ -28,32 +28,182 @@
        ===================================================== -->
 
   <header
-    class="navbar"
-    id="homeNavbar"
-  >
+   <!-- =====================================================
+     TOP NAVBAR
+     ===================================================== -->
 
-    <div class="nav-container">
+<header class="navbar" id="homeNavbar">
 
-      <button
-        class="brand-button"
-        id="brandButton"
-        type="button"
-        aria-label="Go to home"
+  <div class="nav-container">
+
+    <!-- HAMBURGER -->
+    <button
+      class="menu-button"
+      id="menuButton"
+      type="button"
+      aria-label="Open categories menu"
+      aria-expanded="false"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <!-- YOUR REAL TZTOOLS LOGO -->
+    <button
+      class="brand-button"
+      id="brandButton"
+      type="button"
+      aria-label="Go to home"
+    >
+
+      <!-- KEEP YOUR REAL LOGO HERE -->
+      <img
+        src="favicon.png"
+        alt="TzTools"
+        class="brand-logo"
       >
 
-        <span class="brand-mark">
-          T
-        </span>
+      <span class="brand-name">
+        TzTools
+      </span>
 
-        <span class="brand-name">
-          TzTools
-        </span>
+    </button>
 
+  </div>
+
+</header>
+
+ <!-- =====================================================
+     CATEGORY MENU
+     ===================================================== -->
+
+<aside
+  class="category-menu"
+  id="categoryMenu"
+  aria-hidden="true"
+>
+
+  <div class="category-menu-backdrop" id="categoryMenuBackdrop"></div>
+
+  <div class="category-menu-panel">
+
+    <div class="category-menu-header">
+
+      <div class="category-menu-brand">
+
+        <img
+          src="favicon.png"
+          alt="TzTools"
+          class="category-menu-logo"
+        >
+
+        <span>TzTools</span>
+
+      </div>
+
+      <button
+        class="category-menu-close"
+        id="categoryMenuClose"
+        type="button"
+        aria-label="Close categories menu"
+      >
+        ×
       </button>
 
     </div>
 
-  </header>
+    <div class="category-menu-body">
+
+      <p class="category-menu-label">
+        CATEGORIES
+      </p>
+
+      <button class="menu-category" type="button" data-category="AI">
+        <span class="menu-category-icon">✦</span>
+        <span>AI</span>
+        <span>›</span>
+      </button>
+
+      <button class="menu-category" type="button" data-category="Design">
+        <span class="menu-category-icon">◇</span>
+        <span>Design</span>
+        <span>›</span>
+      </button>
+
+      <button class="menu-category" type="button" data-category="Images">
+        <span class="menu-category-icon">▣</span>
+        <span>Images</span>
+        <span>›</span>
+      </button>
+
+      <button class="menu-category" type="button" data-category="Video">
+        <span class="menu-category-icon">▶</span>
+        <span>Video</span>
+        <span>›</span>
+      </button>
+
+      <button class="menu-category" type="button" data-category="Writing">
+        <span class="menu-category-icon">Aa</span>
+        <span>Writing</span>
+        <span>›</span>
+      </button>
+
+      <button class="menu-category" type="button" data-category="Productivity">
+        <span class="menu-category-icon">✓</span>
+        <span>Productivity</span>
+        <span>›</span>
+      </button>
+
+      <button class="menu-category" type="button" data-category="Websites">
+        <span class="menu-category-icon">⌘</span>
+        <span>Websites</span>
+        <span>›</span>
+      </button>
+
+      <button class="menu-category" type="button" data-category="Students">
+        <span class="menu-category-icon">▤</span>
+        <span>Students</span>
+        <span>›</span>
+      </button>
+
+      <button class="menu-category" type="button" data-category="PDF">
+        <span class="menu-category-icon">PDF</span>
+        <span>PDF</span>
+        <span>›</span>
+      </button>
+
+      <button class="menu-category" type="button" data-category="Audio">
+        <span class="menu-category-icon">♪</span>
+        <span>Audio</span>
+        <span>›</span>
+      </button>
+
+      <div class="menu-divider"></div>
+
+      <p class="category-menu-label">
+        MORE
+      </p>
+
+      <button class="menu-category" type="button">
+        <span class="menu-category-icon">ⓘ</span>
+        <span>About</span>
+        <span>›</span>
+      </button>
+
+      <button class="menu-category" type="button">
+        <span class="menu-category-icon">?</span>
+        <span>Help</span>
+        <span>›</span>
+      </button>
+
+    </div>
+
+  </div>
+
+</aside>  
+
+  
 
 
   <!-- =====================================================
