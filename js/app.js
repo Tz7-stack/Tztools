@@ -1,593 +1,1570 @@
-/* =========================================================
-   TZTOOLS — APP CONTROLLER
-   ========================================================= */
-
-var currentSearchResults = [];
-var currentSearchQuery = "";
-
+"use strict";
 
 /* =========================================================
-   SEARCH RESULTS
+   TZTOOLS V8 — MAIN APPLICATION
    ========================================================= */
 
-function renderSearchResults(results, query) {
-  currentSearchResults = Array.isArray(results) ? results : [];
-  currentSearchQuery = query || "";
+console.log(
+  "TzTools V8.0 starting..."
+);
 
-  const home = document.getElementById("home");
-  const resultsView = document.getElementById("searchResultsView");
+/* =========================================================
+   STORAGE
+   ========================================================= */
 
-  if (home) home.classList.remove("active");
-  if (resultsView) resultsView.classList.add("active");
+const STORAGE = {
+  favorites:
+    "tztools_v76_favorites",
 
-  const title = document.getElementById("resultsTitle");
-  const subtitle = document.getElementById("resultsSubtitle");
-  const count = document.getElementById("resultsCount");
-  const grid = document.getElementById("toolsGrid");
-  const noResults = document.getElementById("noResults");
+  recent:
+    "tztools_v76_recent",
 
-  if (title) {
-    title.textContent = query
-      ? `Tools for "${query}"`
-      : "Recommended tools";
+  compare:
+    "tztools_v76_compare",
+
+  theme:
+    "tztools_v76_theme"
+};
+
+let favorites =
+  JSON.parse(
+    localStorage.getItem(
+      STORAGE.favorites
+    )
+  ) || [];
+
+let recentlyUsed =
+  JSON.parse(
+    localStorage.getItem(
+      STORAGE.recent
+    )
+  ) || [];
+
+let compareList =
+  JSON.parse(
+    localStorage.getItem(
+      STORAGE.compare
+    )
+  ) || [];
+
+/* =========================================================
+   DOM
+   ========================================================= */
+
+const $ =
+  id =>
+    document.getElementById(id);
+
+const home =
+  $("home");
+
+const customerService =
+  $("customerService");
+
+const me =
+  $("me");
+
+const dashboard =
+  $("dashboard");
+
+const homeNavbar =
+  $("homeNavbar");
+
+const searchForm =
+  $("searchForm");
+
+const searchInput =
+  $("searchInput");
+
+const searchButton =
+  $("searchButton");
+
+const searchClear =
+  $("searchClear");
+
+const suggestions =
+  $("suggestions");
+
+const searchResultsView =
+  $("searchResultsView");
+
+const resultsTitle =
+  $("resultsTitle");
+
+const resultsSubtitle =
+  $("resultsSubtitle");
+
+const resultsCount =
+  $("resultsCount");
+
+const toolsGrid =
+  $("toolsGrid");
+
+const noResults =
+  $("noResults");
+
+const resultsCategoryFilter =
+  $("resultsCategoryFilter");
+
+const bottomNavigation =
+  $("bottomNavigation");
+
+const emptyStateHomeButton =
+  $("emptyStateHomeButton");
+
+const toastContainer =
+  $("toastContainer");
+
+/* =========================================================
+   TOOL HELPERS
+   ========================================================= */
+
+function getToolById(id) {
+
+  if (!Array.isArray(tools)) {
+    return null;
   }
 
-  if (subtitle) {
-    subtitle.textContent =
-      "Choose the tool that fits what you want to do.";
+  return tools.find(
+    tool => tool.id === id
+  ) || null;
+}
+
+function getToolDomain(url) {
+
+  try {
+
+    return new URL(url)
+      .hostname
+      .replace(/^www\./, "");
+
+  } catch {
+
+    return "";
+
+  }
+}
+
+function getToolLogo(tool) {
+
+  if (!tool?.url) {
+    return "";
   }
 
-  if (count) {
-    count.textContent = `${currentSearchResults.length} tools`;
+  const domain =
+    getToolDomain(tool.url);
+
+  if (!domain) {
+    return "";
   }
 
-  if (!grid) return;
+  return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
+}
 
-  grid.innerHTML = "";
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
 
-  if (!currentSearchResults.length) {
-    if (noResults) noResults.style.display = "";
+function showView(viewId) {
+
+  document
+    .querySelectorAll(
+      ".app-view"
+    )
+    .forEach(view => {
+
+      view.classList.remove(
+        "active"
+      );
+
+    });
+
+  const target =
+    $(viewId);
+
+  if (target) {
+
+    target.classList.add(
+      "active"
+    );
+
+  }
+
+  if (homeNavbar) {
+
+    homeNavbar.style.display =
+      viewId === "home"
+        ? ""
+        : "none";
+
+  }
+
+  updateBottomNav(viewId);
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+
+  if (
+    viewId ===
+    "dashboard"
+  ) {
+
+    if (
+      typeof renderDashboard ===
+      "function"
+    ) {
+      renderDashboard();
+    }
+
+  }
+
+}
+
+/* =========================================================
+   BOTTOM NAV
+   ========================================================= */
+
+function updateBottomNav(
+  viewId
+) {
+
+  document
+    .querySelectorAll(
+      ".bottom-nav-item"
+    )
+    .forEach(item => {
+
+      item.classList.toggle(
+        "active",
+        item.dataset.viewTarget ===
+          viewId
+      );
+
+    });
+
+}
+
+document
+  .querySelectorAll(
+    "[data-view-target]"
+  )
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      () => {
+
+        const target =
+          button.dataset.viewTarget;
+
+        if (target) {
+          showView(target);
+        }
+
+      }
+    );
+
+  });
+
+/* =========================================================
+   HOME
+   ========================================================= */
+
+function resetHome() {
+
+  if (searchInput) {
+    searchInput.value = "";
+  }
+
+  if (searchClear) {
+    searchClear.style.display =
+      "none";
+  }
+
+  if (suggestions) {
+
+    suggestions.innerHTML = "";
+
+    suggestions.classList.remove(
+      "open"
+    );
+
+  }
+
+}
+
+if (emptyStateHomeButton) {
+
+  emptyStateHomeButton
+    .addEventListener(
+      "click",
+      () => {
+
+        resetHome();
+        showView("home");
+
+      }
+    );
+
+}
+
+/* =========================================================
+   TOOL CARD
+   ========================================================= */
+
+function createToolCard(tool) {
+
+  const favorite =
+    favorites.includes(
+      tool.id
+    );
+
+  const compared =
+    compareList.includes(
+      tool.id
+    );
+
+  const logo =
+    getToolLogo(tool);
+
+  return `
+    <article
+      class="tool-card"
+      data-tool-id="${tool.id}"
+    >
+
+      <div class="tool-card-top">
+
+        <div class="tool-icon">
+
+          ${
+            logo
+              ? `
+                <img
+                  src="${logo}"
+                  alt=""
+                  loading="lazy"
+                  onerror="
+                    this.style.display='none';
+                    this.parentElement.classList.add('logo-fallback');
+                  "
+                >
+              `
+              : ""
+          }
+
+          <span class="tool-icon-fallback">
+            ${tool.name?.charAt(0)?.toUpperCase() || "T"}
+          </span>
+
+        </div>
+
+        <span class="tool-category">
+          ${tool.category || "Tool"}
+        </span>
+
+      </div>
+
+      <div class="tool-card-body">
+
+        <h3 class="tool-name">
+          ${tool.name}
+        </h3>
+
+        <p class="tool-description">
+          ${tool.description || "A useful digital tool."}
+        </p>
+
+        <div class="tool-meta">
+
+          <span>
+            ★ ${tool.rating ?? "—"}
+          </span>
+
+          <span>
+            ${tool.pricing || "Free"}
+          </span>
+
+        </div>
+
+        <div class="tool-actions">
+
+          <button
+            class="icon-action favorite-button ${
+              favorite
+                ? "active"
+                : ""
+            }"
+            data-action="favorite"
+            data-tool-id="${tool.id}"
+            title="${
+              favorite
+                ? "Remove favorite"
+                : "Add favorite"
+            }"
+            aria-label="${
+              favorite
+                ? `Remove ${tool.name} from favorites`
+                : `Add ${tool.name} to favorites`
+            }"
+          >
+            ${
+              favorite
+                ? "♥"
+                : "♡"
+            }
+          </button>
+
+          <button
+            class="icon-action compare-button ${
+              compared
+                ? "active"
+                : ""
+            }"
+            data-action="compare"
+            data-tool-id="${tool.id}"
+            title="${
+              compared
+                ? "Remove from compare"
+                : "Compare"
+            }"
+            aria-label="${
+              compared
+                ? `Remove ${tool.name} from comparison`
+                : `Compare ${tool.name}`
+            }"
+          >
+            ${
+              compared
+                ? "✓"
+                : "+"
+            }
+          </button>
+
+          <a
+            class="visit-button"
+            href="${tool.url}"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-tool-id="${tool.id}"
+          >
+            Visit Tool
+            <span>↗</span>
+          </a>
+
+        </div>
+
+      </div>
+
+    </article>
+  `;
+}
+
+/* =========================================================
+   RENDER SEARCH RESULTS
+   ========================================================= */
+
+function renderTools(
+  list
+) {
+
+  if (!toolsGrid) {
     return;
   }
 
-  if (noResults) noResults.style.display = "none";
+  if (!Array.isArray(list) ||
+      !list.length) {
 
-  currentSearchResults.forEach(tool => {
-    grid.appendChild(createSearchToolCard(tool));
-  });
+    toolsGrid.innerHTML = "";
 
-  updateResultsCategoryFilter();
-}
+    if (noResults) {
+      noResults.style.display =
+        "block";
+    }
 
-
-/* =========================================================
-   SEARCH CARD
-   ========================================================= */
-function getToolDomain(url) {
-  try {
-    return new URL(url).hostname.replace(/^www\./, "");
-  } catch {
-    return "";
-  }
-}
-function createSearchToolCard(tool) {
-  const card = document.createElement("article");
-
-  card.className = "tool-card";
-
-  const isFavorite =
-    typeof favorites !== "undefined" &&
-    favorites.includes(tool.id);
-
-  const isCompared =
-    typeof compareList !== "undefined" &&
-    compareList.includes(tool.id);
-
-  card.innerHTML = `
-    <div class="tool-card-top">
-
-      <div class="tool-icon">
-  <img
-    src="https://www.google.com/s2/favicons?domain=${getToolDomain(tool.url)}&sz=128"
-    alt=""
-    loading="lazy"
-    onerror="this.style.display='none'; this.parentElement.textContent='•';"
-  >
-</div>
-
-      <div class="tool-card-actions">
-
-        <button
-          class="icon-button"
-          data-action="favorite"
-          data-tool-id="${tool.id}"
-          aria-label="${isFavorite ? "Remove from favorites" : "Add to favorites"}"
-          title="${isFavorite ? "Remove favorite" : "Favorite"}"
-        >
-          ${isFavorite ? "❤️" : "♡"}
-        </button>
-
-        <button
-          class="icon-button"
-          data-action="compare"
-          data-tool-id="${tool.id}"
-          aria-label="${isCompared ? "Remove from compare" : "Add to compare"}"
-          title="${isCompared ? "Remove from compare" : "Compare"}"
-        >
-          ${isCompared ? "✓" : "⇄"}
-        </button>
-
-      </div>
-
-    </div>
-
-    <div class="tool-card-body">
-
-      <h3>${escapeHTML(tool.name)}</h3>
-
-      <p>${escapeHTML(tool.description || "")}</p>
-
-      <div class="tool-meta">
-
-        <span class="tool-category">
-          ${escapeHTML(tool.category || "Tool")}
-        </span>
-
-        <span class="tool-rating">
-          ⭐ ${tool.rating || "—"}
-        </span>
-
-      </div>
-
-      <div class="tool-footer">
-
-        <span class="tool-pricing">
-          ${escapeHTML(tool.pricing || "Free")}
-        </span>
-
-        <a
-          class="visit-button"
-          href="${escapeAttribute(tool.url || "#")}"
-          target="_blank"
-          rel="noopener noreferrer"
-          data-tool-id="${tool.id}"
-        >
-          Visit Tool
-        </a>
-
-      </div>
-
-    </div>
-  `;
-
-  return card;
-}
-
-
-/* =========================================================
-   SECURITY HELPERS
-   ========================================================= */
-
-function escapeHTML(value) {
-  return String(value ?? "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
-
-
-function escapeAttribute(value) {
-  return escapeHTML(value);
-}
-
-
-/* =========================================================
-   CATEGORY FILTER
-   ========================================================= */
-
-function updateResultsCategoryFilter() {
-  const filter =
-    document.getElementById("resultsCategoryFilter");
-
-  if (!filter) return;
-
-  const categories = [
-    ...new Set(
-      currentSearchResults
-        .map(tool => tool.category)
-        .filter(Boolean)
-    )
-  ].sort();
-
-  filter.innerHTML = `
-    <option value="all">All Categories</option>
-    ${categories
-      .map(
-        category => `
-          <option value="${escapeAttribute(category)}">
-            ${escapeHTML(category)}
-          </option>
-        `
-      )
-      .join("")}
-  `;
-}
-
-
-function applyResultsFilter() {
-  const filter =
-    document.getElementById("resultsCategoryFilter");
-
-  if (!filter) return;
-
-  const selected = filter.value;
-
-  const filtered =
-    selected === "all"
-      ? currentSearchResults
-      : currentSearchResults.filter(
-          tool => tool.category === selected
-        );
-
-  const grid =
-    document.getElementById("toolsGrid");
-
-  const count =
-    document.getElementById("resultsCount");
-
-  const noResults =
-    document.getElementById("noResults");
-
-  if (grid) {
-    grid.innerHTML = "";
-
-    filtered.forEach(tool => {
-      grid.appendChild(createSearchToolCard(tool));
-    });
-  }
-
-  if (count) {
-    count.textContent = `${filtered.length} tools`;
+    return;
   }
 
   if (noResults) {
     noResults.style.display =
-      filtered.length === 0 ? "" : "none";
+      "none";
   }
+
+  toolsGrid.innerHTML =
+    list
+      .map(createToolCard)
+      .join("");
+
 }
 
-
 /* =========================================================
-   FILTER EVENT
+   SEARCH
    ========================================================= */
 
-document.addEventListener("change", event => {
-  if (
-    event.target.id === "resultsCategoryFilter"
-  ) {
-    applyResultsFilter();
-  }
-});
+function performSearch() {
 
+  const query =
+    searchInput?.value
+      .trim();
 
-/* =========================================================
-   AUTH MODAL
-   ========================================================= */
+  if (!query) {
 
-document.addEventListener("click", event => {
+    if (
+      typeof showToast ===
+      "function"
+    ) {
+      showToast(
+        "Type what you want to do."
+      );
+    }
 
-  const modal =
-    document.getElementById("authModal");
+    return;
 
-  if (!modal) return;
-
-  if (
-    event.target === modal &&
-    typeof closeAuthModal === "function"
-  ) {
-    closeAuthModal();
   }
 
-});
+  let results =
+    typeof searchTools ===
+    "function"
+      ? searchTools(query)
+      : [];
 
-
-/* =========================================================
-   AUTH MODE SWITCH
-   ========================================================= */
-
-document.addEventListener("click", event => {
-
-  const loginTab =
-    event.target.closest("#loginTab");
-
-  const signupTab =
-    event.target.closest("#signupTab");
+  const category =
+    resultsCategoryFilter?.value;
 
   if (
-    loginTab &&
-    typeof openAuthModal === "function"
+    category &&
+    category !== "all"
   ) {
-    openAuthModal("login");
+
+    results =
+      results.filter(
+        tool =>
+          tool.category ===
+          category
+      );
+
   }
 
-  if (
-    signupTab &&
-    typeof openAuthModal === "function"
-  ) {
-    openAuthModal("signup");
+  showView(
+    "searchResultsView"
+  );
+
+  if (resultsTitle) {
+
+    resultsTitle.textContent =
+      `Tools for "${query}"`;
+
   }
 
-});
+  if (resultsSubtitle) {
 
+    resultsSubtitle.textContent =
+      "Here are some tools that could help.";
+
+  }
+
+  if (resultsCount) {
+
+    resultsCount.textContent =
+      `${results.length} ${
+        results.length === 1
+          ? "tool"
+          : "tools"
+      }`;
+
+  }
+
+  renderTools(results);
+
+}
 
 /* =========================================================
-   AUTH CLOSE
+   SEARCH EVENTS
    ========================================================= */
 
-document.addEventListener("click", event => {
+if (searchForm) {
 
-  const closeButton =
-    event.target.closest("#authClose");
+  searchForm.addEventListener(
+    "submit",
+    event => {
 
-  if (
-    closeButton &&
-    typeof closeAuthModal === "function"
-  ) {
-    closeAuthModal();
-  }
+      event.preventDefault();
 
-});
+      performSearch();
 
+    }
+  );
 
-/* =========================================================
-   LOGOUT
-   ========================================================= */
+}
 
-document.addEventListener("click", async event => {
+if (searchButton) {
 
-  const logoutButton =
-    event.target.closest("#logoutButton");
+  searchButton.addEventListener(
+    "click",
+    event => {
 
-  if (!logoutButton) return;
+      if (
+        event &&
+        event.preventDefault
+      ) {
+        event.preventDefault();
+      }
 
-  if (typeof signOutUser === "function") {
-    await signOutUser();
-  }
+      performSearch();
 
-  if (typeof showView === "function") {
-    showView("home");
-  }
+    }
+  );
 
-});
+}
 
+if (searchInput) {
 
-/* =========================================================
-   BACK HOME
-   ========================================================= */
+  searchInput.addEventListener(
+    "input",
+    () => {
 
-document.addEventListener("click", event => {
+      if (searchClear) {
 
-  const button =
-    event.target.closest("#backHomeButton");
+        searchClear.style.display =
+          searchInput.value
+            ? "flex"
+            : "none";
 
-  if (!button) return;
+      }
 
-  if (typeof showView === "function") {
-    showView("home");
-  }
+      renderSuggestions(
+        searchInput.value
+      );
 
-});
+    }
+  );
 
+  searchInput.addEventListener(
+    "keydown",
+    event => {
 
-/* =========================================================
-   COMPARE
-   ========================================================= */
+      if (
+        event.key ===
+        "Enter"
+      ) {
 
-document.addEventListener("click", event => {
+        event.preventDefault();
 
-  const button =
-    event.target.closest("#openCompareButton");
+        performSearch();
 
-  if (!button) return;
+      }
 
-  if (typeof showView === "function") {
-    showView("dashboard");
-  }
+      if (
+        event.key ===
+        "Escape"
+      ) {
 
-  if (typeof renderDashboard === "function") {
-    renderDashboard();
-  }
+        suggestions?.classList
+          .remove("open");
 
-});
+      }
 
+    }
+  );
+
+}
+
+if (searchClear) {
+
+  searchClear.addEventListener(
+    "click",
+    () => {
+
+      if (searchInput) {
+
+        searchInput.value = "";
+
+        searchInput.focus();
+
+      }
+
+      searchClear.style.display =
+        "none";
+
+      suggestions?.classList
+        .remove("open");
+
+    }
+  );
+
+}
+
+if (resultsCategoryFilter) {
+
+  resultsCategoryFilter
+    .addEventListener(
+      "change",
+      () => {
+
+        const query =
+          searchInput?.value.trim();
+
+        if (query) {
+          performSearch();
+        }
+
+      }
+    );
+
+}
 
 /* =========================================================
    SEARCH SUGGESTIONS
    ========================================================= */
 
-document.addEventListener("input", event => {
+function renderSuggestions(
+  query
+) {
 
-  if (event.target.id !== "searchInput") {
+  if (!suggestions) {
     return;
   }
 
-  const query =
-    event.target.value.trim();
+  const clean =
+    typeof normalizeText ===
+    "function"
+      ? normalizeText(query)
+      : String(query || "")
+          .toLowerCase()
+          .trim();
 
-  const suggestions =
-    document.getElementById("suggestions");
+  if (!clean) {
 
-  if (!suggestions) return;
-
-  if (!query) {
     suggestions.innerHTML = "";
-    suggestions.style.display = "none";
+
+    suggestions.classList.remove(
+      "open"
+    );
+
+    return;
+
+  }
+
+  if (!Array.isArray(tools)) {
     return;
   }
 
-  if (typeof tools === "undefined") {
-    return;
-  }
+  const ranked =
+    tools
+      .map(tool => {
 
-  const matches = tools
-    .filter(tool => {
+        const searchable =
+          [
+            tool.name,
+            tool.description,
+            tool.category,
+            ...(tool.keywords || [])
+          ]
+            .join(" ")
+            .toLowerCase();
 
-      const text = [
-        tool.name,
-        tool.description,
-        tool.category
-      ]
-        .join(" ")
-        .toLowerCase();
+        const name =
+          String(
+            tool.name || ""
+          )
+            .toLowerCase();
 
-      return text.includes(
-        query.toLowerCase()
+        let score = 0;
+
+        if (
+          name === clean
+        ) {
+          score += 100;
+        }
+
+        if (
+          name.includes(clean)
+        ) {
+          score += 60;
+        }
+
+        if (
+          searchable.includes(clean)
+        ) {
+          score += 25;
+        }
+
+        score +=
+          Number(tool.rating || 0);
+
+        return {
+          tool,
+          score
+        };
+
+      })
+      .filter(item =>
+        item.score > 0
+      )
+      .sort(
+        (a, b) =>
+          b.score - a.score
+      )
+      .slice(0, 6)
+      .map(
+        item => item.tool
       );
 
-    })
-    .slice(0, 5);
+  if (!ranked.length) {
 
-  if (!matches.length) {
     suggestions.innerHTML = "";
-    suggestions.style.display = "none";
+
+    suggestions.classList.remove(
+      "open"
+    );
+
     return;
+
   }
 
   suggestions.innerHTML =
-    matches
-      .map(
-        tool => `
+    ranked
+      .map(tool => {
+
+        const logo =
+          getToolLogo(tool);
+
+        return `
           <button
-            class="suggestion-item"
+            class="suggestion"
+            data-tool-suggestion="${tool.id}"
             type="button"
-            data-suggestion="${escapeAttribute(tool.name)}"
           >
-            <span>${tool.icon || "🛠️"}</span>
-            <span>${escapeHTML(tool.name)}</span>
+
+            <span class="suggestion-icon">
+
+              ${
+                logo
+                  ? `
+                    <img
+                      src="${logo}"
+                      alt=""
+                      loading="lazy"
+                    >
+                  `
+                  : tool.name
+                      ?.charAt(0)
+                      ?.toUpperCase()
+              }
+
+            </span>
+
+            <span class="suggestion-text">
+
+              <strong>
+                ${tool.name}
+              </strong>
+
+              <small>
+                ${tool.category || "Tool"}
+              </small>
+
+            </span>
+
           </button>
-        `
-      )
+        `;
+
+      })
       .join("");
 
-  suggestions.style.display = "";
+  suggestions.classList.add(
+    "open"
+  );
 
-});
-
+}
 
 /* =========================================================
    SUGGESTION CLICK
    ========================================================= */
 
-document.addEventListener("click", event => {
+if (suggestions) {
 
-  const suggestion =
-    event.target.closest(".suggestion-item");
+  suggestions.addEventListener(
+    "click",
+    event => {
 
-  if (!suggestion) return;
+      const button =
+        event.target.closest(
+          "[data-tool-suggestion]"
+        );
 
-  const input =
-    document.getElementById("searchInput");
+      if (!button) {
+        return;
+      }
 
-  if (!input) return;
+      const id =
+        button.dataset
+          .toolSuggestion;
 
-  input.value =
-    suggestion.dataset.suggestion || "";
+      const tool =
+        getToolById(id);
 
-  const suggestions =
-    document.getElementById("suggestions");
+      if (!tool) {
+        return;
+      }
 
-  if (suggestions) {
-    suggestions.innerHTML = "";
-    suggestions.style.display = "none";
-  }
+      searchInput.value =
+        tool.name;
 
-  if (typeof runToolSearch === "function") {
-    runToolSearch(input.value);
-  }
+      suggestions.classList
+        .remove("open");
 
-});
+      performSearch();
 
+    }
+  );
+
+}
 
 /* =========================================================
-   ESCAPE KEY
+   FAVORITES
    ========================================================= */
 
-document.addEventListener("keydown", event => {
-
-  if (event.key !== "Escape") return;
-
-  const authModal =
-    document.getElementById("authModal");
+async function syncFavoriteCloudV8() {
 
   if (
-    authModal &&
-    authModal.classList.contains("active") &&
-    typeof closeAuthModal === "function"
+    typeof supabaseClient ===
+    "undefined" ||
+    !supabaseClient
   ) {
-    closeAuthModal();
+    return;
   }
 
-  const aboutPanel =
-    document.getElementById("aboutPanel");
+  try {
+
+    const {
+      data: userData,
+      error: userError
+    } =
+      await supabaseClient.auth
+        .getUser();
+
+    if (
+      userError ||
+      !userData?.user
+    ) {
+      return;
+    }
+
+    const user =
+      userData.user;
+
+    const {
+      data: existingRows,
+      error: selectError
+    } =
+      await supabaseClient
+        .from("favorites")
+        .select("tool_id")
+        .eq(
+          "user_id",
+          user.id
+        );
+
+    if (selectError) {
+      console.warn(
+        "Favorites cloud read:",
+        selectError
+      );
+      return;
+    }
+
+    const cloudIds =
+      (existingRows || [])
+        .map(row =>
+          row.tool_id
+        );
+
+    const removeIds =
+      cloudIds.filter(
+        id =>
+          !favorites.includes(id)
+      );
+
+    const addIds =
+      favorites.filter(
+        id =>
+          !cloudIds.includes(id)
+      );
+
+    if (removeIds.length) {
+
+      await supabaseClient
+        .from("favorites")
+        .delete()
+        .eq(
+          "user_id",
+          user.id
+        )
+        .in(
+          "tool_id",
+          removeIds
+        );
+
+    }
+
+    if (addIds.length) {
+
+      await supabaseClient
+        .from("favorites")
+        .upsert(
+          addIds.map(
+            tool_id => ({
+              user_id: user.id,
+              tool_id
+            })
+          ),
+          {
+            onConflict:
+              "user_id,tool_id"
+          }
+        );
+
+    }
+
+  } catch (error) {
+
+    console.warn(
+      "Favorite cloud sync failed:",
+      error
+    );
+
+  }
+
+}
+
+async function toggleFavorite(
+  id
+) {
 
   if (
-    aboutPanel &&
-    aboutPanel.classList.contains("active") &&
-    typeof closeAboutPanel === "function"
+    favorites.includes(id)
   ) {
-    closeAboutPanel();
+
+    favorites =
+      favorites.filter(
+        item => item !== id
+      );
+
+    showToast(
+      "Removed from favorites."
+    );
+
+  } else {
+
+    favorites.unshift(id);
+
+    showToast(
+      "Added to favorites."
+    );
+
   }
 
-});
+  saveLocalData();
 
+  updateCountsSafe();
+
+  refreshVisibleCards();
+
+  if (
+    typeof renderDashboard ===
+    "function"
+  ) {
+    renderDashboard();
+  }
+
+  await syncFavoriteCloudV8();
+
+}
 
 /* =========================================================
-   APP STARTUP
+   COMPARE
+   ========================================================= */
+
+function toggleCompare(
+  id
+) {
+
+  if (
+    compareList.includes(id)
+  ) {
+
+    compareList =
+      compareList.filter(
+        item => item !== id
+      );
+
+    showToast(
+      "Removed from comparison."
+    );
+
+  } else {
+
+    if (
+      compareList.length >= 3
+    ) {
+
+      showToast(
+        "Compare up to 3 tools."
+      );
+
+      return;
+
+    }
+
+    compareList.push(id);
+
+    showToast(
+      "Added to comparison."
+    );
+
+  }
+
+  saveLocalData();
+
+  updateCountsSafe();
+
+  refreshVisibleCards();
+
+  if (
+    typeof renderDashboard ===
+    "function"
+  ) {
+    renderDashboard();
+  }
+
+}
+
+/* =========================================================
+   RECENT
+   ========================================================= */
+
+function addRecentlyUsed(
+  id
+) {
+
+  recentlyUsed =
+    recentlyUsed.filter(
+      item => item !== id
+    );
+
+  recentlyUsed.unshift(id);
+
+  recentlyUsed =
+    recentlyUsed.slice(
+      0,
+      8
+    );
+
+  saveLocalData();
+
+  updateCountsSafe();
+
+}
+
+/* =========================================================
+   CARD ACTIONS
    ========================================================= */
 
 document.addEventListener(
-  "DOMContentLoaded",
-  async () => {
+  "click",
+  event => {
 
-    console.log(
-      "TzTools V8.0 starting..."
-    );
+    const actionButton =
+      event.target.closest(
+        "[data-action]"
+      );
 
-    if (
-      typeof loadCloudData === "function"
-    ) {
-      await loadCloudData();
+    if (actionButton) {
+
+      const id =
+        actionButton.dataset
+          .toolId;
+
+      const action =
+        actionButton.dataset
+          .action;
+
+      if (
+        action ===
+        "favorite"
+      ) {
+
+        toggleFavorite(id);
+
+      }
+
+      if (
+        action ===
+        "compare"
+      ) {
+
+        toggleCompare(id);
+
+      }
+
+      return;
+
     }
 
-    if (
-      typeof updateAuthUI === "function"
-    ) {
-      await updateAuthUI();
-    }
+    const visit =
+      event.target.closest(
+        ".visit-button"
+      );
 
-    if (
-      typeof updateCounts === "function"
-    ) {
-      updateCounts();
-    }
+    if (visit) {
 
-    if (
-      typeof refreshVisibleCards === "function"
-    ) {
-      refreshVisibleCards();
-    }
+      const id =
+        visit.dataset.toolId;
 
-    if (
-      typeof renderDashboard === "function"
-    ) {
-      renderDashboard();
-    }
+      addRecentlyUsed(id);
 
-    console.log(
-      "TzTools V8.0 ready 🚀"
-    );
+    }
 
   }
 );
+
+/* =========================================================
+   LOCAL STORAGE
+   ========================================================= */
+
+function saveLocalData() {
+
+  localStorage.setItem(
+    STORAGE.favorites,
+    JSON.stringify(
+      favorites
+    )
+  );
+
+  localStorage.setItem(
+    STORAGE.recent,
+    JSON.stringify(
+      recentlyUsed
+    )
+  );
+
+  localStorage.setItem(
+    STORAGE.compare,
+    JSON.stringify(
+      compareList
+    )
+  );
+
+}
+
+function updateCountsSafe() {
+
+  if (
+    typeof updateCounts ===
+    "function"
+  ) {
+
+    updateCounts();
+
+  }
+
+}
+
+/* =========================================================
+   REFRESH VISIBLE CARDS
+   ========================================================= */
+
+function refreshVisibleCards() {
+
+  const activeView =
+    document.querySelector(
+      ".app-view.active"
+    );
+
+  if (!activeView) {
+    return;
+  }
+
+  const grids =
+    activeView.querySelectorAll(
+      ".tools-grid"
+    );
+
+  grids.forEach(grid => {
+
+    const cards =
+      grid.querySelectorAll(
+        ".tool-card"
+      );
+
+    cards.forEach(card => {
+
+      const id =
+        card.dataset.toolId;
+
+      const tool =
+        getToolById(id);
+
+      if (!tool) {
+        return;
+      }
+
+      const wrapper =
+        document.createElement(
+          "div"
+        );
+
+      wrapper.innerHTML =
+        createToolCard(tool);
+
+      const newCard =
+        wrapper.firstElementChild;
+
+      if (newCard) {
+        card.replaceWith(
+          newCard
+        );
+      }
+
+    });
+
+  });
+
+}
+
+/* =========================================================
+   CATEGORY TILES
+   ========================================================= */
+
+document
+  .querySelectorAll(
+    ".category-tile"
+  )
+  .forEach(tile => {
+
+    tile.addEventListener(
+      "click",
+      () => {
+
+        const label =
+          tile.querySelector(
+            "strong"
+          );
+
+        const category =
+          label?.textContent
+            .trim();
+
+        if (!category) {
+          return;
+        }
+
+        if (resultsCategoryFilter) {
+
+          const valid =
+            [
+              "AI",
+              "Design",
+              "Images",
+              "Video",
+              "Writing",
+              "Productivity",
+              "Websites",
+              "Students",
+              "PDF",
+              "Audio"
+            ];
+
+          if (
+            valid.includes(category)
+          ) {
+
+            resultsCategoryFilter
+              .value =
+                category;
+
+          }
+
+        }
+
+        const matching =
+          tools.filter(
+            tool =>
+              tool.category ===
+              category
+          );
+
+        showView(
+          "searchResultsView"
+        );
+
+        if (resultsTitle) {
+          resultsTitle.textContent =
+            category;
+        }
+
+        if (resultsSubtitle) {
+          resultsSubtitle.textContent =
+            `Explore ${category.toLowerCase()} tools.`;
+        }
+
+        if (resultsCount) {
+          resultsCount.textContent =
+            `${matching.length} tools`;
+        }
+
+        renderTools(
+          matching
+        );
+
+      }
+    );
+
+  });
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+function showToast(
+  message
+) {
+
+  if (!toastContainer) {
+    console.log(message);
+    return;
+  }
+
+  const toast =
+    document.createElement(
+      "div"
+    );
+
+  toast.className =
+    "toast";
+
+  toast.textContent =
+    message;
+
+  toastContainer.appendChild(
+    toast
+  );
+
+  requestAnimationFrame(
+    () => {
+      toast.classList.add(
+        "show"
+      );
+    }
+  );
+
+  setTimeout(
+    () => {
+
+      toast.classList.remove(
+        "show"
+      );
+
+      setTimeout(
+        () => {
+          toast.remove();
+        },
+        220
+      );
+
+    },
+    2300
+  );
+
+}
+
+/* =========================================================
+   CLOSE SUGGESTIONS
+   ========================================================= */
+
+document.addEventListener(
+  "click",
+  event => {
+
+    if (
+      suggestions &&
+      searchInput &&
+      !suggestions.contains(
+        event.target
+      ) &&
+      !searchInput.contains(
+        event.target
+      )
+    ) {
+
+      suggestions.classList
+        .remove("open");
+
+    }
+
+  }
+);
+
+/* =========================================================
+   DARK MODE
+   ========================================================= */
+
+function applyThemeV8() {
+
+  const saved =
+    localStorage.getItem(
+      STORAGE.theme
+    );
+
+  document.body.classList.toggle(
+    "dark",
+    saved === "dark"
+  );
+
+}
+
+applyThemeV8();
+
+/* =========================================================
+   INITIALISE
+   ========================================================= */
+
+function initialiseV8() {
+
+  applyThemeV8();
+
+  updateCountsSafe();
+
+  if (
+    typeof renderDashboard ===
+    "function"
+  ) {
+    renderDashboard();
+  }
+
+  showView("home");
+
+  console.log(
+    `TzTools V8.0 ready 🚀 — ${tools.length} tools`
+  );
+
+}
+
+if (
+  document.readyState ===
+  "loading"
+) {
+
+  document.addEventListener(
+    "DOMContentLoaded",
+    initialiseV8
+  );
+
+} else {
+
+  initialiseV8();
+
+}
