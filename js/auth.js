@@ -16,7 +16,7 @@ const SUPABASE_URL =
   "https://nslaakklgidpzwlymrhf.supabase.co";
 
 const SUPABASE_KEY =
-  "sb_publishable_XoDQsJkHs_7PA8wQAoutHA_glygnyK";
+  "sb_publishable_XoDQsJkHs_7PA8wQAoutHA_glygnyxK";
 
 let supabaseClient;
 
