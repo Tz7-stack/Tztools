@@ -1778,18 +1778,25 @@ function scoreTool(tool, query) {
    SMART SEARCH
    ========================================================= */
 
-function searchTools(query) {
+function searchTools(query, category) {
 
   const clean =
     normalizeText(query);
 
+  const pool =
+    category && category !== "all"
+      ? tools.filter(
+          tool => tool.category === category
+        )
+      : tools;
+
   if (!clean) {
-    return tools.slice();
+    return pool.slice();
   }
 
 
   const ranked =
-    tools
+    pool
       .map(tool => ({
         tool,
         score: scoreTool(
@@ -1825,7 +1832,7 @@ function searchTools(query) {
 
   if (!ranked.length) {
 
-    return tools
+    return pool
       .slice()
       .sort(
         (a, b) =>
@@ -2016,8 +2023,13 @@ function performSearch() {
 
   }
 
+  const category =
+    resultsCategoryFilter
+      ? resultsCategoryFilter.value
+      : "all";
+
   const results =
-    searchTools(query);
+    searchTools(query, category);
 
   showView("searchResultsView");
 
@@ -2049,6 +2061,16 @@ if (searchButton) {
 
   searchButton.addEventListener(
     "click",
+    performSearch
+  );
+
+}
+
+
+if (resultsCategoryFilter) {
+
+  resultsCategoryFilter.addEventListener(
+    "change",
     performSearch
   );
 
