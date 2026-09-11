@@ -537,3 +537,7 @@ document.querySelectorAll(".menu-category[data-category]").forEach((button) => {
 });
   }
 );
+/* Prevent page movement while category menu is open */
+body.menu-open {
+  overflow: hidden;
+}
