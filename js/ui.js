@@ -1,15 +1,82 @@
 /* =========================================================
    TZTOOLS V8 — UI.JS
-   UI ONLY
-   Menu • Theme • About • Auth Modal
+   Navigation • Hamburger • Theme • About • Auth
    ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
 
   const $ = (id) => document.getElementById(id);
 
+
   /* =======================================================
-     CATEGORY / HAMBURGER MENU
+     PAGE NAVIGATION
+     ======================================================= */
+
+  const navItems = document.querySelectorAll(".bottom-nav-item");
+  const views = document.querySelectorAll(".app-view");
+
+  function showView(viewId) {
+
+    views.forEach((view) => {
+      view.classList.remove("active");
+    });
+
+    const target = $(viewId);
+
+    if (!target) {
+      console.warn("TzTools: view not found:", viewId);
+      return;
+    }
+
+    target.classList.add("active");
+
+    navItems.forEach((item) => {
+      item.classList.toggle(
+        "active",
+        item.dataset.viewTarget === viewId
+      );
+    });
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+
+  navItems.forEach((item) => {
+
+    item.addEventListener("click", () => {
+
+      const target = item.dataset.viewTarget;
+
+      if (target) {
+        showView(target);
+      }
+
+    });
+
+  });
+
+
+  /* =======================================================
+     REAL TZTOOLS LOGO → HOME
+     ======================================================= */
+
+  const brandButton = $("brandButton");
+
+  if (brandButton) {
+
+    brandButton.addEventListener("click", () => {
+      showView("home");
+      closeCategoryMenu();
+    });
+
+  }
+
+
+  /* =======================================================
+     HAMBURGER MENU
      ======================================================= */
 
   const menuButton = $("menuButton");
@@ -18,40 +85,71 @@ document.addEventListener("DOMContentLoaded", () => {
   const categoryMenuBackdrop = $("categoryMenuBackdrop");
 
   function openCategoryMenu() {
+
     if (!categoryMenu) return;
 
     categoryMenu.classList.add("open");
-    categoryMenu.setAttribute("aria-hidden", "false");
+
+    categoryMenu.setAttribute(
+      "aria-hidden",
+      "false"
+    );
 
     if (menuButton) {
-      menuButton.setAttribute("aria-expanded", "true");
+
+      menuButton.setAttribute(
+        "aria-expanded",
+        "true"
+      );
+
     }
 
     document.body.classList.add("menu-open");
   }
 
+
   function closeCategoryMenu() {
+
     if (!categoryMenu) return;
 
     categoryMenu.classList.remove("open");
-    categoryMenu.setAttribute("aria-hidden", "true");
+
+    categoryMenu.setAttribute(
+      "aria-hidden",
+      "true"
+    );
 
     if (menuButton) {
-      menuButton.setAttribute("aria-expanded", "false");
+
+      menuButton.setAttribute(
+        "aria-expanded",
+        "false"
+      );
+
     }
 
     document.body.classList.remove("menu-open");
   }
 
+
   if (menuButton) {
+
     menuButton.addEventListener("click", () => {
-      if (categoryMenu?.classList.contains("open")) {
+
+      const isOpen =
+        categoryMenu &&
+        categoryMenu.classList.contains("open");
+
+      if (isOpen) {
         closeCategoryMenu();
       } else {
         openCategoryMenu();
       }
+
     });
+
   }
+
 
   if (categoryMenuClose) {
     categoryMenuClose.addEventListener(
@@ -60,6 +158,7 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   }
 
+
   if (categoryMenuBackdrop) {
     categoryMenuBackdrop.addEventListener(
       "click",
@@ -67,142 +166,114 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   }
 
+
+  /* ESC closes menu */
+
   document.addEventListener("keydown", (event) => {
+
     if (event.key === "Escape") {
       closeCategoryMenu();
     }
+
   });
 
 
   /* =======================================================
-     CATEGORY BUTTONS
+     CATEGORY SELECTION
      ======================================================= */
 
-  document
-    .querySelectorAll(".menu-category[data-category]")
-    .forEach((button) => {
-
-      button.addEventListener("click", () => {
-
-        const category = button.dataset.category;
-
-        if (!category) return;
-
-        closeCategoryMenu();
-
-        /*
-         * Let the existing app logic handle the results.
-         * We only set the category filter and switch pages.
-         */
-
-        const filter = $("resultsCategoryFilter");
-
-        if (filter) {
-          filter.value = category;
-
-          filter.dispatchEvent(
-            new Event("change", {
-              bubbles: true
-            })
-          );
-        }
-
-        const resultsView = $("searchResultsView");
-
-        if (resultsView) {
-
-          document
-            .querySelectorAll(".app-view")
-            .forEach((view) => {
-              view.classList.remove("active");
-            });
-
-          resultsView.classList.add("active");
-        }
-
-        window.scrollTo({
-          top: 0,
-          behavior: "smooth"
-        });
-
-      });
-
-    });
+  const categoryButtons =
+    document.querySelectorAll(
+      ".menu-category[data-category]"
+    );
 
 
-  /* =======================================================
-     BRAND BUTTON → HOME
-     ======================================================= */
+  categoryButtons.forEach((button) => {
 
-  const brandButton = $("brandButton");
+    button.addEventListener("click", () => {
 
-  if (brandButton) {
+      const category =
+        button.dataset.category;
 
-    brandButton.addEventListener("click", () => {
+      if (!category) return;
 
       closeCategoryMenu();
 
-      document
-        .querySelectorAll(".app-view")
-        .forEach((view) => {
-          view.classList.remove("active");
-        });
+      const resultsView =
+        $("searchResultsView");
 
-      const home = $("home");
+      const categoryFilter =
+        $("resultsCategoryFilter");
 
-      if (home) {
-        home.classList.add("active");
+
+      /*
+       * Switch to Results
+       */
+
+      if (resultsView) {
+        showView("searchResultsView");
       }
 
-      document
-        .querySelectorAll(".bottom-nav-item")
-        .forEach((item) => {
 
-          item.classList.toggle(
-            "active",
-            item.dataset.viewTarget === "home"
-          );
+      /*
+       * Set the category filter
+       */
 
-        });
+      if (categoryFilter) {
 
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
+        categoryFilter.value = category;
+
+        categoryFilter.dispatchEvent(
+          new Event("change", {
+            bubbles: true
+          })
+        );
+
+      }
 
     });
 
-  }
+  });
 
 
   /* =======================================================
      DARK MODE
      ======================================================= */
 
-  const themeButton = $("themeSettingButton");
-  const themeStatus = $("themeStatus");
+  const themeButton =
+    $("themeSettingButton");
 
-  const THEME_KEY = "tztools_v76_theme";
+  const themeStatus =
+    $("themeStatus");
+
+  const THEME_KEY =
+    "tztools_v76_theme";
+
 
   function applyTheme(theme) {
 
-    const isDark = theme === "dark";
+    const dark =
+      theme === "dark";
 
     document.body.classList.toggle(
       "dark",
-      isDark
+      dark
     );
 
     if (themeStatus) {
+
       themeStatus.textContent =
-        isDark ? "On" : "Off";
+        dark ? "On" : "Off";
+
     }
 
     localStorage.setItem(
       THEME_KEY,
-      isDark ? "dark" : "light"
+      dark ? "dark" : "light"
     );
+
   }
+
 
   const savedTheme =
     localStorage.getItem(THEME_KEY);
@@ -213,18 +284,24 @@ document.addEventListener("DOMContentLoaded", () => {
       : "light"
   );
 
+
   if (themeButton) {
 
-    themeButton.addEventListener("click", () => {
+    themeButton.addEventListener(
+      "click",
+      () => {
 
-      const isDark =
-        document.body.classList.contains("dark");
+        const dark =
+          document.body.classList.contains(
+            "dark"
+          );
 
-      applyTheme(
-        isDark ? "light" : "dark"
-      );
+        applyTheme(
+          dark ? "light" : "dark"
+        );
 
-    });
+      }
+    );
 
   }
 
@@ -233,27 +310,44 @@ document.addEventListener("DOMContentLoaded", () => {
      ABOUT PANEL
      ======================================================= */
 
-  const aboutButton = $("aboutButton");
-  const aboutPanel = $("aboutPanel");
-  const aboutClose = $("aboutClose");
+  const aboutButton =
+    $("aboutButton");
+
+  const aboutPanel =
+    $("aboutPanel");
+
+  const aboutClose =
+    $("aboutClose");
+
 
   if (aboutButton && aboutPanel) {
 
-    aboutButton.addEventListener("click", () => {
+    aboutButton.addEventListener(
+      "click",
+      () => {
 
-      aboutPanel.classList.toggle("open");
+        aboutPanel.classList.toggle(
+          "open"
+        );
 
-    });
+      }
+    );
 
   }
 
+
   if (aboutClose && aboutPanel) {
 
-    aboutClose.addEventListener("click", () => {
+    aboutClose.addEventListener(
+      "click",
+      () => {
 
-      aboutPanel.classList.remove("open");
+        aboutPanel.classList.remove(
+          "open"
+        );
 
-    });
+      }
+    );
 
   }
 
@@ -262,10 +356,18 @@ document.addEventListener("DOMContentLoaded", () => {
      AUTH MODAL
      ======================================================= */
 
-  const authModal = $("authModal");
-  const authModalClose = $("authModalClose");
-  const authModalBackdrop = $("authModalBackdrop");
-  const accountButton = $("accountButton");
+  const authModal =
+    $("authModal");
+
+  const authModalClose =
+    $("authModalClose");
+
+  const authModalBackdrop =
+    $("authModalBackdrop");
+
+  const accountButton =
+    $("accountButton");
+
 
   function openAuthModal() {
 
@@ -278,8 +380,12 @@ document.addEventListener("DOMContentLoaded", () => {
       "false"
     );
 
-    document.body.classList.add("modal-open");
+    document.body.classList.add(
+      "modal-open"
+    );
+
   }
+
 
   function closeAuthModal() {
 
@@ -292,43 +398,80 @@ document.addEventListener("DOMContentLoaded", () => {
       "true"
     );
 
-    document.body.classList.remove("modal-open");
+    document.body.classList.remove(
+      "modal-open"
+    );
+
   }
 
+
   if (accountButton) {
+
     accountButton.addEventListener(
       "click",
       openAuthModal
     );
+
   }
 
+
   if (authModalClose) {
+
     authModalClose.addEventListener(
       "click",
       closeAuthModal
     );
+
   }
 
+
   if (authModalBackdrop) {
+
     authModalBackdrop.addEventListener(
       "click",
       closeAuthModal
     );
+
   }
 
 
   /* =======================================================
-     FINAL UI STATE
+     ACCOUNT SETTINGS
+     ======================================================= */
+
+  const accountSettingsButton =
+    $("accountSettingsButton");
+
+
+  if (accountSettingsButton) {
+
+    accountSettingsButton.addEventListener(
+      "click",
+      () => {
+
+        showView("me");
+
+      }
+    );
+
+  }
+
+
+  /* =======================================================
+     INITIAL STATE
      ======================================================= */
 
   closeCategoryMenu();
 
-  if (authModal) {
-    authModal.setAttribute(
-      "aria-hidden",
-      "true"
+  navItems.forEach((item) => {
+
+    item.classList.toggle(
+      "active",
+      item.dataset.viewTarget === "home"
     );
-  }
+
+  });
+
 
   console.log(
     "TzTools UI loaded successfully."
