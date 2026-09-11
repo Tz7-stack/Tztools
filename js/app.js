@@ -2,17 +2,13 @@
    TZTOOLS — APP CONTROLLER
    ========================================================= */
 
-/* ---------------------------------------------------------
-   GLOBAL SEARCH STATE
---------------------------------------------------------- */
-
 var currentSearchResults = [];
 var currentSearchQuery = "";
 
 
-/* ---------------------------------------------------------
+/* =========================================================
    SEARCH RESULTS
---------------------------------------------------------- */
+   ========================================================= */
 
 function renderSearchResults(results, query) {
   currentSearchResults = Array.isArray(results) ? results : [];
@@ -37,7 +33,8 @@ function renderSearchResults(results, query) {
   }
 
   if (subtitle) {
-    subtitle.textContent = "Choose the tool that fits what you want to do.";
+    subtitle.textContent =
+      "Choose the tool that fits what you want to do.";
   }
 
   if (count) {
@@ -63,9 +60,9 @@ function renderSearchResults(results, query) {
 }
 
 
-/* ---------------------------------------------------------
-   SEARCH TOOL CARD
---------------------------------------------------------- */
+/* =========================================================
+   SEARCH CARD
+   ========================================================= */
 
 function createSearchToolCard(tool) {
   const card = document.createElement("article");
@@ -156,9 +153,9 @@ function createSearchToolCard(tool) {
 }
 
 
-/* ---------------------------------------------------------
-   SAFE HTML HELPERS
---------------------------------------------------------- */
+/* =========================================================
+   SECURITY HELPERS
+   ========================================================= */
 
 function escapeHTML(value) {
   return String(value ?? "")
@@ -175,12 +172,13 @@ function escapeAttribute(value) {
 }
 
 
-/* ---------------------------------------------------------
+/* =========================================================
    CATEGORY FILTER
---------------------------------------------------------- */
+   ========================================================= */
 
 function updateResultsCategoryFilter() {
-  const filter = document.getElementById("resultsCategoryFilter");
+  const filter =
+    document.getElementById("resultsCategoryFilter");
 
   if (!filter) return;
 
@@ -196,10 +194,11 @@ function updateResultsCategoryFilter() {
     <option value="all">All Categories</option>
     ${categories
       .map(
-        category =>
-          `<option value="${escapeAttribute(category)}">
+        category => `
+          <option value="${escapeAttribute(category)}">
             ${escapeHTML(category)}
-          </option>`
+          </option>
+        `
       )
       .join("")}
   `;
@@ -207,7 +206,8 @@ function updateResultsCategoryFilter() {
 
 
 function applyResultsFilter() {
-  const filter = document.getElementById("resultsCategoryFilter");
+  const filter =
+    document.getElementById("resultsCategoryFilter");
 
   if (!filter) return;
 
@@ -220,9 +220,14 @@ function applyResultsFilter() {
           tool => tool.category === selected
         );
 
-  const grid = document.getElementById("toolsGrid");
-  const count = document.getElementById("resultsCount");
-  const noResults = document.getElementById("noResults");
+  const grid =
+    document.getElementById("toolsGrid");
+
+  const count =
+    document.getElementById("resultsCount");
+
+  const noResults =
+    document.getElementById("noResults");
 
   if (grid) {
     grid.innerHTML = "";
@@ -243,82 +248,91 @@ function applyResultsFilter() {
 }
 
 
-/* ---------------------------------------------------------
-   RESULTS FILTER EVENT
---------------------------------------------------------- */
+/* =========================================================
+   FILTER EVENT
+   ========================================================= */
 
 document.addEventListener("change", event => {
-  if (event.target.id === "resultsCategoryFilter") {
+  if (
+    event.target.id === "resultsCategoryFilter"
+  ) {
     applyResultsFilter();
   }
 });
 
 
-/* ---------------------------------------------------------
+/* =========================================================
    AUTH MODAL
---------------------------------------------------------- */
-
-function closeAuthModalOnOutsideClick(event) {
-  const modal = document.getElementById("authModal");
-
-  if (!modal) return;
-
-  if (event.target === modal) {
-    if (typeof closeAuthModal === "function") {
-      closeAuthModal();
-    }
-  }
-}
-
-document.addEventListener(
-  "click",
-  closeAuthModalOnOutsideClick
-);
-
-
-/* ---------------------------------------------------------
-   AUTH MODE SWITCH
---------------------------------------------------------- */
+   ========================================================= */
 
 document.addEventListener("click", event => {
 
-  const loginTab = event.target.closest("#loginTab");
-  const signupTab = event.target.closest("#signupTab");
+  const modal =
+    document.getElementById("authModal");
 
-  if (loginTab) {
-    if (typeof openAuthModal === "function") {
-      openAuthModal("login");
-    }
+  if (!modal) return;
+
+  if (
+    event.target === modal &&
+    typeof closeAuthModal === "function"
+  ) {
+    closeAuthModal();
   }
 
- if (signupTab) {
-  if (typeof openAuthModal === "function") {
-    openAuthModal("signup");
-  }
-}
 });
 
 
-/* ---------------------------------------------------------
-   AUTH MODAL CLOSE BUTTON
---------------------------------------------------------- */
+/* =========================================================
+   AUTH MODE SWITCH
+   ========================================================= */
+
+document.addEventListener("click", event => {
+
+  const loginTab =
+    event.target.closest("#loginTab");
+
+  const signupTab =
+    event.target.closest("#signupTab");
+
+  if (
+    loginTab &&
+    typeof openAuthModal === "function"
+  ) {
+    openAuthModal("login");
+  }
+
+  if (
+    signupTab &&
+    typeof openAuthModal === "function"
+  ) {
+    openAuthModal("signup");
+  }
+
+});
+
+
+/* =========================================================
+   AUTH CLOSE
+   ========================================================= */
 
 document.addEventListener("click", event => {
 
   const closeButton =
     event.target.closest("#authClose");
 
-  if (!closeButton) return;
-
-  if (typeof closeAuthModal === "function") {
+  if (
+    closeButton &&
+    typeof closeAuthModal === "function"
+  ) {
     closeAuthModal();
   }
+
 });
 
 
-/* ---------------------------------------------------------
-   LOGOUT BUTTON
---------------------------------------------------------- */
+/* =========================================================
+   LOGOUT
+   ========================================================= */
 
 document.addEventListener("click", async event => {
 
@@ -331,13 +345,16 @@ document.addEventListener("click", async event => {
     await signOutUser();
   }
 
-  showView("home");
+  if (typeof showView === "function") {
+    showView("home");
+  }
+
 });
 
 
-/* ---------------------------------------------------------
-   BACK TO HOME
---------------------------------------------------------- */
+/* =========================================================
+   BACK HOME
+   ========================================================= */
 
 document.addEventListener("click", event => {
 
@@ -346,13 +363,16 @@ document.addEventListener("click", event => {
 
   if (!button) return;
 
-  showView("home");
+  if (typeof showView === "function") {
+    showView("home");
+  }
+
 });
 
 
-/* ---------------------------------------------------------
-   COMPARE VIEW
---------------------------------------------------------- */
+/* =========================================================
+   COMPARE
+   ========================================================= */
 
 document.addEventListener("click", event => {
 
@@ -361,22 +381,29 @@ document.addEventListener("click", event => {
 
   if (!button) return;
 
-  if (typeof renderDashboard === "function") {
+  if (typeof showView === "function") {
     showView("dashboard");
+  }
+
+  if (typeof renderDashboard === "function") {
     renderDashboard();
   }
+
 });
 
 
-/* ---------------------------------------------------------
-   HOME SEARCH INPUT SUGGESTIONS
---------------------------------------------------------- */
+/* =========================================================
+   SEARCH SUGGESTIONS
+   ========================================================= */
 
 document.addEventListener("input", event => {
 
-  if (event.target.id !== "searchInput") return;
+  if (event.target.id !== "searchInput") {
+    return;
+  }
 
-  const query = event.target.value.trim();
+  const query =
+    event.target.value.trim();
 
   const suggestions =
     document.getElementById("suggestions");
@@ -389,7 +416,9 @@ document.addEventListener("input", event => {
     return;
   }
 
-  if (typeof tools === "undefined") return;
+  if (typeof tools === "undefined") {
+    return;
+  }
 
   const matches = tools
     .filter(tool => {
@@ -402,7 +431,10 @@ document.addEventListener("input", event => {
         .join(" ")
         .toLowerCase();
 
-      return text.includes(query.toLowerCase());
+      return text.includes(
+        query.toLowerCase()
+      );
+
     })
     .slice(0, 5);
 
@@ -412,28 +444,30 @@ document.addEventListener("input", event => {
     return;
   }
 
-  suggestions.innerHTML = matches
-    .map(
-      tool => `
-        <button
-          class="suggestion-item"
-          type="button"
-          data-suggestion="${escapeAttribute(tool.name)}"
-        >
-          <span>${tool.icon || "🛠️"}</span>
-          <span>${escapeHTML(tool.name)}</span>
-        </button>
-      `
-    )
-    .join("");
+  suggestions.innerHTML =
+    matches
+      .map(
+        tool => `
+          <button
+            class="suggestion-item"
+            type="button"
+            data-suggestion="${escapeAttribute(tool.name)}"
+          >
+            <span>${tool.icon || "🛠️"}</span>
+            <span>${escapeHTML(tool.name)}</span>
+          </button>
+        `
+      )
+      .join("");
 
   suggestions.style.display = "";
+
 });
 
 
-/* ---------------------------------------------------------
+/* =========================================================
    SUGGESTION CLICK
---------------------------------------------------------- */
+   ========================================================= */
 
 document.addEventListener("click", event => {
 
@@ -461,12 +495,13 @@ document.addEventListener("click", event => {
   if (typeof runToolSearch === "function") {
     runToolSearch(input.value);
   }
+
 });
 
 
-/* ---------------------------------------------------------
-   KEYBOARD ESCAPE
---------------------------------------------------------- */
+/* =========================================================
+   ESCAPE KEY
+   ========================================================= */
 
 document.addEventListener("keydown", event => {
 
@@ -477,11 +512,10 @@ document.addEventListener("keydown", event => {
 
   if (
     authModal &&
-    authModal.classList.contains("active")
+    authModal.classList.contains("active") &&
+    typeof closeAuthModal === "function"
   ) {
-    if (typeof closeAuthModal === "function") {
-      closeAuthModal();
-    }
+    closeAuthModal();
   }
 
   const aboutPanel =
@@ -489,42 +523,60 @@ document.addEventListener("keydown", event => {
 
   if (
     aboutPanel &&
-    aboutPanel.classList.contains("active")
+    aboutPanel.classList.contains("active") &&
+    typeof closeAboutPanel === "function"
   ) {
-    if (typeof closeAboutPanel === "function") {
-      closeAboutPanel();
+    closeAboutPanel();
+  }
+
+});
+
+
+/* =========================================================
+   APP STARTUP
+   ========================================================= */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  async () => {
+
+    console.log(
+      "TzTools V8.0 starting..."
+    );
+
+    if (
+      typeof loadCloudData === "function"
+    ) {
+      await loadCloudData();
     }
+
+    if (
+      typeof updateAuthUI === "function"
+    ) {
+      await updateAuthUI();
+    }
+
+    if (
+      typeof updateCounts === "function"
+    ) {
+      updateCounts();
+    }
+
+    if (
+      typeof refreshVisibleCards === "function"
+    ) {
+      refreshVisibleCards();
+    }
+
+    if (
+      typeof renderDashboard === "function"
+    ) {
+      renderDashboard();
+    }
+
+    console.log(
+      "TzTools V8.0 ready 🚀"
+    );
+
   }
-});
-
-
-/* ---------------------------------------------------------
-   INITIAL APP STARTUP
---------------------------------------------------------- */
-
-document.addEventListener("DOMContentLoaded", async () => {
-
-  console.log("TzTools V8.0 starting...");
-
-  if (typeof loadCloudData === "function") {
-    await loadCloudData();
-  }
-
-  if (typeof updateAuthUI === "function") {
-    await updateAuthUI();
-  }
-
-  if (typeof updateCounts === "function") {
-    updateCounts();
-  }
-
-  if (typeof refreshVisibleCards === "function") {
-    refreshVisibleCards();
-  }
-
-  if (typeof renderDashboard === "function") {
-    renderDashboard();
-  }
-
-  console.log("TzTools V8.0 ready 🚀");
-});
+);
