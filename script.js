@@ -611,7 +611,25 @@ const tools = [
     ]
   },
 
-
+{
+    id: "photopea",
+    name: "Photopea",
+    icon: "🖼️",
+    description: "Free browser-based photo editor with powerful tools and support for PSD files.",
+    category: "Images",
+    pricing: "Free",
+    rating: 4.8,
+    url: "https://www.photopea.com/",
+    keywords: [
+      "photo editor",
+      "image editor",
+      "edit photos",
+      "photoshop alternative",
+      "psd editor",
+      "graphic design",
+      "browser photo editor",
+      "free photo editor"
+    ];
   /* ================= AUDIO ================= */
 
   {
@@ -728,26 +746,8 @@ const tools = [
       "free illustrator alternative"
     ]
   },
-  {
-    id: "photopea",
-    name: "Photopea",
-    icon: "🖼️",
-    description: "Free browser-based photo editor with powerful tools and support for PSD files.",
-    category: "Images",
-    pricing: "Free",
-    rating: 4.8,
-    url: "https://www.photopea.com/",
-    keywords: [
-      "photo editor",
-      "image editor",
-      "edit photos",
-      "photoshop alternative",
-      "psd editor",
-      "graphic design",
-      "browser photo editor",
-      "free photo editor"
-    ]
-  },
+
+{
 
   {
     id: "penpot",
