@@ -648,7 +648,6 @@ const tools = [
     ]
   },
 
-
   {
     id: "gimp",
     name: "GIMP",
