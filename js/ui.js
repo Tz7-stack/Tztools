@@ -1,114 +1,15 @@
 /* =========================================================
-   TZTOOLS V8 — UI CONTROLLER
-   Navigation • Category Menu • Theme • About
+   TZTOOLS V8 — UI.JS
+   UI ONLY
+   Menu • Theme • About • Auth Modal
    ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
 
-  /* =======================================================
-     HELPERS
-     ======================================================= */
-
   const $ = (id) => document.getElementById(id);
 
-  const home = $("home");
-  const searchResultsView = $("searchResultsView");
-  const customerService = $("customerService");
-  const dashboard = $("dashboard");
-  const me = $("me");
-
-  const bottomNavItems = document.querySelectorAll(
-    ".bottom-nav-item"
-  );
-
-
   /* =======================================================
-     VIEW NAVIGATION
-     ======================================================= */
-
-  function showView(viewId) {
-
-    const views = document.querySelectorAll(".app-view");
-
-    views.forEach((view) => {
-      view.classList.remove("active");
-    });
-
-    const target = $(viewId);
-
-    if (!target) return;
-
-    target.classList.add("active");
-
-    bottomNavItems.forEach((item) => {
-      item.classList.toggle(
-        "active",
-        item.dataset.viewTarget === viewId
-      );
-    });
-
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
-
-    /* Dashboard refresh */
-
-    if (
-      viewId === "dashboard" &&
-      typeof window.renderDashboard === "function"
-    ) {
-      window.renderDashboard();
-    }
-
-    if (
-      viewId === "dashboard" &&
-      window.TzApp &&
-      typeof window.TzApp.renderDashboard === "function"
-    ) {
-      window.TzApp.renderDashboard();
-    }
-  }
-
-
-  /* =======================================================
-     BOTTOM NAVIGATION
-     ======================================================= */
-
-  bottomNavItems.forEach((item) => {
-
-    item.addEventListener("click", () => {
-
-      const targetView = item.dataset.viewTarget;
-
-      if (!targetView) return;
-
-      showView(targetView);
-
-    });
-
-  });
-
-
-  /* =======================================================
-     BRAND → HOME
-     ======================================================= */
-
-  const brandButton = $("brandButton");
-
-  if (brandButton) {
-
-    brandButton.addEventListener("click", () => {
-
-      showView("home");
-
-    });
-
-  }
-
-
-  /* =======================================================
-     CATEGORY MENU
+     CATEGORY / HAMBURGER MENU
      ======================================================= */
 
   const menuButton = $("menuButton");
@@ -116,108 +17,60 @@ document.addEventListener("DOMContentLoaded", () => {
   const categoryMenuClose = $("categoryMenuClose");
   const categoryMenuBackdrop = $("categoryMenuBackdrop");
 
-
   function openCategoryMenu() {
-
     if (!categoryMenu) return;
 
     categoryMenu.classList.add("open");
-
-    categoryMenu.setAttribute(
-      "aria-hidden",
-      "false"
-    );
+    categoryMenu.setAttribute("aria-hidden", "false");
 
     if (menuButton) {
-
-      menuButton.setAttribute(
-        "aria-expanded",
-        "true"
-      );
-
+      menuButton.setAttribute("aria-expanded", "true");
     }
 
     document.body.classList.add("menu-open");
-
   }
 
-
   function closeCategoryMenu() {
-
     if (!categoryMenu) return;
 
     categoryMenu.classList.remove("open");
-
-    categoryMenu.setAttribute(
-      "aria-hidden",
-      "true"
-    );
+    categoryMenu.setAttribute("aria-hidden", "true");
 
     if (menuButton) {
-
-      menuButton.setAttribute(
-        "aria-expanded",
-        "false"
-      );
-
+      menuButton.setAttribute("aria-expanded", "false");
     }
 
     document.body.classList.remove("menu-open");
-
   }
 
-
   if (menuButton) {
-
     menuButton.addEventListener("click", () => {
-
-      const open =
-        categoryMenu &&
-        categoryMenu.classList.contains("open");
-
-      if (open) {
+      if (categoryMenu?.classList.contains("open")) {
         closeCategoryMenu();
       } else {
         openCategoryMenu();
       }
-
     });
-
   }
 
-
   if (categoryMenuClose) {
-
     categoryMenuClose.addEventListener(
       "click",
       closeCategoryMenu
     );
-
   }
 
-
   if (categoryMenuBackdrop) {
-
     categoryMenuBackdrop.addEventListener(
       "click",
       closeCategoryMenu
     );
-
   }
 
-
-  /* =======================================================
-     ESC → CLOSE MENU
-     ======================================================= */
-
   document.addEventListener("keydown", (event) => {
-
     if (event.key === "Escape") {
-
       closeCategoryMenu();
-
     }
-
   });
 
 
@@ -231,24 +84,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
       button.addEventListener("click", () => {
 
-        const category =
-          button.dataset.category;
+        const category = button.dataset.category;
 
         if (!category) return;
 
         closeCategoryMenu();
 
-        /* Switch to results page */
+        /*
+         * Let the existing app logic handle the results.
+         * We only set the category filter and switch pages.
+         */
 
-        showView("searchResultsView");
-
-        /* Apply category filter */
-
-        const filter =
-          $("resultsCategoryFilter");
+        const filter = $("resultsCategoryFilter");
 
         if (filter) {
-
           filter.value = category;
 
           filter.dispatchEvent(
@@ -256,17 +105,25 @@ document.addEventListener("DOMContentLoaded", () => {
               bubbles: true
             })
           );
-
         }
 
-        /* Let the main app refresh results */
+        const resultsView = $("searchResultsView");
 
-        if (
-          window.TzApp &&
-          typeof window.TzApp.renderTools === "function"
-        ) {
-          window.TzApp.renderTools();
+        if (resultsView) {
+
+          document
+            .querySelectorAll(".app-view")
+            .forEach((view) => {
+              view.classList.remove("active");
+            });
+
+          resultsView.classList.add("active");
         }
+
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth"
+        });
 
       });
 
@@ -274,18 +131,46 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =======================================================
-     BACK HOME BUTTON
+     BRAND BUTTON → HOME
      ======================================================= */
 
-  const emptyStateHomeButton =
-    $("emptyStateHomeButton");
+  const brandButton = $("brandButton");
 
-  if (emptyStateHomeButton) {
+  if (brandButton) {
 
-    emptyStateHomeButton.addEventListener(
-      "click",
-      () => showView("home")
-    );
+    brandButton.addEventListener("click", () => {
+
+      closeCategoryMenu();
+
+      document
+        .querySelectorAll(".app-view")
+        .forEach((view) => {
+          view.classList.remove("active");
+        });
+
+      const home = $("home");
+
+      if (home) {
+        home.classList.add("active");
+      }
+
+      document
+        .querySelectorAll(".bottom-nav-item")
+        .forEach((item) => {
+
+          item.classList.toggle(
+            "active",
+            item.dataset.viewTarget === "home"
+          );
+
+        });
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+
+    });
 
   }
 
@@ -294,42 +179,33 @@ document.addEventListener("DOMContentLoaded", () => {
      DARK MODE
      ======================================================= */
 
-  const themeButton =
-    $("themeSettingButton");
+  const themeButton = $("themeSettingButton");
+  const themeStatus = $("themeStatus");
 
-  const themeStatus =
-    $("themeStatus");
-
+  const THEME_KEY = "tztools_v76_theme";
 
   function applyTheme(theme) {
 
-    const dark =
-      theme === "dark";
+    const isDark = theme === "dark";
 
     document.body.classList.toggle(
       "dark",
-      dark
+      isDark
     );
 
     if (themeStatus) {
-
       themeStatus.textContent =
-        dark ? "On" : "Off";
-
+        isDark ? "On" : "Off";
     }
 
     localStorage.setItem(
-      "tztools_v76_theme",
-      dark ? "dark" : "light"
+      THEME_KEY,
+      isDark ? "dark" : "light"
     );
-
   }
 
-
   const savedTheme =
-    localStorage.getItem(
-      "tztools_v76_theme"
-    );
+    localStorage.getItem(THEME_KEY);
 
   applyTheme(
     savedTheme === "dark"
@@ -337,24 +213,18 @@ document.addEventListener("DOMContentLoaded", () => {
       : "light"
   );
 
-
   if (themeButton) {
 
-    themeButton.addEventListener(
-      "click",
-      () => {
+    themeButton.addEventListener("click", () => {
 
-        const isDark =
-          document.body.classList.contains(
-            "dark"
-          );
+      const isDark =
+        document.body.classList.contains("dark");
 
-        applyTheme(
-          isDark ? "light" : "dark"
-        );
+      applyTheme(
+        isDark ? "light" : "dark"
+      );
 
-      }
-    );
+    });
 
   }
 
@@ -363,71 +233,39 @@ document.addEventListener("DOMContentLoaded", () => {
      ABOUT PANEL
      ======================================================= */
 
-  const aboutButton =
-    $("aboutButton");
-
-  const aboutPanel =
-    $("aboutPanel");
-
-  const aboutClose =
-    $("aboutClose");
-
+  const aboutButton = $("aboutButton");
+  const aboutPanel = $("aboutPanel");
+  const aboutClose = $("aboutClose");
 
   if (aboutButton && aboutPanel) {
 
-    aboutButton.addEventListener(
-      "click",
-      () => {
+    aboutButton.addEventListener("click", () => {
 
-        aboutPanel.classList.toggle(
-          "open"
-        );
+      aboutPanel.classList.toggle("open");
 
-        if (
-          aboutPanel.classList.contains(
-            "open"
-          )
-        ) {
-
-          aboutPanel.scrollIntoView({
-            behavior: "smooth",
-            block: "nearest"
-          });
-
-        }
-
-      }
-    );
+    });
 
   }
 
-
   if (aboutClose && aboutPanel) {
 
-    aboutClose.addEventListener(
-      "click",
-      () => {
+    aboutClose.addEventListener("click", () => {
 
-        aboutPanel.classList.remove(
-          "open"
-        );
+      aboutPanel.classList.remove("open");
 
-      }
-    );
+    });
 
   }
 
 
   /* =======================================================
-     ACCOUNT BUTTON
+     AUTH MODAL
      ======================================================= */
 
-  const accountButton =
-    $("accountButton");
-
-  const authModal =
-    $("authModal");
-
+  const authModal = $("authModal");
+  const authModalClose = $("authModalClose");
+  const authModalBackdrop = $("authModalBackdrop");
+  const accountButton = $("accountButton");
 
   function openAuthModal() {
 
@@ -440,122 +278,60 @@ document.addEventListener("DOMContentLoaded", () => {
       "false"
     );
 
-    document.body.classList.add(
-      "modal-open"
-    );
-
+    document.body.classList.add("modal-open");
   }
-
 
   function closeAuthModal() {
 
     if (!authModal) return;
 
-    authModal.classList.remove(
-      "open"
-    );
+    authModal.classList.remove("open");
 
     authModal.setAttribute(
       "aria-hidden",
       "true"
     );
 
-    document.body.classList.remove(
-      "modal-open"
-    );
-
+    document.body.classList.remove("modal-open");
   }
 
-
   if (accountButton) {
-
     accountButton.addEventListener(
       "click",
       openAuthModal
     );
-
   }
 
-
-  const authModalClose =
-    $("authModalClose");
-
-  const authModalBackdrop =
-    $("authModalBackdrop");
-
-
   if (authModalClose) {
-
     authModalClose.addEventListener(
       "click",
       closeAuthModal
     );
-
   }
 
-
   if (authModalBackdrop) {
-
     authModalBackdrop.addEventListener(
       "click",
       closeAuthModal
     );
-
   }
 
 
   /* =======================================================
-     ACCOUNT SETTINGS
-     ======================================================= */
-
-  const accountSettingsButton =
-    $("accountSettingsButton");
-
-
-  if (accountSettingsButton) {
-
-    accountSettingsButton.addEventListener(
-      "click",
-      () => {
-
-        showView("me");
-
-        const accountBtn =
-          $("accountButton");
-
-        if (accountBtn) {
-
-          accountBtn.scrollIntoView({
-            behavior: "smooth",
-            block: "center"
-          });
-
-        }
-
-      }
-    );
-
-  }
-
-
-  /* =======================================================
-     INITIAL STATE
+     FINAL UI STATE
      ======================================================= */
 
   closeCategoryMenu();
 
-  bottomNavItems.forEach((item) => {
-
-    item.classList.toggle(
-      "active",
-      item.dataset.viewTarget === "home"
+  if (authModal) {
+    authModal.setAttribute(
+      "aria-hidden",
+      "true"
     );
-
-  });
-
+  }
 
   console.log(
-    "TzTools UI controller loaded successfully."
+    "TzTools UI loaded successfully."
   );
 
 });
