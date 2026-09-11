@@ -646,7 +646,7 @@ const tools = [
       "ai",
       "text to speech"
     ]
-  }
+  },
 
 
   {
