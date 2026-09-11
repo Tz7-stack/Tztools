@@ -727,7 +727,7 @@ const tools = [
       "icons",
       "free illustrator alternative"
     ]
-  }
+  },
   {
     id: "photopea",
     name: "Photopea",
