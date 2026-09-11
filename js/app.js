@@ -81,8 +81,13 @@ function createSearchToolCard(tool) {
     <div class="tool-card-top">
 
       <div class="tool-icon">
-        ${tool.icon || "🛠️"}
-      </div>
+  <img
+    src="https://www.google.com/s2/favicons?domain=${getToolDomain(tool.url)}&sz=128"
+    alt=""
+    loading="lazy"
+    onerror="this.style.display='none'; this.parentElement.textContent='•';"
+  >
+</div>
 
       <div class="tool-card-actions">
 
