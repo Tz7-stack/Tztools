@@ -256,8 +256,13 @@ function renderComparisonTools() {
           <div class="comparison-tool-info">
 
             <span class="comparison-icon">
-              ${tool.icon}
-            </span>
+  <img
+    src="https://www.google.com/s2/favicons?domain=${getToolDomain(tool.url)}&sz=128"
+    alt=""
+    loading="lazy"
+    onerror="this.style.display='none'; this.parentElement.textContent='•';"
+  >
+</span>
 
             <div>
               <strong>${tool.name}</strong>
