@@ -19,7 +19,7 @@
     Never use the service-role / secret key in browser code.
   */
   const SUPABASE_KEY =
-    "YOUR_SUPABASE_PUBLISHABLE_KEY";
+    "sb_publishable_XoDQsJkHs_7PA8wQAoutHA_glygnyxK";
 
   let client = null;
   let currentUser = null;
