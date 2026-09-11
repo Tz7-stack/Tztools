@@ -1,71 +1,52 @@
 "use strict";
 
 /* =========================================================
-   TZTOOLS V8 — MAIN APPLICATION
+   TZTOOLS V8 — MAIN APP CONTROLLER
    ========================================================= */
 
-console.log(
-  "TzTools V8.0 starting..."
-);
+console.log("TzTools V8.0 starting...");
 
 /* =========================================================
-   STORAGE
+   SHARED STATE
    ========================================================= */
 
-const STORAGE = {
-  favorites:
-    "tztools_v76_favorites",
+window.TzApp = window.TzApp || {};
 
-  recent:
-    "tztools_v76_recent",
+const state = window.TzApp;
 
-  compare:
-    "tztools_v76_compare",
+state.favorites =
+  Array.isArray(state.favorites)
+    ? state.favorites
+    : JSON.parse(
+        localStorage.getItem(
+          "tztools_v76_favorites"
+        )
+      ) || [];
 
-  theme:
-    "tztools_v76_theme"
-};
+state.recentlyUsed =
+  Array.isArray(state.recentlyUsed)
+    ? state.recentlyUsed
+    : JSON.parse(
+        localStorage.getItem(
+          "tztools_v76_recent"
+        )
+      ) || [];
 
-let favorites =
-  JSON.parse(
-    localStorage.getItem(
-      STORAGE.favorites
-    )
-  ) || [];
-
-let recentlyUsed =
-  JSON.parse(
-    localStorage.getItem(
-      STORAGE.recent
-    )
-  ) || [];
-
-let compareList =
-  JSON.parse(
-    localStorage.getItem(
-      STORAGE.compare
-    )
-  ) || [];
+state.compareList =
+  Array.isArray(state.compareList)
+    ? state.compareList
+    : JSON.parse(
+        localStorage.getItem(
+          "tztools_v76_compare"
+        )
+      ) || [];
 
 /* =========================================================
    DOM
    ========================================================= */
 
 const $ =
-  id =>
-    document.getElementById(id);
-
-const home =
-  $("home");
-
-const customerService =
-  $("customerService");
-
-const me =
-  $("me");
-
-const dashboard =
-  $("dashboard");
+  id => document.getElementById(id);
 
 const homeNavbar =
   $("homeNavbar");
@@ -85,9 +66,6 @@ const searchClear =
 const suggestions =
   $("suggestions");
 
-const searchResultsView =
-  $("searchResultsView");
-
 const resultsTitle =
   $("resultsTitle");
 
@@ -106,11 +84,11 @@ const noResults =
 const resultsCategoryFilter =
   $("resultsCategoryFilter");
 
-const bottomNavigation =
-  $("bottomNavigation");
-
 const emptyStateHomeButton =
   $("emptyStateHomeButton");
+
+const bottomNavigation =
+  $("bottomNavigation");
 
 const toastContainer =
   $("toastContainer");
@@ -125,9 +103,11 @@ function getToolById(id) {
     return null;
   }
 
-  return tools.find(
-    tool => tool.id === id
-  ) || null;
+  return (
+    tools.find(
+      tool => tool.id === id
+    ) || null
+  );
 }
 
 function getToolDomain(url) {
@@ -143,22 +123,25 @@ function getToolDomain(url) {
     return "";
 
   }
+
 }
 
 function getToolLogo(tool) {
 
-  if (!tool?.url) {
-    return "";
-  }
-
   const domain =
-    getToolDomain(tool.url);
+    getToolDomain(
+      tool?.url
+    );
 
   if (!domain) {
     return "";
   }
 
-  return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
+  return (
+    "https://www.google.com/s2/favicons" +
+    `?domain=${domain}&sz=128`
+  );
+
 }
 
 /* =========================================================
@@ -199,7 +182,9 @@ function showView(viewId) {
 
   }
 
-  updateBottomNav(viewId);
+  updateBottomNav(
+    viewId
+  );
 
   window.scrollTo({
     top: 0,
@@ -207,24 +192,16 @@ function showView(viewId) {
   });
 
   if (
-    viewId ===
-    "dashboard"
+    viewId === "dashboard" &&
+    typeof renderDashboard ===
+      "function"
   ) {
 
-    if (
-      typeof renderDashboard ===
-      "function"
-    ) {
-      renderDashboard();
-    }
+    renderDashboard();
 
   }
 
 }
-
-/* =========================================================
-   BOTTOM NAV
-   ========================================================= */
 
 function updateBottomNav(
   viewId
@@ -245,6 +222,10 @@ function updateBottomNav(
     });
 
 }
+
+/* =========================================================
+   NAV EVENTS
+   ========================================================= */
 
 document
   .querySelectorAll(
@@ -314,15 +295,17 @@ if (emptyStateHomeButton) {
    TOOL CARD
    ========================================================= */
 
-function createToolCard(tool) {
+function createToolCard(
+  tool
+) {
 
   const favorite =
-    favorites.includes(
+    state.favorites.includes(
       tool.id
     );
 
   const compared =
-    compareList.includes(
+    state.compareList.includes(
       tool.id
     );
 
@@ -356,7 +339,11 @@ function createToolCard(tool) {
           }
 
           <span class="tool-icon-fallback">
-            ${tool.name?.charAt(0)?.toUpperCase() || "T"}
+            ${
+              tool.name
+                ?.charAt(0)
+                ?.toUpperCase() || "T"
+            }
           </span>
 
         </div>
@@ -374,7 +361,10 @@ function createToolCard(tool) {
         </h3>
 
         <p class="tool-description">
-          ${tool.description || "A useful digital tool."}
+          ${
+            tool.description ||
+            "A useful digital tool."
+          }
         </p>
 
         <div class="tool-meta">
@@ -399,11 +389,6 @@ function createToolCard(tool) {
             }"
             data-action="favorite"
             data-tool-id="${tool.id}"
-            title="${
-              favorite
-                ? "Remove favorite"
-                : "Add favorite"
-            }"
             aria-label="${
               favorite
                 ? `Remove ${tool.name} from favorites`
@@ -425,11 +410,6 @@ function createToolCard(tool) {
             }"
             data-action="compare"
             data-tool-id="${tool.id}"
-            title="${
-              compared
-                ? "Remove from compare"
-                : "Compare"
-            }"
             aria-label="${
               compared
                 ? `Remove ${tool.name} from comparison`
@@ -463,7 +443,7 @@ function createToolCard(tool) {
 }
 
 /* =========================================================
-   RENDER SEARCH RESULTS
+   RENDER RESULTS
    ========================================================= */
 
 function renderTools(
@@ -474,8 +454,10 @@ function renderTools(
     return;
   }
 
-  if (!Array.isArray(list) ||
-      !list.length) {
+  if (
+    !Array.isArray(list) ||
+    !list.length
+  ) {
 
     toolsGrid.innerHTML = "";
 
@@ -511,14 +493,9 @@ function performSearch() {
 
   if (!query) {
 
-    if (
-      typeof showToast ===
-      "function"
-    ) {
-      showToast(
-        "Type what you want to do."
-      );
-    }
+    showToast(
+      "Type what you want to do."
+    );
 
     return;
 
@@ -605,12 +582,7 @@ if (searchButton) {
     "click",
     event => {
 
-      if (
-        event &&
-        event.preventDefault
-      ) {
-        event.preventDefault();
-      }
+      event.preventDefault();
 
       performSearch();
 
@@ -634,9 +606,16 @@ if (searchInput) {
 
       }
 
-      renderSuggestions(
-        searchInput.value
-      );
+      if (
+        typeof renderSuggestions ===
+        "function"
+      ) {
+
+        renderSuggestions(
+          searchInput.value
+        );
+
+      }
 
     }
   );
@@ -646,8 +625,7 @@ if (searchInput) {
     event => {
 
       if (
-        event.key ===
-        "Enter"
+        event.key === "Enter"
       ) {
 
         event.preventDefault();
@@ -657,8 +635,7 @@ if (searchInput) {
       }
 
       if (
-        event.key ===
-        "Escape"
+        event.key === "Escape"
       ) {
 
         suggestions?.classList
@@ -677,249 +654,36 @@ if (searchClear) {
     "click",
     () => {
 
+      resetHome();
+
       if (searchInput) {
-
-        searchInput.value = "";
-
         searchInput.focus();
-
       }
-
-      searchClear.style.display =
-        "none";
-
-      suggestions?.classList
-        .remove("open");
 
     }
   );
 
 }
 
-if (resultsCategoryFilter) {
+if (
+  resultsCategoryFilter
+) {
 
   resultsCategoryFilter
     .addEventListener(
       "change",
       () => {
 
-        const query =
-          searchInput?.value.trim();
+        if (
+          searchInput?.value.trim()
+        ) {
 
-        if (query) {
           performSearch();
+
         }
 
       }
     );
-
-}
-
-/* =========================================================
-   SEARCH SUGGESTIONS
-   ========================================================= */
-
-function renderSuggestions(
-  query
-) {
-
-  if (!suggestions) {
-    return;
-  }
-
-  const clean =
-    typeof normalizeText ===
-    "function"
-      ? normalizeText(query)
-      : String(query || "")
-          .toLowerCase()
-          .trim();
-
-  if (!clean) {
-
-    suggestions.innerHTML = "";
-
-    suggestions.classList.remove(
-      "open"
-    );
-
-    return;
-
-  }
-
-  if (!Array.isArray(tools)) {
-    return;
-  }
-
-  const ranked =
-    tools
-      .map(tool => {
-
-        const searchable =
-          [
-            tool.name,
-            tool.description,
-            tool.category,
-            ...(tool.keywords || [])
-          ]
-            .join(" ")
-            .toLowerCase();
-
-        const name =
-          String(
-            tool.name || ""
-          )
-            .toLowerCase();
-
-        let score = 0;
-
-        if (
-          name === clean
-        ) {
-          score += 100;
-        }
-
-        if (
-          name.includes(clean)
-        ) {
-          score += 60;
-        }
-
-        if (
-          searchable.includes(clean)
-        ) {
-          score += 25;
-        }
-
-        score +=
-          Number(tool.rating || 0);
-
-        return {
-          tool,
-          score
-        };
-
-      })
-      .filter(item =>
-        item.score > 0
-      )
-      .sort(
-        (a, b) =>
-          b.score - a.score
-      )
-      .slice(0, 6)
-      .map(
-        item => item.tool
-      );
-
-  if (!ranked.length) {
-
-    suggestions.innerHTML = "";
-
-    suggestions.classList.remove(
-      "open"
-    );
-
-    return;
-
-  }
-
-  suggestions.innerHTML =
-    ranked
-      .map(tool => {
-
-        const logo =
-          getToolLogo(tool);
-
-        return `
-          <button
-            class="suggestion"
-            data-tool-suggestion="${tool.id}"
-            type="button"
-          >
-
-            <span class="suggestion-icon">
-
-              ${
-                logo
-                  ? `
-                    <img
-                      src="${logo}"
-                      alt=""
-                      loading="lazy"
-                    >
-                  `
-                  : tool.name
-                      ?.charAt(0)
-                      ?.toUpperCase()
-              }
-
-            </span>
-
-            <span class="suggestion-text">
-
-              <strong>
-                ${tool.name}
-              </strong>
-
-              <small>
-                ${tool.category || "Tool"}
-              </small>
-
-            </span>
-
-          </button>
-        `;
-
-      })
-      .join("");
-
-  suggestions.classList.add(
-    "open"
-  );
-
-}
-
-/* =========================================================
-   SUGGESTION CLICK
-   ========================================================= */
-
-if (suggestions) {
-
-  suggestions.addEventListener(
-    "click",
-    event => {
-
-      const button =
-        event.target.closest(
-          "[data-tool-suggestion]"
-        );
-
-      if (!button) {
-        return;
-      }
-
-      const id =
-        button.dataset
-          .toolSuggestion;
-
-      const tool =
-        getToolById(id);
-
-      if (!tool) {
-        return;
-      }
-
-      searchInput.value =
-        tool.name;
-
-      suggestions.classList
-        .remove("open");
-
-      performSearch();
-
-    }
-  );
 
 }
 
@@ -927,11 +691,11 @@ if (suggestions) {
    FAVORITES
    ========================================================= */
 
-async function syncFavoriteCloudV8() {
+async function syncFavoritesToCloud() {
 
   if (
     typeof supabaseClient ===
-    "undefined" ||
+      "undefined" ||
     !supabaseClient
   ) {
     return;
@@ -940,7 +704,7 @@ async function syncFavoriteCloudV8() {
   try {
 
     const {
-      data: userData,
+      data,
       error: userError
     } =
       await supabaseClient.auth
@@ -948,17 +712,17 @@ async function syncFavoriteCloudV8() {
 
     if (
       userError ||
-      !userData?.user
+      !data?.user
     ) {
       return;
     }
 
     const user =
-      userData.user;
+      data.user;
 
     const {
-      data: existingRows,
-      error: selectError
+      data: cloudRows,
+      error
     } =
       await supabaseClient
         .from("favorites")
@@ -968,30 +732,35 @@ async function syncFavoriteCloudV8() {
           user.id
         );
 
-    if (selectError) {
+    if (error) {
+
       console.warn(
-        "Favorites cloud read:",
-        selectError
+        "Favorite sync read:",
+        error
       );
+
       return;
+
     }
 
     const cloudIds =
-      (existingRows || [])
+      (cloudRows || [])
         .map(row =>
           row.tool_id
         );
 
+    const addIds =
+      state.favorites.filter(
+        id =>
+          !cloudIds.includes(id)
+      );
+
     const removeIds =
       cloudIds.filter(
         id =>
-          !favorites.includes(id)
-      );
-
-    const addIds =
-      favorites.filter(
-        id =>
-          !cloudIds.includes(id)
+          !state.favorites.includes(
+            id
+          )
       );
 
     if (removeIds.length) {
@@ -1017,7 +786,8 @@ async function syncFavoriteCloudV8() {
         .upsert(
           addIds.map(
             tool_id => ({
-              user_id: user.id,
+              user_id:
+                user.id,
               tool_id
             })
           ),
@@ -1032,7 +802,7 @@ async function syncFavoriteCloudV8() {
   } catch (error) {
 
     console.warn(
-      "Favorite cloud sync failed:",
+      "Favorite sync failed:",
       error
     );
 
@@ -1045,11 +815,11 @@ async function toggleFavorite(
 ) {
 
   if (
-    favorites.includes(id)
+    state.favorites.includes(id)
   ) {
 
-    favorites =
-      favorites.filter(
+    state.favorites =
+      state.favorites.filter(
         item => item !== id
       );
 
@@ -1059,7 +829,7 @@ async function toggleFavorite(
 
   } else {
 
-    favorites.unshift(id);
+    state.favorites.unshift(id);
 
     showToast(
       "Added to favorites."
@@ -1068,8 +838,6 @@ async function toggleFavorite(
   }
 
   saveLocalData();
-
-  updateCountsSafe();
 
   refreshVisibleCards();
 
@@ -1080,7 +848,7 @@ async function toggleFavorite(
     renderDashboard();
   }
 
-  await syncFavoriteCloudV8();
+  await syncFavoritesToCloud();
 
 }
 
@@ -1093,11 +861,13 @@ function toggleCompare(
 ) {
 
   if (
-    compareList.includes(id)
+    state.compareList.includes(
+      id
+    )
   ) {
 
-    compareList =
-      compareList.filter(
+    state.compareList =
+      state.compareList.filter(
         item => item !== id
       );
 
@@ -1108,7 +878,8 @@ function toggleCompare(
   } else {
 
     if (
-      compareList.length >= 3
+      state.compareList.length >=
+      3
     ) {
 
       showToast(
@@ -1119,7 +890,9 @@ function toggleCompare(
 
     }
 
-    compareList.push(id);
+    state.compareList.push(
+      id
+    );
 
     showToast(
       "Added to comparison."
@@ -1128,8 +901,6 @@ function toggleCompare(
   }
 
   saveLocalData();
-
-  updateCountsSafe();
 
   refreshVisibleCards();
 
@@ -1150,27 +921,27 @@ function addRecentlyUsed(
   id
 ) {
 
-  recentlyUsed =
-    recentlyUsed.filter(
+  state.recentlyUsed =
+    state.recentlyUsed.filter(
       item => item !== id
     );
 
-  recentlyUsed.unshift(id);
+  state.recentlyUsed.unshift(
+    id
+  );
 
-  recentlyUsed =
-    recentlyUsed.slice(
+  state.recentlyUsed =
+    state.recentlyUsed.slice(
       0,
       8
     );
 
   saveLocalData();
 
-  updateCountsSafe();
-
 }
 
 /* =========================================================
-   CARD ACTIONS
+   CARD EVENTS
    ========================================================= */
 
 document.addEventListener(
@@ -1196,18 +967,14 @@ document.addEventListener(
         action ===
         "favorite"
       ) {
-
         toggleFavorite(id);
-
       }
 
       if (
         action ===
         "compare"
       ) {
-
         toggleCompare(id);
-
       }
 
       return;
@@ -1221,10 +988,9 @@ document.addEventListener(
 
     if (visit) {
 
-      const id =
-        visit.dataset.toolId;
-
-      addRecentlyUsed(id);
+      addRecentlyUsed(
+        visit.dataset.toolId
+      );
 
     }
 
@@ -1232,44 +998,31 @@ document.addEventListener(
 );
 
 /* =========================================================
-   LOCAL STORAGE
+   LOCAL DATA
    ========================================================= */
 
 function saveLocalData() {
 
   localStorage.setItem(
-    STORAGE.favorites,
+    "tztools_v76_favorites",
     JSON.stringify(
-      favorites
+      state.favorites
     )
   );
 
   localStorage.setItem(
-    STORAGE.recent,
+    "tztools_v76_recent",
     JSON.stringify(
-      recentlyUsed
+      state.recentlyUsed
     )
   );
 
   localStorage.setItem(
-    STORAGE.compare,
+    "tztools_v76_compare",
     JSON.stringify(
-      compareList
+      state.compareList
     )
   );
-
-}
-
-function updateCountsSafe() {
-
-  if (
-    typeof updateCounts ===
-    "function"
-  ) {
-
-    updateCounts();
-
-  }
 
 }
 
@@ -1288,50 +1041,38 @@ function refreshVisibleCards() {
     return;
   }
 
-  const grids =
-    activeView.querySelectorAll(
-      ".tools-grid"
-    );
-
-  grids.forEach(grid => {
-
-    const cards =
-      grid.querySelectorAll(
-        ".tool-card"
-      );
-
-    cards.forEach(card => {
-
-      const id =
-        card.dataset.toolId;
+  activeView
+    .querySelectorAll(
+      ".tool-card"
+    )
+    .forEach(card => {
 
       const tool =
-        getToolById(id);
+        getToolById(
+          card.dataset.toolId
+        );
 
-      if (!tool) {
-        return;
-      }
+      if (!tool) return;
 
-      const wrapper =
+      const holder =
         document.createElement(
           "div"
         );
 
-      wrapper.innerHTML =
+      holder.innerHTML =
         createToolCard(tool);
 
-      const newCard =
-        wrapper.firstElementChild;
+      if (
+        holder.firstElementChild
+      ) {
 
-      if (newCard) {
         card.replaceWith(
-          newCard
+          holder.firstElementChild
         );
+
       }
 
     });
-
-  });
 
 }
 
@@ -1362,40 +1103,14 @@ document
           return;
         }
 
-        if (resultsCategoryFilter) {
-
-          const valid =
-            [
-              "AI",
-              "Design",
-              "Images",
-              "Video",
-              "Writing",
-              "Productivity",
-              "Websites",
-              "Students",
-              "PDF",
-              "Audio"
-            ];
-
-          if (
-            valid.includes(category)
-          ) {
-
-            resultsCategoryFilter
-              .value =
-                category;
-
-          }
-
-        }
-
-        const matching =
-          tools.filter(
-            tool =>
-              tool.category ===
-              category
-          );
+        const results =
+          Array.isArray(tools)
+            ? tools.filter(
+                tool =>
+                  tool.category ===
+                  category
+              )
+            : [];
 
         showView(
           "searchResultsView"
@@ -1413,12 +1128,15 @@ document
 
         if (resultsCount) {
           resultsCount.textContent =
-            `${matching.length} tools`;
+            `${results.length} tools`;
         }
 
-        renderTools(
-          matching
-        );
+        if (resultsCategoryFilter) {
+          resultsCategoryFilter.value =
+            category;
+        }
+
+        renderTools(results);
 
       }
     );
@@ -1455,9 +1173,11 @@ function showToast(
 
   requestAnimationFrame(
     () => {
+
       toast.classList.add(
         "show"
       );
+
     }
   );
 
@@ -1469,9 +1189,7 @@ function showToast(
       );
 
       setTimeout(
-        () => {
-          toast.remove();
-        },
+        () => toast.remove(),
         220
       );
 
@@ -1482,61 +1200,19 @@ function showToast(
 }
 
 /* =========================================================
-   CLOSE SUGGESTIONS
-   ========================================================= */
-
-document.addEventListener(
-  "click",
-  event => {
-
-    if (
-      suggestions &&
-      searchInput &&
-      !suggestions.contains(
-        event.target
-      ) &&
-      !searchInput.contains(
-        event.target
-      )
-    ) {
-
-      suggestions.classList
-        .remove("open");
-
-    }
-
-  }
-);
-
-/* =========================================================
-   DARK MODE
-   ========================================================= */
-
-function applyThemeV8() {
-
-  const saved =
-    localStorage.getItem(
-      STORAGE.theme
-    );
-
-  document.body.classList.toggle(
-    "dark",
-    saved === "dark"
-  );
-
-}
-
-applyThemeV8();
-
-/* =========================================================
    INITIALISE
    ========================================================= */
 
 function initialiseV8() {
 
-  applyThemeV8();
+  saveLocalData();
 
-  updateCountsSafe();
+  if (
+    typeof updateCounts ===
+    "function"
+  ) {
+    updateCounts();
+  }
 
   if (
     typeof renderDashboard ===
@@ -1548,7 +1224,11 @@ function initialiseV8() {
   showView("home");
 
   console.log(
-    `TzTools V8.0 ready 🚀 — ${tools.length} tools`
+    `TzTools V8.0 ready 🚀 — ${
+      Array.isArray(tools)
+        ? tools.length
+        : 0
+    } tools`
   );
 
 }
