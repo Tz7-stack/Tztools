@@ -7,25 +7,31 @@
 
 window.TzApp = window.TzApp || {};
 
-const state = window.TzApp;
+const appState = window.TzApp;
 
 /* =========================================================
    STATE
    ========================================================= */
 
-state.favorites = Array.isArray(state.favorites)
-  ? state.favorites
-  : JSON.parse(localStorage.getItem("tztools_v76_favorites") || "[]");
+appState.favorites = Array.isArray(appState.favorites)
+  ? appState.favorites
+  : JSON.parse(
+      localStorage.getItem("tztools_v76_favorites") || "[]"
+    );
 
-state.recentlyUsed = Array.isArray(state.recentlyUsed)
-  ? state.recentlyUsed
-  : JSON.parse(localStorage.getItem("tztools_v76_recent") || "[]");
+appState.recentlyUsed = Array.isArray(appState.recentlyUsed)
+  ? appState.recentlyUsed
+  : JSON.parse(
+      localStorage.getItem("tztools_v76_recent") || "[]"
+    );
 
-state.compareList = Array.isArray(state.compareList)
-  ? state.compareList
-  : JSON.parse(localStorage.getItem("tztools_v76_compare") || "[]");
+appState.compareList = Array.isArray(appState.compareList)
+  ? appState.compareList
+  : JSON.parse(
+      localStorage.getItem("tztools_v76_compare") || "[]"
+    );
 
-state.currentView = "homeView";
+appState.currentView = "homeView";
 
 /* =========================================================
    DOM
@@ -54,7 +60,9 @@ let toastContainer;
 function getToolById(id) {
   if (!Array.isArray(window.tools)) return null;
 
-  return window.tools.find(tool => String(tool.id) === String(id));
+  return window.tools.find(
+    tool => String(tool.id) === String(id)
+  );
 }
 
 function getToolDomain(url) {
@@ -68,21 +76,19 @@ function getToolDomain(url) {
 function getToolLogo(tool) {
   const domain = getToolDomain(tool.url);
 
-  if (!domain) {
-    return "";
-  }
+  if (!domain) return "";
 
   return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
 }
 
 /* =========================================================
-   AUTH HELPERS
+   AUTH
    ========================================================= */
 
 async function isSignedIn() {
   if (
-    typeof supabaseClient === "undefined" ||
-    !supabaseClient?.auth
+    typeof window.supabaseClient === "undefined" ||
+    !window.supabaseClient?.auth
   ) {
     return false;
   }
@@ -90,7 +96,7 @@ async function isSignedIn() {
   try {
     const {
       data: { user }
-    } = await supabaseClient.auth.getUser();
+    } = await window.supabaseClient.auth.getUser();
 
     return !!user;
   } catch {
@@ -98,7 +104,9 @@ async function isSignedIn() {
   }
 }
 
-function requireAccount(message = "Create a free account to unlock this feature.") {
+function requireAccount(
+  message = "Create a free account to unlock this feature."
+) {
   if (typeof window.openAuthModal !== "function") {
     showToast(message);
     return false;
@@ -124,44 +132,57 @@ function updateBottomNav(viewId) {
 }
 
 async function showView(viewId) {
-  /* Protected dashboard */
+
   if (viewId === "dashboardView") {
+
     const signedIn = await isSignedIn();
 
     if (!signedIn) {
+
       requireAccount(
         "Create a free account to unlock your personal TzTools Dashboard."
       );
+
       return;
     }
   }
 
-  document.querySelectorAll(".app-view").forEach(view => {
-    view.classList.remove("active");
-  });
+  document
+    .querySelectorAll(".app-view")
+    .forEach(view => {
+      view.classList.remove("active");
+    });
 
-  const target = document.getElementById(viewId);
+  const target =
+    document.getElementById(viewId);
 
   if (!target) {
-    console.warn(`TzTools: view "${viewId}" was not found.`);
+
+    console.warn(
+      `TzTools: view "${viewId}" was not found.`
+    );
+
     return;
   }
 
   target.classList.add("active");
 
-  state.currentView = viewId;
+  appState.currentView = viewId;
 
   updateBottomNav(viewId);
 
   if (homeNavbar) {
     homeNavbar.style.display =
-      viewId === "homeView" ? "" : "none";
+      viewId === "homeView"
+        ? ""
+        : "none";
   }
 
-  if (viewId === "dashboardView") {
-    if (typeof window.renderDashboard === "function") {
-      window.renderDashboard();
-    }
+  if (
+    viewId === "dashboardView" &&
+    typeof window.renderDashboard === "function"
+  ) {
+    window.renderDashboard();
   }
 
   window.scrollTo({
@@ -170,7 +191,6 @@ async function showView(viewId) {
   });
 }
 
-/* Make navigation available globally */
 window.showView = showView;
 
 /* =========================================================
@@ -178,6 +198,7 @@ window.showView = showView;
    ========================================================= */
 
 function resetHome() {
+
   if (searchInput) {
     searchInput.value = "";
   }
@@ -191,10 +212,13 @@ function resetHome() {
 }
 
 function updateHomeState() {
-  const query = searchInput?.value?.trim() || "";
+
+  const query =
+    searchInput?.value?.trim() || "";
 
   if (searchClear) {
-    searchClear.style.display = query ? "flex" : "none";
+    searchClear.style.display =
+      query ? "flex" : "none";
   }
 }
 
@@ -203,20 +227,36 @@ function updateHomeState() {
    ========================================================= */
 
 function performSearch() {
-  const query = searchInput?.value?.trim() || "";
+
+  const query =
+    searchInput?.value?.trim() || "";
 
   if (!query) {
-    showToast("Type something you want to find.");
+
+    showToast(
+      "Type something you want to find."
+    );
+
     return;
   }
 
-  if (typeof window.searchTools !== "function") {
-    console.error("TzTools: searchTools() is missing.");
-    showToast("Search is temporarily unavailable.");
+  if (
+    typeof window.searchTools !== "function"
+  ) {
+
+    console.error(
+      "TzTools: searchTools() is missing."
+    );
+
+    showToast(
+      "Search is temporarily unavailable."
+    );
+
     return;
   }
 
-  let results = window.searchTools(query);
+  let results =
+    window.searchTools(query);
 
   if (!Array.isArray(results)) {
     results = [];
@@ -226,6 +266,7 @@ function performSearch() {
     resultsCategoryFilter?.value || "all";
 
   if (category !== "all") {
+
     results = results.filter(tool =>
       String(tool.category).toLowerCase() ===
       String(category).toLowerCase()
@@ -233,26 +274,37 @@ function performSearch() {
   }
 
   const resultsView =
-    document.getElementById("searchResultsView");
+    document.getElementById(
+      "searchResultsView"
+    );
 
   if (!resultsView) {
-    console.error("TzTools: searchResultsView missing.");
+
+    console.error(
+      "TzTools: searchResultsView missing."
+    );
+
     return;
   }
 
-  document.querySelectorAll(".app-view").forEach(view => {
-    view.classList.remove("active");
-  });
+  document
+    .querySelectorAll(".app-view")
+    .forEach(view => {
+      view.classList.remove("active");
+    });
 
   resultsView.classList.add("active");
 
-  state.currentView = "searchResultsView";
+  appState.currentView =
+    "searchResultsView";
 
   if (homeNavbar) {
     homeNavbar.style.display = "none";
   }
 
-  updateBottomNav("searchResultsView");
+  updateBottomNav(
+    "searchResultsView"
+  );
 
   if (resultsTitle) {
     resultsTitle.textContent =
@@ -268,7 +320,11 @@ function performSearch() {
 
   if (resultsCount) {
     resultsCount.textContent =
-      `${results.length} ${results.length === 1 ? "tool" : "tools"}`;
+      `${results.length} ${
+        results.length === 1
+          ? "tool"
+          : "tools"
+      }`;
   }
 
   renderTools(results);
@@ -284,42 +340,63 @@ function performSearch() {
    ========================================================= */
 
 function createToolCard(tool) {
+
   if (!tool) return "";
 
   const favorite =
-    state.favorites.includes(String(tool.id)) ||
-    state.favorites.includes(tool.id);
+    appState.favorites.includes(
+      String(tool.id)
+    ) ||
+    appState.favorites.includes(
+      tool.id
+    );
 
   const compare =
-    state.compareList.includes(String(tool.id)) ||
-    state.compareList.includes(tool.id);
+    appState.compareList.includes(
+      String(tool.id)
+    ) ||
+    appState.compareList.includes(
+      tool.id
+    );
 
-  const logo = getToolLogo(tool);
+  const logo =
+    getToolLogo(tool);
 
   return `
-    <article class="tool-card" data-tool-id="${tool.id}">
+    <article
+      class="tool-card"
+      data-tool-id="${tool.id}"
+    >
 
       <div class="tool-card-top">
 
         <div class="tool-logo-wrap">
+
           ${
             logo
-              ? `<img
+              ? `
+                <img
                   class="tool-logo"
                   src="${logo}"
                   alt="${tool.name} logo"
                   loading="lazy"
-                >`
-              : `<div class="tool-logo-fallback">
+                >
+              `
+              : `
+                <div class="tool-logo-fallback">
                   ${String(tool.name).charAt(0)}
-                </div>`
+                </div>
+              `
           }
+
         </div>
 
         <div class="tool-card-actions">
 
           <button
-            class="icon-button favorite-button ${favorite ? "active" : ""}"
+            class="icon-button favorite-button ${
+              favorite ? "active" : ""
+            }"
             data-action="favorite"
             data-tool-id="${tool.id}"
             aria-label="${
@@ -337,7 +414,9 @@ function createToolCard(tool) {
           </button>
 
           <button
-            class="icon-button compare-button ${compare ? "active" : ""}"
+            class="icon-button compare-button ${
+              compare ? "active" : ""
+            }"
             data-action="compare"
             data-tool-id="${tool.id}"
             aria-label="${
@@ -369,7 +448,10 @@ function createToolCard(tool) {
         </h3>
 
         <p class="tool-description">
-          ${tool.description || "Useful online tool."}
+          ${
+            tool.description ||
+            "Useful online tool."
+          }
         </p>
 
         <div class="tool-meta">
@@ -408,15 +490,20 @@ function createToolCard(tool) {
 }
 
 /* =========================================================
-   RENDER TOOLS
+   RENDER
    ========================================================= */
 
 function renderTools(list) {
+
   if (!toolsGrid) return;
 
   toolsGrid.innerHTML = "";
 
-  if (!Array.isArray(list) || list.length === 0) {
+  if (
+    !Array.isArray(list) ||
+    list.length === 0
+  ) {
+
     if (noResults) {
       noResults.style.display = "block";
     }
@@ -428,194 +515,297 @@ function renderTools(list) {
     noResults.style.display = "none";
   }
 
-  toolsGrid.innerHTML = list
-    .map(createToolCard)
-    .join("");
+  toolsGrid.innerHTML =
+    list.map(createToolCard).join("");
 }
 
-window.createToolCard = createToolCard;
-window.renderTools = renderTools;
+window.createToolCard =
+  createToolCard;
+
+window.renderTools =
+  renderTools;
 
 /* =========================================================
    FAVORITES
    ========================================================= */
 
 async function toggleFavorite(id) {
-  const signedIn = await isSignedIn();
+
+  const signedIn =
+    await isSignedIn();
 
   if (!signedIn) {
+
     requireAccount(
       "Create a free account to save tools to your Favorites."
     );
+
     return;
   }
 
-  const normalizedId = String(id);
+  const normalizedId =
+    String(id);
 
-  const index = state.favorites.findIndex(
-    favoriteId => String(favoriteId) === normalizedId
-  );
+  const index =
+    appState.favorites.findIndex(
+      favoriteId =>
+        String(favoriteId) ===
+        normalizedId
+    );
 
   if (index >= 0) {
-    state.favorites.splice(index, 1);
-    showToast("Removed from Favorites.");
+
+    appState.favorites.splice(
+      index,
+      1
+    );
+
+    showToast(
+      "Removed from Favorites."
+    );
+
   } else {
-    state.favorites.push(normalizedId);
-    showToast("Added to Favorites ⭐");
+
+    appState.favorites.push(
+      normalizedId
+    );
+
+    showToast(
+      "Added to Favorites ⭐"
+    );
   }
 
   saveLocalData();
 
   refreshVisibleCards();
 
-  if (typeof window.renderDashboard === "function") {
+  if (
+    typeof window.renderDashboard ===
+    "function"
+  ) {
     window.renderDashboard();
   }
 
-  if (typeof window.syncFavoritesToCloud === "function") {
+  if (
+    typeof window.syncFavoritesToCloud ===
+    "function"
+  ) {
     window.syncFavoritesToCloud();
   }
 }
 
-window.toggleFavorite = toggleFavorite;
+window.toggleFavorite =
+  toggleFavorite;
 
 /* =========================================================
    COMPARE
    ========================================================= */
 
 async function toggleCompare(id) {
-  const signedIn = await isSignedIn();
+
+  const signedIn =
+    await isSignedIn();
 
   if (!signedIn) {
+
     requireAccount(
       "Create a free account to compare tools."
     );
+
     return;
   }
 
-  const normalizedId = String(id);
+  const normalizedId =
+    String(id);
 
-  const index = state.compareList.findIndex(
-    compareId => String(compareId) === normalizedId
-  );
+  const index =
+    appState.compareList.findIndex(
+      compareId =>
+        String(compareId) ===
+        normalizedId
+    );
 
   if (index >= 0) {
-    state.compareList.splice(index, 1);
 
-    showToast("Removed from Compare.");
+    appState.compareList.splice(
+      index,
+      1
+    );
+
+    showToast(
+      "Removed from Compare."
+    );
+
   } else {
 
-    if (state.compareList.length >= 3) {
-      showToast("You can compare up to 3 tools.");
+    if (
+      appState.compareList.length >= 3
+    ) {
+
+      showToast(
+        "You can compare up to 3 tools."
+      );
+
       return;
     }
 
-    state.compareList.push(normalizedId);
+    appState.compareList.push(
+      normalizedId
+    );
 
-    showToast("Added to Compare ⚖");
+    showToast(
+      "Added to Compare ⚖"
+    );
   }
 
   saveLocalData();
 
   refreshVisibleCards();
 
-  if (typeof window.renderDashboard === "function") {
+  if (
+    typeof window.renderDashboard ===
+    "function"
+  ) {
     window.renderDashboard();
   }
 
-  if (typeof window.syncCompareToCloud === "function") {
+  if (
+    typeof window.syncCompareToCloud ===
+    "function"
+  ) {
     window.syncCompareToCloud();
   }
 }
 
-window.toggleCompare = toggleCompare;
+window.toggleCompare =
+  toggleCompare;
 
 /* =========================================================
    RECENTLY USED
    ========================================================= */
 
 async function addRecentlyUsed(id) {
-  const signedIn = await isSignedIn();
 
-  /* Recently Used is an account feature */
+  const signedIn =
+    await isSignedIn();
+
   if (!signedIn) {
     return;
   }
 
-  const normalizedId = String(id);
+  const normalizedId =
+    String(id);
 
-  state.recentlyUsed = state.recentlyUsed.filter(
-    recentId => String(recentId) !== normalizedId
+  appState.recentlyUsed =
+    appState.recentlyUsed.filter(
+      recentId =>
+        String(recentId) !==
+        normalizedId
+    );
+
+  appState.recentlyUsed.unshift(
+    normalizedId
   );
 
-  state.recentlyUsed.unshift(normalizedId);
-
-  /* Keep latest 8 */
-  state.recentlyUsed =
-    state.recentlyUsed.slice(0, 8);
+  appState.recentlyUsed =
+    appState.recentlyUsed.slice(
+      0,
+      8
+    );
 
   saveLocalData();
 
-  if (typeof window.syncRecentToCloud === "function") {
+  if (
+    typeof window.syncRecentToCloud ===
+    "function"
+  ) {
     window.syncRecentToCloud();
+  }
+
+  if (
+    typeof window.renderDashboard ===
+    "function"
+  ) {
+    window.renderDashboard();
   }
 }
 
-window.addRecentlyUsed = addRecentlyUsed;
+window.addRecentlyUsed =
+  addRecentlyUsed;
 
 /* =========================================================
-   VISIBLE CARD REFRESH
+   REFRESH CARDS
    ========================================================= */
 
 function refreshVisibleCards() {
+
   if (!toolsGrid) return;
 
   const cards =
-    toolsGrid.querySelectorAll("[data-tool-id]");
+    toolsGrid.querySelectorAll(
+      "[data-tool-id]"
+    );
 
   cards.forEach(card => {
-    const id = card.dataset.toolId;
-    const tool = getToolById(id);
+
+    const id =
+      card.dataset.toolId;
+
+    const tool =
+      getToolById(id);
 
     if (!tool) return;
 
-    const newCard = document.createElement("div");
+    const wrapper =
+      document.createElement("div");
 
-    newCard.innerHTML = createToolCard(tool);
+    wrapper.innerHTML =
+      createToolCard(tool);
 
     const replacement =
-      newCard.firstElementChild;
+      wrapper.firstElementChild;
 
     if (replacement) {
-      card.replaceWith(replacement);
+      card.replaceWith(
+        replacement
+      );
     }
   });
 }
 
-window.refreshVisibleCards = refreshVisibleCards;
+window.refreshVisibleCards =
+  refreshVisibleCards;
 
 /* =========================================================
    LOCAL STORAGE
    ========================================================= */
 
 function saveLocalData() {
+
   localStorage.setItem(
     "tztools_v76_favorites",
-    JSON.stringify(state.favorites)
+    JSON.stringify(
+      appState.favorites || []
+    )
   );
 
   localStorage.setItem(
     "tztools_v76_recent",
-    JSON.stringify(state.recentlyUsed)
+    JSON.stringify(
+      appState.recentlyUsed || []
+    )
   );
 
   localStorage.setItem(
     "tztools_v76_compare",
-    JSON.stringify(state.compareList)
+    JSON.stringify(
+      appState.compareList || []
+    )
   );
 }
 
-window.saveLocalData = saveLocalData;
+window.saveLocalData =
+  saveLocalData;
 
 /* =========================================================
    EVENTS
@@ -623,110 +813,132 @@ window.saveLocalData = saveLocalData;
 
 function setupEvents() {
 
-  /* Bottom / normal navigation */
-  document.addEventListener("click", event => {
+  document.addEventListener(
+    "click",
+    event => {
 
-    const navButton =
-      event.target.closest("[data-view-target]");
+      const navButton =
+        event.target.closest(
+          "[data-view-target]"
+        );
 
-    if (navButton) {
-      event.preventDefault();
+      if (navButton) {
 
-      const target =
-        navButton.dataset.viewTarget;
-
-      if (target) {
-        showView(target);
-      }
-
-      return;
-    }
-
-    /* Tool actions */
-    const actionButton =
-      event.target.closest("[data-action]");
-
-    if (actionButton) {
-
-      const action =
-        actionButton.dataset.action;
-
-      const id =
-        actionButton.dataset.toolId;
-
-      if (!id) return;
-
-      if (action === "favorite") {
         event.preventDefault();
-        toggleFavorite(id);
+
+        const target =
+          navButton.dataset.viewTarget;
+
+        if (target) {
+          showView(target);
+        }
+
         return;
       }
 
-      if (action === "compare") {
-        event.preventDefault();
-        toggleCompare(id);
-        return;
-      }
+      const actionButton =
+        event.target.closest(
+          "[data-action]"
+        );
 
-      if (action === "visit") {
+      if (actionButton) {
 
-        event.preventDefault();
+        const action =
+          actionButton.dataset.action;
 
-        const tool =
-          getToolById(id);
+        const id =
+          actionButton.dataset.toolId;
 
-        if (!tool?.url) {
-          showToast("Tool link unavailable.");
+        if (!id) return;
+
+        if (action === "favorite") {
+
+          event.preventDefault();
+
+          toggleFavorite(id);
+
           return;
         }
 
-        addRecentlyUsed(id);
+        if (action === "compare") {
 
-        window.open(
-          tool.url,
-          "_blank",
-          "noopener,noreferrer"
+          event.preventDefault();
+
+          toggleCompare(id);
+
+          return;
+        }
+
+        if (action === "visit") {
+
+          event.preventDefault();
+
+          const tool =
+            getToolById(id);
+
+          if (!tool?.url) {
+
+            showToast(
+              "Tool link unavailable."
+            );
+
+            return;
+          }
+
+          addRecentlyUsed(id);
+
+          window.open(
+            tool.url,
+            "_blank",
+            "noopener,noreferrer"
+          );
+
+          return;
+        }
+      }
+
+      const homeButton =
+        event.target.closest(
+          "[data-home-button], .home-button"
         );
 
-        return;
+      if (homeButton) {
+
+        event.preventDefault();
+
+        resetHome();
       }
     }
+  );
 
-    /* Home button */
-    const homeButton =
-      event.target.closest(
-        "[data-home-button], .home-button"
-      );
-
-    if (homeButton) {
-      event.preventDefault();
-      resetHome();
-    }
-
-  });
-
-  /* Search */
   if (searchForm) {
+
     searchForm.addEventListener(
       "submit",
       event => {
+
         event.preventDefault();
+
         performSearch();
       }
     );
   }
 
   if (searchButton) {
+
     searchButton.addEventListener(
       "click",
       event => {
+
         event.preventDefault();
+
         performSearch();
       }
     );
   }
 
   if (searchInput) {
+
     searchInput.addEventListener(
       "input",
       updateHomeState
@@ -735,8 +947,11 @@ function setupEvents() {
     searchInput.addEventListener(
       "keydown",
       event => {
+
         if (event.key === "Enter") {
+
           event.preventDefault();
+
           performSearch();
         }
       }
@@ -744,37 +959,38 @@ function setupEvents() {
   }
 
   if (searchClear) {
+
     searchClear.addEventListener(
       "click",
       () => {
+
         if (searchInput) {
           searchInput.value = "";
         }
 
         updateHomeState();
+
         searchInput?.focus();
       }
     );
   }
 
   if (emptyStateHomeButton) {
+
     emptyStateHomeButton.addEventListener(
       "click",
       resetHome
     );
   }
 
-  /* Category filter */
   if (resultsCategoryFilter) {
+
     resultsCategoryFilter.addEventListener(
       "change",
-      () => {
-        performSearch();
-      }
+      performSearch
     );
   }
 
-  /* Category tiles */
   document.addEventListener(
     "click",
     event => {
@@ -793,9 +1009,12 @@ function setupEvents() {
 
       const filtered =
         Array.isArray(window.tools)
-          ? window.tools.filter(tool =>
-              String(tool.category).toLowerCase() ===
-              String(categoryName).toLowerCase()
+          ? window.tools.filter(
+              tool =>
+                String(tool.category)
+                  .toLowerCase() ===
+                String(categoryName)
+                  .toLowerCase()
             )
           : [];
 
@@ -812,13 +1031,16 @@ function setupEvents() {
 
       if (!resultsView) return;
 
-      resultsView.classList.add("active");
+      resultsView.classList.add(
+        "active"
+      );
 
-      state.currentView =
+      appState.currentView =
         "searchResultsView";
 
       if (homeNavbar) {
-        homeNavbar.style.display = "none";
+        homeNavbar.style.display =
+          "none";
       }
 
       if (resultsTitle) {
@@ -850,26 +1072,41 @@ function setupEvents() {
    ========================================================= */
 
 function showToast(message) {
+
   if (!toastContainer) {
-    console.log(message);
+
+    console.log(
+      "TzTools:",
+      message
+    );
+
     return;
   }
 
   const toast =
     document.createElement("div");
 
-  toast.className = "tz-toast";
+  toast.className =
+    "tz-toast";
 
-  toast.textContent = message;
+  toast.textContent =
+    message;
 
-  toastContainer.appendChild(toast);
+  toastContainer.appendChild(
+    toast
+  );
 
   requestAnimationFrame(() => {
-    toast.classList.add("show");
+    toast.classList.add(
+      "show"
+    );
   });
 
   setTimeout(() => {
-    toast.classList.remove("show");
+
+    toast.classList.remove(
+      "show"
+    );
 
     setTimeout(() => {
       toast.remove();
@@ -878,7 +1115,8 @@ function showToast(message) {
   }, 2500);
 }
 
-window.showToast = showToast;
+window.showToast =
+  showToast;
 
 /* =========================================================
    INITIALISE
@@ -887,38 +1125,62 @@ window.showToast = showToast;
 function initialiseV8() {
 
   homeNavbar =
-    document.getElementById("homeNavbar");
+    document.getElementById(
+      "homeNavbar"
+    );
 
   searchForm =
-    document.getElementById("searchForm");
+    document.getElementById(
+      "searchForm"
+    );
 
   searchInput =
-    document.getElementById("homeSearchInput") ||
-    document.getElementById("searchInput");
+    document.getElementById(
+      "homeSearchInput"
+    ) ||
+    document.getElementById(
+      "searchInput"
+    );
 
   searchButton =
-    document.getElementById("searchButton");
+    document.getElementById(
+      "searchButton"
+    );
 
   searchClear =
-    document.getElementById("searchClear");
+    document.getElementById(
+      "searchClear"
+    );
 
   suggestions =
-    document.getElementById("searchSuggestions");
+    document.getElementById(
+      "searchSuggestions"
+    );
 
   resultsTitle =
-    document.getElementById("resultsTitle");
+    document.getElementById(
+      "resultsTitle"
+    );
 
   resultsSubtitle =
-    document.getElementById("resultsSubtitle");
+    document.getElementById(
+      "resultsSubtitle"
+    );
 
   resultsCount =
-    document.getElementById("resultsCount");
+    document.getElementById(
+      "resultsCount"
+    );
 
   toolsGrid =
-    document.getElementById("toolsGrid");
+    document.getElementById(
+      "toolsGrid"
+    );
 
   noResults =
-    document.getElementById("noResults");
+    document.getElementById(
+      "noResults"
+    );
 
   resultsCategoryFilter =
     document.getElementById(
@@ -947,23 +1209,31 @@ function initialiseV8() {
 
   setupEvents();
 
-  /* Always start on Home */
   document
     .querySelectorAll(".app-view")
     .forEach(view =>
-      view.classList.remove("active")
+      view.classList.remove(
+        "active"
+      )
     );
 
   const home =
-    document.getElementById("homeView");
+    document.getElementById(
+      "homeView"
+    );
 
   if (home) {
-    home.classList.add("active");
+    home.classList.add(
+      "active"
+    );
   }
 
-  state.currentView = "homeView";
+  appState.currentView =
+    "homeView";
 
-  updateBottomNav("homeView");
+  updateBottomNav(
+    "homeView"
+  );
 
   console.log(
     `TzTools V8 ready 🚀 — ${
@@ -974,11 +1244,17 @@ function initialiseV8() {
   );
 }
 
-if (document.readyState === "loading") {
+if (
+  document.readyState ===
+  "loading"
+) {
+
   document.addEventListener(
     "DOMContentLoaded",
     initialiseV8
   );
+
 } else {
+
   initialiseV8();
 }
