@@ -1,440 +1,405 @@
 "use strict";
 
 /* =========================================================
-   TZTOOLS V8 — MAIN APP CONTROLLER
-   ========================================================= */
-
-console.log("TzTools V8.0 starting...");
-
-/* =========================================================
-   SHARED STATE
+   TzTools V8 — Main App
+   Single source of truth: window.TzApp
    ========================================================= */
 
 window.TzApp = window.TzApp || {};
 
 const state = window.TzApp;
 
-state.favorites =
-  Array.isArray(state.favorites)
-    ? state.favorites
-    : JSON.parse(
-        localStorage.getItem(
-          "tztools_v76_favorites"
-        )
-      ) || [];
+/* =========================================================
+   STATE
+   ========================================================= */
 
-state.recentlyUsed =
-  Array.isArray(state.recentlyUsed)
-    ? state.recentlyUsed
-    : JSON.parse(
-        localStorage.getItem(
-          "tztools_v76_recent"
-        )
-      ) || [];
+state.favorites = Array.isArray(state.favorites)
+  ? state.favorites
+  : JSON.parse(localStorage.getItem("tztools_v76_favorites") || "[]");
 
-state.compareList =
-  Array.isArray(state.compareList)
-    ? state.compareList
-    : JSON.parse(
-        localStorage.getItem(
-          "tztools_v76_compare"
-        )
-      ) || [];
+state.recentlyUsed = Array.isArray(state.recentlyUsed)
+  ? state.recentlyUsed
+  : JSON.parse(localStorage.getItem("tztools_v76_recent") || "[]");
+
+state.compareList = Array.isArray(state.compareList)
+  ? state.compareList
+  : JSON.parse(localStorage.getItem("tztools_v76_compare") || "[]");
+
+state.currentView = "homeView";
 
 /* =========================================================
    DOM
    ========================================================= */
 
-const $ =
-  id => document.getElementById(id);
-
-const homeNavbar =
-  $("homeNavbar");
-
-const searchForm =
-  $("searchForm");
-
-const searchInput =
-  $("searchInput");
-
-const searchButton =
-  $("searchButton");
-
-const searchClear =
-  $("searchClear");
-
-const suggestions =
-  $("suggestions");
-
-const resultsTitle =
-  $("resultsTitle");
-
-const resultsSubtitle =
-  $("resultsSubtitle");
-
-const resultsCount =
-  $("resultsCount");
-
-const toolsGrid =
-  $("toolsGrid");
-
-const noResults =
-  $("noResults");
-
-const resultsCategoryFilter =
-  $("resultsCategoryFilter");
-
-const emptyStateHomeButton =
-  $("emptyStateHomeButton");
-
-const bottomNavigation =
-  $("bottomNavigation");
-
-const toastContainer =
-  $("toastContainer");
+let homeNavbar;
+let searchForm;
+let searchInput;
+let searchButton;
+let searchClear;
+let suggestions;
+let resultsTitle;
+let resultsSubtitle;
+let resultsCount;
+let toolsGrid;
+let noResults;
+let resultsCategoryFilter;
+let emptyStateHomeButton;
+let bottomNavigation;
+let toastContainer;
 
 /* =========================================================
-   TOOL HELPERS
+   HELPERS
    ========================================================= */
 
 function getToolById(id) {
+  if (!Array.isArray(window.tools)) return null;
 
-  if (!Array.isArray(tools)) {
-    return null;
-  }
-
-  return (
-    tools.find(
-      tool => tool.id === id
-    ) || null
-  );
+  return window.tools.find(tool => String(tool.id) === String(id));
 }
 
 function getToolDomain(url) {
-
   try {
-
-    return new URL(url)
-      .hostname
-      .replace(/^www\./, "");
-
+    return new URL(url).hostname.replace(/^www\./, "");
   } catch {
-
     return "";
-
   }
-
 }
 
 function getToolLogo(tool) {
-
-  const domain =
-    getToolDomain(
-      tool?.url
-    );
+  const domain = getToolDomain(tool.url);
 
   if (!domain) {
     return "";
   }
 
-  return (
-    "https://www.google.com/s2/favicons" +
-    `?domain=${domain}&sz=128`
-  );
+  return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
+}
 
+/* =========================================================
+   AUTH HELPERS
+   ========================================================= */
+
+async function isSignedIn() {
+  if (
+    typeof supabaseClient === "undefined" ||
+    !supabaseClient?.auth
+  ) {
+    return false;
+  }
+
+  try {
+    const {
+      data: { user }
+    } = await supabaseClient.auth.getUser();
+
+    return !!user;
+  } catch {
+    return false;
+  }
+}
+
+function requireAccount(message = "Create a free account to unlock this feature.") {
+  if (typeof window.openAuthModal !== "function") {
+    showToast(message);
+    return false;
+  }
+
+  window.openAuthModal("signup", message);
+  return false;
 }
 
 /* =========================================================
    NAVIGATION
    ========================================================= */
 
-function showView(viewId) {
-
+function updateBottomNav(viewId) {
   document
-    .querySelectorAll(
-      ".app-view"
-    )
-    .forEach(view => {
-
-      view.classList.remove(
-        "active"
+    .querySelectorAll("[data-view-target]")
+    .forEach(button => {
+      button.classList.toggle(
+        "active",
+        button.dataset.viewTarget === viewId
       );
-
     });
+}
 
-  const target =
-    $(viewId);
+async function showView(viewId) {
+  /* Protected dashboard */
+  if (viewId === "dashboardView") {
+    const signedIn = await isSignedIn();
 
-  if (target) {
-
-    target.classList.add(
-      "active"
-    );
-
+    if (!signedIn) {
+      requireAccount(
+        "Create a free account to unlock your personal TzTools Dashboard."
+      );
+      return;
+    }
   }
+
+  document.querySelectorAll(".app-view").forEach(view => {
+    view.classList.remove("active");
+  });
+
+  const target = document.getElementById(viewId);
+
+  if (!target) {
+    console.warn(`TzTools: view "${viewId}" was not found.`);
+    return;
+  }
+
+  target.classList.add("active");
+
+  state.currentView = viewId;
+
+  updateBottomNav(viewId);
 
   if (homeNavbar) {
-
     homeNavbar.style.display =
-      viewId === "home"
-        ? ""
-        : "none";
-
+      viewId === "homeView" ? "" : "none";
   }
 
-  updateBottomNav(
-    viewId
-  );
+  if (viewId === "dashboardView") {
+    if (typeof window.renderDashboard === "function") {
+      window.renderDashboard();
+    }
+  }
 
   window.scrollTo({
     top: 0,
     behavior: "smooth"
   });
-
-  if (
-    viewId === "dashboard" &&
-    typeof renderDashboard ===
-      "function"
-  ) {
-
-    renderDashboard();
-
-  }
-
 }
 
-function updateBottomNav(
-  viewId
-) {
-
-  document
-    .querySelectorAll(
-      ".bottom-nav-item"
-    )
-    .forEach(item => {
-
-      item.classList.toggle(
-        "active",
-        item.dataset.viewTarget ===
-          viewId
-      );
-
-    });
-
-}
-
-/* =========================================================
-   NAV EVENTS
-   ========================================================= */
-
-document
-  .querySelectorAll(
-    "[data-view-target]"
-  )
-  .forEach(button => {
-
-    button.addEventListener(
-      "click",
-      () => {
-
-        const target =
-          button.dataset.viewTarget;
-
-        if (target) {
-          showView(target);
-        }
-
-      }
-    );
-
-  });
+/* Make navigation available globally */
+window.showView = showView;
 
 /* =========================================================
    HOME
    ========================================================= */
 
 function resetHome() {
-
   if (searchInput) {
     searchInput.value = "";
   }
 
-  if (searchClear) {
-    searchClear.style.display =
-      "none";
-  }
-
   if (suggestions) {
-
     suggestions.innerHTML = "";
-
-    suggestions.classList.remove(
-      "open"
-    );
-
+    suggestions.style.display = "none";
   }
 
+  showView("homeView");
 }
 
-if (emptyStateHomeButton) {
+function updateHomeState() {
+  const query = searchInput?.value?.trim() || "";
 
-  emptyStateHomeButton
-    .addEventListener(
-      "click",
-      () => {
+  if (searchClear) {
+    searchClear.style.display = query ? "flex" : "none";
+  }
+}
 
-        resetHome();
-        showView("home");
+/* =========================================================
+   SEARCH
+   ========================================================= */
 
-      }
+function performSearch() {
+  const query = searchInput?.value?.trim() || "";
+
+  if (!query) {
+    showToast("Type something you want to find.");
+    return;
+  }
+
+  if (typeof window.searchTools !== "function") {
+    console.error("TzTools: searchTools() is missing.");
+    showToast("Search is temporarily unavailable.");
+    return;
+  }
+
+  let results = window.searchTools(query);
+
+  if (!Array.isArray(results)) {
+    results = [];
+  }
+
+  const category =
+    resultsCategoryFilter?.value || "all";
+
+  if (category !== "all") {
+    results = results.filter(tool =>
+      String(tool.category).toLowerCase() ===
+      String(category).toLowerCase()
     );
+  }
 
+  const resultsView =
+    document.getElementById("searchResultsView");
+
+  if (!resultsView) {
+    console.error("TzTools: searchResultsView missing.");
+    return;
+  }
+
+  document.querySelectorAll(".app-view").forEach(view => {
+    view.classList.remove("active");
+  });
+
+  resultsView.classList.add("active");
+
+  state.currentView = "searchResultsView";
+
+  if (homeNavbar) {
+    homeNavbar.style.display = "none";
+  }
+
+  updateBottomNav("searchResultsView");
+
+  if (resultsTitle) {
+    resultsTitle.textContent =
+      `Results for "${query}"`;
+  }
+
+  if (resultsSubtitle) {
+    resultsSubtitle.textContent =
+      results.length
+        ? "Tools that match what you're looking for."
+        : "We couldn't find a matching tool.";
+  }
+
+  if (resultsCount) {
+    resultsCount.textContent =
+      `${results.length} ${results.length === 1 ? "tool" : "tools"}`;
+  }
+
+  renderTools(results);
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
 }
 
 /* =========================================================
    TOOL CARD
    ========================================================= */
 
-function createToolCard(
-  tool
-) {
+function createToolCard(tool) {
+  if (!tool) return "";
 
   const favorite =
-    state.favorites.includes(
-      tool.id
-    );
+    state.favorites.includes(String(tool.id)) ||
+    state.favorites.includes(tool.id);
 
-  const compared =
-    state.compareList.includes(
-      tool.id
-    );
+  const compare =
+    state.compareList.includes(String(tool.id)) ||
+    state.compareList.includes(tool.id);
 
-  const logo =
-    getToolLogo(tool);
+  const logo = getToolLogo(tool);
 
   return `
-    <article
-      class="tool-card"
-      data-tool-id="${tool.id}"
-    >
+    <article class="tool-card" data-tool-id="${tool.id}">
 
       <div class="tool-card-top">
 
-        <div class="tool-icon">
-
+        <div class="tool-logo-wrap">
           ${
             logo
-              ? `
-                <img
+              ? `<img
+                  class="tool-logo"
                   src="${logo}"
-                  alt=""
+                  alt="${tool.name} logo"
                   loading="lazy"
-                  onerror="
-                    this.style.display='none';
-                    this.parentElement.classList.add('logo-fallback');
-                  "
-                >
-              `
-              : ""
+                >`
+              : `<div class="tool-logo-fallback">
+                  ${String(tool.name).charAt(0)}
+                </div>`
           }
+        </div>
 
-          <span class="tool-icon-fallback">
-            ${
-              tool.name
-                ?.charAt(0)
-                ?.toUpperCase() || "T"
-            }
-          </span>
+        <div class="tool-card-actions">
+
+          <button
+            class="icon-button favorite-button ${favorite ? "active" : ""}"
+            data-action="favorite"
+            data-tool-id="${tool.id}"
+            aria-label="${
+              favorite
+                ? "Remove from favorites"
+                : "Add to favorites"
+            }"
+            title="${
+              favorite
+                ? "Remove from favorites"
+                : "Add to favorites"
+            }"
+          >
+            ${favorite ? "♥" : "♡"}
+          </button>
+
+          <button
+            class="icon-button compare-button ${compare ? "active" : ""}"
+            data-action="compare"
+            data-tool-id="${tool.id}"
+            aria-label="${
+              compare
+                ? "Remove from compare"
+                : "Add to compare"
+            }"
+            title="${
+              compare
+                ? "Remove from compare"
+                : "Add to compare"
+            }"
+          >
+            ⚖
+          </button>
 
         </div>
 
-        <span class="tool-category">
-          ${tool.category || "Tool"}
-        </span>
-
       </div>
 
-      <div class="tool-card-body">
+      <div class="tool-card-content">
+
+        <div class="tool-category">
+          ${tool.category || "Tool"}
+        </div>
 
         <h3 class="tool-name">
           ${tool.name}
         </h3>
 
         <p class="tool-description">
-          ${
-            tool.description ||
-            "A useful digital tool."
-          }
+          ${tool.description || "Useful online tool."}
         </p>
 
         <div class="tool-meta">
 
-          <span>
-            ★ ${tool.rating ?? "—"}
-          </span>
+          ${
+            tool.rating
+              ? `<span>⭐ ${tool.rating}</span>`
+              : ""
+          }
 
-          <span>
-            ${tool.pricing || "Free"}
-          </span>
-
-        </div>
-
-        <div class="tool-actions">
-
-          <button
-            class="icon-action favorite-button ${
-              favorite
-                ? "active"
-                : ""
-            }"
-            data-action="favorite"
-            data-tool-id="${tool.id}"
-            aria-label="${
-              favorite
-                ? `Remove ${tool.name} from favorites`
-                : `Add ${tool.name} to favorites`
-            }"
-          >
-            ${
-              favorite
-                ? "♥"
-                : "♡"
-            }
-          </button>
-
-          <button
-            class="icon-action compare-button ${
-              compared
-                ? "active"
-                : ""
-            }"
-            data-action="compare"
-            data-tool-id="${tool.id}"
-            aria-label="${
-              compared
-                ? `Remove ${tool.name} from comparison`
-                : `Compare ${tool.name}`
-            }"
-          >
-            ${
-              compared
-                ? "✓"
-                : "+"
-            }
-          </button>
-
-          <a
-            class="visit-button"
-            href="${tool.url}"
-            target="_blank"
-            rel="noopener noreferrer"
-            data-tool-id="${tool.id}"
-          >
-            Visit Tool
-            <span>↗</span>
-          </a>
+          ${
+            tool.pricing
+              ? `<span>${tool.pricing}</span>`
+              : ""
+          }
 
         </div>
+
+      </div>
+
+      <div class="tool-card-footer">
+
+        <button
+          class="visit-button"
+          data-action="visit"
+          data-tool-id="${tool.id}"
+        >
+          Visit Tool
+          <span>↗</span>
+        </button>
 
       </div>
 
@@ -443,761 +408,477 @@ function createToolCard(
 }
 
 /* =========================================================
-   RENDER RESULTS
+   RENDER TOOLS
    ========================================================= */
 
-function renderTools(
-  list
-) {
+function renderTools(list) {
+  if (!toolsGrid) return;
 
-  if (!toolsGrid) {
-    return;
-  }
+  toolsGrid.innerHTML = "";
 
-  if (
-    !Array.isArray(list) ||
-    !list.length
-  ) {
-
-    toolsGrid.innerHTML = "";
-
+  if (!Array.isArray(list) || list.length === 0) {
     if (noResults) {
-      noResults.style.display =
-        "block";
+      noResults.style.display = "block";
     }
 
     return;
   }
 
   if (noResults) {
-    noResults.style.display =
-      "none";
+    noResults.style.display = "none";
   }
 
-  toolsGrid.innerHTML =
-    list
-      .map(createToolCard)
-      .join("");
-
+  toolsGrid.innerHTML = list
+    .map(createToolCard)
+    .join("");
 }
 
-/* =========================================================
-   SEARCH
-   ========================================================= */
-
-function performSearch() {
-
-  const query =
-    searchInput?.value
-      .trim();
-
-  if (!query) {
-
-    showToast(
-      "Type what you want to do."
-    );
-
-    return;
-
-  }
-
-  let results =
-    typeof searchTools ===
-    "function"
-      ? searchTools(query)
-      : [];
-
-  const category =
-    resultsCategoryFilter?.value;
-
-  if (
-    category &&
-    category !== "all"
-  ) {
-
-    results =
-      results.filter(
-        tool =>
-          tool.category ===
-          category
-      );
-
-  }
-
-  showView(
-    "searchResultsView"
-  );
-
-  if (resultsTitle) {
-
-    resultsTitle.textContent =
-      `Tools for "${query}"`;
-
-  }
-
-  if (resultsSubtitle) {
-
-    resultsSubtitle.textContent =
-      "Here are some tools that could help.";
-
-  }
-
-  if (resultsCount) {
-
-    resultsCount.textContent =
-      `${results.length} ${
-        results.length === 1
-          ? "tool"
-          : "tools"
-      }`;
-
-  }
-
-  renderTools(results);
-
-}
-
-/* =========================================================
-   SEARCH EVENTS
-   ========================================================= */
-
-if (searchForm) {
-
-  searchForm.addEventListener(
-    "submit",
-    event => {
-
-      event.preventDefault();
-
-      performSearch();
-
-    }
-  );
-
-}
-
-if (searchButton) {
-
-  searchButton.addEventListener(
-    "click",
-    event => {
-
-      event.preventDefault();
-
-      performSearch();
-
-    }
-  );
-
-}
-
-if (searchInput) {
-
-  searchInput.addEventListener(
-    "input",
-    () => {
-
-      if (searchClear) {
-
-        searchClear.style.display =
-          searchInput.value
-            ? "flex"
-            : "none";
-
-      }
-
-      if (
-        typeof renderSuggestions ===
-        "function"
-      ) {
-
-        renderSuggestions(
-          searchInput.value
-        );
-
-      }
-
-    }
-  );
-
-  searchInput.addEventListener(
-    "keydown",
-    event => {
-
-      if (
-        event.key === "Enter"
-      ) {
-
-        event.preventDefault();
-
-        performSearch();
-
-      }
-
-      if (
-        event.key === "Escape"
-      ) {
-
-        suggestions?.classList
-          .remove("open");
-
-      }
-
-    }
-  );
-
-}
-
-if (searchClear) {
-
-  searchClear.addEventListener(
-    "click",
-    () => {
-
-      resetHome();
-
-      if (searchInput) {
-        searchInput.focus();
-      }
-
-    }
-  );
-
-}
-
-if (
-  resultsCategoryFilter
-) {
-
-  resultsCategoryFilter
-    .addEventListener(
-      "change",
-      () => {
-
-        if (
-          searchInput?.value.trim()
-        ) {
-
-          performSearch();
-
-        }
-
-      }
-    );
-
-}
+window.createToolCard = createToolCard;
+window.renderTools = renderTools;
 
 /* =========================================================
    FAVORITES
    ========================================================= */
 
-async function syncFavoritesToCloud() {
+async function toggleFavorite(id) {
+  const signedIn = await isSignedIn();
 
-  if (
-    typeof supabaseClient ===
-      "undefined" ||
-    !supabaseClient
-  ) {
+  if (!signedIn) {
+    requireAccount(
+      "Create a free account to save tools to your Favorites."
+    );
     return;
   }
 
-  try {
+  const normalizedId = String(id);
 
-    const {
-      data,
-      error: userError
-    } =
-      await supabaseClient.auth
-        .getUser();
+  const index = state.favorites.findIndex(
+    favoriteId => String(favoriteId) === normalizedId
+  );
 
-    if (
-      userError ||
-      !data?.user
-    ) {
-      return;
-    }
-
-    const user =
-      data.user;
-
-    const {
-      data: cloudRows,
-      error
-    } =
-      await supabaseClient
-        .from("favorites")
-        .select("tool_id")
-        .eq(
-          "user_id",
-          user.id
-        );
-
-    if (error) {
-
-      console.warn(
-        "Favorite sync read:",
-        error
-      );
-
-      return;
-
-    }
-
-    const cloudIds =
-      (cloudRows || [])
-        .map(row =>
-          row.tool_id
-        );
-
-    const addIds =
-      state.favorites.filter(
-        id =>
-          !cloudIds.includes(id)
-      );
-
-    const removeIds =
-      cloudIds.filter(
-        id =>
-          !state.favorites.includes(
-            id
-          )
-      );
-
-    if (removeIds.length) {
-
-      await supabaseClient
-        .from("favorites")
-        .delete()
-        .eq(
-          "user_id",
-          user.id
-        )
-        .in(
-          "tool_id",
-          removeIds
-        );
-
-    }
-
-    if (addIds.length) {
-
-      await supabaseClient
-        .from("favorites")
-        .upsert(
-          addIds.map(
-            tool_id => ({
-              user_id:
-                user.id,
-              tool_id
-            })
-          ),
-          {
-            onConflict:
-              "user_id,tool_id"
-          }
-        );
-
-    }
-
-  } catch (error) {
-
-    console.warn(
-      "Favorite sync failed:",
-      error
-    );
-
-  }
-
-}
-
-async function toggleFavorite(
-  id
-) {
-
-  if (
-    state.favorites.includes(id)
-  ) {
-
-    state.favorites =
-      state.favorites.filter(
-        item => item !== id
-      );
-
-    showToast(
-      "Removed from favorites."
-    );
-
+  if (index >= 0) {
+    state.favorites.splice(index, 1);
+    showToast("Removed from Favorites.");
   } else {
-
-    state.favorites.unshift(id);
-
-    showToast(
-      "Added to favorites."
-    );
-
+    state.favorites.push(normalizedId);
+    showToast("Added to Favorites ⭐");
   }
 
   saveLocalData();
 
   refreshVisibleCards();
 
-  if (
-    typeof renderDashboard ===
-    "function"
-  ) {
-    renderDashboard();
+  if (typeof window.renderDashboard === "function") {
+    window.renderDashboard();
   }
 
-  await syncFavoritesToCloud();
-
+  if (typeof window.syncFavoritesToCloud === "function") {
+    window.syncFavoritesToCloud();
+  }
 }
+
+window.toggleFavorite = toggleFavorite;
 
 /* =========================================================
    COMPARE
    ========================================================= */
 
-function toggleCompare(
-  id
-) {
+async function toggleCompare(id) {
+  const signedIn = await isSignedIn();
 
-  if (
-    state.compareList.includes(
-      id
-    )
-  ) {
-
-    state.compareList =
-      state.compareList.filter(
-        item => item !== id
-      );
-
-    showToast(
-      "Removed from comparison."
+  if (!signedIn) {
+    requireAccount(
+      "Create a free account to compare tools."
     );
+    return;
+  }
 
+  const normalizedId = String(id);
+
+  const index = state.compareList.findIndex(
+    compareId => String(compareId) === normalizedId
+  );
+
+  if (index >= 0) {
+    state.compareList.splice(index, 1);
+
+    showToast("Removed from Compare.");
   } else {
 
-    if (
-      state.compareList.length >=
-      3
-    ) {
-
-      showToast(
-        "Compare up to 3 tools."
-      );
-
+    if (state.compareList.length >= 3) {
+      showToast("You can compare up to 3 tools.");
       return;
-
     }
 
-    state.compareList.push(
-      id
-    );
+    state.compareList.push(normalizedId);
 
-    showToast(
-      "Added to comparison."
-    );
-
+    showToast("Added to Compare ⚖");
   }
 
   saveLocalData();
 
   refreshVisibleCards();
 
-  if (
-    typeof renderDashboard ===
-    "function"
-  ) {
-    renderDashboard();
+  if (typeof window.renderDashboard === "function") {
+    window.renderDashboard();
   }
 
+  if (typeof window.syncCompareToCloud === "function") {
+    window.syncCompareToCloud();
+  }
 }
 
+window.toggleCompare = toggleCompare;
+
 /* =========================================================
-   RECENT
+   RECENTLY USED
    ========================================================= */
 
-function addRecentlyUsed(
-  id
-) {
+async function addRecentlyUsed(id) {
+  const signedIn = await isSignedIn();
 
-  state.recentlyUsed =
-    state.recentlyUsed.filter(
-      item => item !== id
-    );
+  /* Recently Used is an account feature */
+  if (!signedIn) {
+    return;
+  }
 
-  state.recentlyUsed.unshift(
-    id
+  const normalizedId = String(id);
+
+  state.recentlyUsed = state.recentlyUsed.filter(
+    recentId => String(recentId) !== normalizedId
   );
 
+  state.recentlyUsed.unshift(normalizedId);
+
+  /* Keep latest 8 */
   state.recentlyUsed =
-    state.recentlyUsed.slice(
-      0,
-      8
-    );
+    state.recentlyUsed.slice(0, 8);
 
   saveLocalData();
 
+  if (typeof window.syncRecentToCloud === "function") {
+    window.syncRecentToCloud();
+  }
 }
 
+window.addRecentlyUsed = addRecentlyUsed;
+
 /* =========================================================
-   CARD EVENTS
+   VISIBLE CARD REFRESH
    ========================================================= */
 
-document.addEventListener(
-  "click",
-  event => {
+function refreshVisibleCards() {
+  if (!toolsGrid) return;
 
-    const actionButton =
-      event.target.closest(
-        "[data-action]"
-      );
+  const cards =
+    toolsGrid.querySelectorAll("[data-tool-id]");
 
-    if (actionButton) {
+  cards.forEach(card => {
+    const id = card.dataset.toolId;
+    const tool = getToolById(id);
 
-      const id =
-        actionButton.dataset
-          .toolId;
+    if (!tool) return;
 
-      const action =
-        actionButton.dataset
-          .action;
+    const newCard = document.createElement("div");
 
-      if (
-        action ===
-        "favorite"
-      ) {
-        toggleFavorite(id);
-      }
+    newCard.innerHTML = createToolCard(tool);
 
-      if (
-        action ===
-        "compare"
-      ) {
-        toggleCompare(id);
-      }
+    const replacement =
+      newCard.firstElementChild;
 
-      return;
-
+    if (replacement) {
+      card.replaceWith(replacement);
     }
+  });
+}
 
-    const visit =
-      event.target.closest(
-        ".visit-button"
-      );
-
-    if (visit) {
-
-      addRecentlyUsed(
-        visit.dataset.toolId
-      );
-
-    }
-
-  }
-);
+window.refreshVisibleCards = refreshVisibleCards;
 
 /* =========================================================
-   LOCAL DATA
+   LOCAL STORAGE
    ========================================================= */
 
 function saveLocalData() {
-
   localStorage.setItem(
     "tztools_v76_favorites",
-    JSON.stringify(
-      state.favorites
-    )
+    JSON.stringify(state.favorites)
   );
 
   localStorage.setItem(
     "tztools_v76_recent",
-    JSON.stringify(
-      state.recentlyUsed
-    )
+    JSON.stringify(state.recentlyUsed)
   );
 
   localStorage.setItem(
     "tztools_v76_compare",
-    JSON.stringify(
-      state.compareList
-    )
+    JSON.stringify(state.compareList)
   );
-
 }
 
+window.saveLocalData = saveLocalData;
+
 /* =========================================================
-   REFRESH VISIBLE CARDS
+   EVENTS
    ========================================================= */
 
-function refreshVisibleCards() {
+function setupEvents() {
 
-  const activeView =
-    document.querySelector(
-      ".app-view.active"
-    );
+  /* Bottom / normal navigation */
+  document.addEventListener("click", event => {
 
-  if (!activeView) {
-    return;
-  }
+    const navButton =
+      event.target.closest("[data-view-target]");
 
-  activeView
-    .querySelectorAll(
-      ".tool-card"
-    )
-    .forEach(card => {
+    if (navButton) {
+      event.preventDefault();
 
-      const tool =
-        getToolById(
-          card.dataset.toolId
-        );
+      const target =
+        navButton.dataset.viewTarget;
 
-      if (!tool) return;
-
-      const holder =
-        document.createElement(
-          "div"
-        );
-
-      holder.innerHTML =
-        createToolCard(tool);
-
-      if (
-        holder.firstElementChild
-      ) {
-
-        card.replaceWith(
-          holder.firstElementChild
-        );
-
+      if (target) {
+        showView(target);
       }
 
-    });
+      return;
+    }
 
-}
+    /* Tool actions */
+    const actionButton =
+      event.target.closest("[data-action]");
 
-/* =========================================================
-   CATEGORY TILES
-   ========================================================= */
+    if (actionButton) {
 
-document
-  .querySelectorAll(
-    ".category-tile"
-  )
-  .forEach(tile => {
+      const action =
+        actionButton.dataset.action;
 
-    tile.addEventListener(
-      "click",
-      () => {
+      const id =
+        actionButton.dataset.toolId;
 
-        const label =
-          tile.querySelector(
-            "strong"
-          );
+      if (!id) return;
 
-        const category =
-          label?.textContent
-            .trim();
+      if (action === "favorite") {
+        event.preventDefault();
+        toggleFavorite(id);
+        return;
+      }
 
-        if (!category) {
+      if (action === "compare") {
+        event.preventDefault();
+        toggleCompare(id);
+        return;
+      }
+
+      if (action === "visit") {
+
+        event.preventDefault();
+
+        const tool =
+          getToolById(id);
+
+        if (!tool?.url) {
+          showToast("Tool link unavailable.");
           return;
         }
 
-        const results =
-          Array.isArray(tools)
-            ? tools.filter(
-                tool =>
-                  tool.category ===
-                  category
-              )
-            : [];
+        addRecentlyUsed(id);
 
-        showView(
+        window.open(
+          tool.url,
+          "_blank",
+          "noopener,noreferrer"
+        );
+
+        return;
+      }
+    }
+
+    /* Home button */
+    const homeButton =
+      event.target.closest(
+        "[data-home-button], .home-button"
+      );
+
+    if (homeButton) {
+      event.preventDefault();
+      resetHome();
+    }
+
+  });
+
+  /* Search */
+  if (searchForm) {
+    searchForm.addEventListener(
+      "submit",
+      event => {
+        event.preventDefault();
+        performSearch();
+      }
+    );
+  }
+
+  if (searchButton) {
+    searchButton.addEventListener(
+      "click",
+      event => {
+        event.preventDefault();
+        performSearch();
+      }
+    );
+  }
+
+  if (searchInput) {
+    searchInput.addEventListener(
+      "input",
+      updateHomeState
+    );
+
+    searchInput.addEventListener(
+      "keydown",
+      event => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          performSearch();
+        }
+      }
+    );
+  }
+
+  if (searchClear) {
+    searchClear.addEventListener(
+      "click",
+      () => {
+        if (searchInput) {
+          searchInput.value = "";
+        }
+
+        updateHomeState();
+        searchInput?.focus();
+      }
+    );
+  }
+
+  if (emptyStateHomeButton) {
+    emptyStateHomeButton.addEventListener(
+      "click",
+      resetHome
+    );
+  }
+
+  /* Category filter */
+  if (resultsCategoryFilter) {
+    resultsCategoryFilter.addEventListener(
+      "change",
+      () => {
+        performSearch();
+      }
+    );
+  }
+
+  /* Category tiles */
+  document.addEventListener(
+    "click",
+    event => {
+
+      const category =
+        event.target.closest(
+          "[data-category]"
+        );
+
+      if (!category) return;
+
+      const categoryName =
+        category.dataset.category;
+
+      if (!categoryName) return;
+
+      const filtered =
+        Array.isArray(window.tools)
+          ? window.tools.filter(tool =>
+              String(tool.category).toLowerCase() ===
+              String(categoryName).toLowerCase()
+            )
+          : [];
+
+      document
+        .querySelectorAll(".app-view")
+        .forEach(view =>
+          view.classList.remove("active")
+        );
+
+      const resultsView =
+        document.getElementById(
           "searchResultsView"
         );
 
-        if (resultsTitle) {
-          resultsTitle.textContent =
-            category;
-        }
+      if (!resultsView) return;
 
-        if (resultsSubtitle) {
-          resultsSubtitle.textContent =
-            `Explore ${category.toLowerCase()} tools.`;
-        }
+      resultsView.classList.add("active");
 
-        if (resultsCount) {
-          resultsCount.textContent =
-            `${results.length} tools`;
-        }
+      state.currentView =
+        "searchResultsView";
 
-        if (resultsCategoryFilter) {
-          resultsCategoryFilter.value =
-            category;
-        }
-
-        renderTools(results);
-
+      if (homeNavbar) {
+        homeNavbar.style.display = "none";
       }
-    );
 
-  });
+      if (resultsTitle) {
+        resultsTitle.textContent =
+          categoryName;
+      }
+
+      if (resultsSubtitle) {
+        resultsSubtitle.textContent =
+          `Explore ${categoryName} tools.`;
+      }
+
+      if (resultsCount) {
+        resultsCount.textContent =
+          `${filtered.length} tools`;
+      }
+
+      renderTools(filtered);
+
+      updateBottomNav(
+        "searchResultsView"
+      );
+    }
+  );
+}
 
 /* =========================================================
    TOAST
    ========================================================= */
 
-function showToast(
-  message
-) {
-
+function showToast(message) {
   if (!toastContainer) {
     console.log(message);
     return;
   }
 
   const toast =
-    document.createElement(
-      "div"
-    );
+    document.createElement("div");
 
-  toast.className =
-    "toast";
+  toast.className = "tz-toast";
 
-  toast.textContent =
-    message;
+  toast.textContent = message;
 
-  toastContainer.appendChild(
-    toast
-  );
+  toastContainer.appendChild(toast);
 
-  requestAnimationFrame(
-    () => {
+  requestAnimationFrame(() => {
+    toast.classList.add("show");
+  });
 
-      toast.classList.add(
-        "show"
-      );
+  setTimeout(() => {
+    toast.classList.remove("show");
 
-    }
-  );
+    setTimeout(() => {
+      toast.remove();
+    }, 250);
 
-  setTimeout(
-    () => {
-
-      toast.classList.remove(
-        "show"
-      );
-
-      setTimeout(
-        () => toast.remove(),
-        220
-      );
-
-    },
-    2300
-  );
-
+  }, 2500);
 }
+
+window.showToast = showToast;
 
 /* =========================================================
    INITIALISE
@@ -1205,46 +886,99 @@ function showToast(
 
 function initialiseV8() {
 
+  homeNavbar =
+    document.getElementById("homeNavbar");
+
+  searchForm =
+    document.getElementById("searchForm");
+
+  searchInput =
+    document.getElementById("homeSearchInput") ||
+    document.getElementById("searchInput");
+
+  searchButton =
+    document.getElementById("searchButton");
+
+  searchClear =
+    document.getElementById("searchClear");
+
+  suggestions =
+    document.getElementById("searchSuggestions");
+
+  resultsTitle =
+    document.getElementById("resultsTitle");
+
+  resultsSubtitle =
+    document.getElementById("resultsSubtitle");
+
+  resultsCount =
+    document.getElementById("resultsCount");
+
+  toolsGrid =
+    document.getElementById("toolsGrid");
+
+  noResults =
+    document.getElementById("noResults");
+
+  resultsCategoryFilter =
+    document.getElementById(
+      "resultsCategoryFilter"
+    ) ||
+    document.getElementById(
+      "categoryFilter"
+    );
+
+  emptyStateHomeButton =
+    document.getElementById(
+      "emptyStateHomeButton"
+    );
+
+  bottomNavigation =
+    document.getElementById(
+      "bottomNavigation"
+    );
+
+  toastContainer =
+    document.getElementById(
+      "toastContainer"
+    );
+
   saveLocalData();
 
-  if (
-    typeof updateCounts ===
-    "function"
-  ) {
-    updateCounts();
+  setupEvents();
+
+  /* Always start on Home */
+  document
+    .querySelectorAll(".app-view")
+    .forEach(view =>
+      view.classList.remove("active")
+    );
+
+  const home =
+    document.getElementById("homeView");
+
+  if (home) {
+    home.classList.add("active");
   }
 
-  if (
-    typeof renderDashboard ===
-    "function"
-  ) {
-    renderDashboard();
-  }
+  state.currentView = "homeView";
 
-  showView("home");
+  updateBottomNav("homeView");
 
   console.log(
-    `TzTools V8.0 ready 🚀 — ${
-      Array.isArray(tools)
-        ? tools.length
+    `TzTools V8 ready 🚀 — ${
+      Array.isArray(window.tools)
+        ? window.tools.length
         : 0
     } tools`
   );
-
 }
 
-if (
-  document.readyState ===
-  "loading"
-) {
-
+if (document.readyState === "loading") {
   document.addEventListener(
     "DOMContentLoaded",
     initialiseV8
   );
-
 } else {
-
   initialiseV8();
-
 }
