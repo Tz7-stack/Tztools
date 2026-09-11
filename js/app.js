@@ -1122,111 +1122,108 @@ window.showToast =
    INITIALISE
    ========================================================= */
 
+let v8Initialised = false;
+
 function initialiseV8() {
 
+  // Prevent duplicate initialization
+  if (v8Initialised) return;
+
+  v8Initialised = true;
+
+  /* -----------------------------
+     DOM REFERENCES
+  ----------------------------- */
+
   homeNavbar =
-    document.getElementById(
-      "homeNavbar"
-    );
+    document.getElementById("homeNavbar");
 
   searchForm =
-    document.getElementById(
-      "searchForm"
-    );
+    document.getElementById("searchForm");
 
   searchInput =
-    document.getElementById(
-      "homeSearchInput"
-    ) ||
-    document.getElementById(
-      "searchInput"
-    );
+    document.getElementById("homeSearchInput") ||
+    document.getElementById("searchInput");
 
   searchButton =
-    document.getElementById(
-      "searchButton"
-    );
+    document.getElementById("searchButton");
 
   searchClear =
-    document.getElementById(
-      "searchClear"
-    );
+    document.getElementById("searchClear");
 
   suggestions =
-    document.getElementById(
-      "searchSuggestions"
-    );
+    document.getElementById("searchSuggestions");
 
   resultsTitle =
-    document.getElementById(
-      "resultsTitle"
-    );
+    document.getElementById("resultsTitle");
 
   resultsSubtitle =
-    document.getElementById(
-      "resultsSubtitle"
-    );
+    document.getElementById("resultsSubtitle");
 
   resultsCount =
-    document.getElementById(
-      "resultsCount"
-    );
+    document.getElementById("resultsCount");
 
   toolsGrid =
-    document.getElementById(
-      "toolsGrid"
-    );
+    document.getElementById("toolsGrid");
 
   noResults =
-    document.getElementById(
-      "noResults"
-    );
+    document.getElementById("noResults");
 
   resultsCategoryFilter =
-    document.getElementById(
-      "resultsCategoryFilter"
-    ) ||
-    document.getElementById(
-      "categoryFilter"
-    );
+    document.getElementById("resultsCategoryFilter") ||
+    document.getElementById("categoryFilter");
 
   emptyStateHomeButton =
-    document.getElementById(
-      "emptyStateHomeButton"
-    );
+    document.getElementById("emptyStateHomeButton");
 
   bottomNavigation =
-    document.getElementById(
-      "bottomNavigation"
-    );
+    document.getElementById("bottomNavigation");
 
   toastContainer =
-    document.getElementById(
-      "toastContainer"
-    );
+    document.getElementById("toastContainer");
+
+
+  /* -----------------------------
+     LOCAL DATA
+  ----------------------------- */
 
   saveLocalData();
 
+
+  /* -----------------------------
+     EVENTS
+  ----------------------------- */
+
   setupEvents();
 
-  document
-    .querySelectorAll(".app-view")
-    .forEach(view =>
-      view.classList.remove(
-        "active"
-      )
-    );
 
-  const home =
-    document.getElementById(
-      "homeView"
-    );
+  /* -----------------------------
+     FORCE CLEAN HOME START
+  ----------------------------- */
 
-  if (home) {
-    home.classList.add(
-      "active"
+  const allViews =
+    document.querySelectorAll(".app-view");
+
+  allViews.forEach(view => {
+    view.classList.remove("active");
+  });
+
+
+  const homeView =
+    document.getElementById("homeView");
+
+  if (homeView) {
+    homeView.classList.add("active");
+  } else {
+    console.warn(
+      "TzTools: homeView was not found."
     );
   }
+
+
+  /* -----------------------------
+     HOME NAVIGATION STATE
+  ----------------------------- */
 
   appState.currentView =
     "homeView";
@@ -1234,6 +1231,48 @@ function initialiseV8() {
   updateBottomNav(
     "homeView"
   );
+
+
+  /* -----------------------------
+     HOME NAVBAR
+  ----------------------------- */
+
+  if (homeNavbar) {
+    homeNavbar.style.display = "";
+  }
+
+
+  /* -----------------------------
+     RESET SEARCH UI
+  ----------------------------- */
+
+  if (searchInput) {
+    searchInput.value = "";
+  }
+
+  if (suggestions) {
+    suggestions.innerHTML = "";
+    suggestions.style.display = "none";
+  }
+
+  if (searchClear) {
+    searchClear.style.display = "none";
+  }
+
+
+  /* -----------------------------
+     RESET SCROLL
+  ----------------------------- */
+
+  window.scrollTo({
+    top: 0,
+    behavior: "auto"
+  });
+
+
+  /* -----------------------------
+     READY
+  ----------------------------- */
 
   console.log(
     `TzTools V8 ready 🚀 — ${
@@ -1244,17 +1283,25 @@ function initialiseV8() {
   );
 }
 
-if (
-  document.readyState ===
-  "loading"
-) {
+
+/* =========================================================
+   START APP AFTER DOM IS READY
+   ========================================================= */
+
+if (document.readyState === "loading") {
 
   document.addEventListener(
     "DOMContentLoaded",
-    initialiseV8
+    initialiseV8,
+    { once: true }
   );
 
 } else {
 
   initialiseV8();
+
 }
+     
+ 
+
+ 
