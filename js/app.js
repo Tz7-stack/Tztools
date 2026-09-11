@@ -63,7 +63,13 @@ function renderSearchResults(results, query) {
 /* =========================================================
    SEARCH CARD
    ========================================================= */
-
+function getToolDomain(url) {
+  try {
+    return new URL(url).hostname.replace(/^www\./, "");
+  } catch {
+    return "";
+  }
+}
 function createSearchToolCard(tool) {
   const card = document.createElement("article");
 
