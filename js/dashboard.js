@@ -563,3 +563,276 @@ document.addEventListener(
     renderDashboard();
   }
 );
+/* =========================================================
+   TZTOOLS — DIRECTORY HOMEPAGE
+   ========================================================= */
+
+#home {
+  min-height: 100vh;
+  background: #f8f9fb;
+}
+
+/* Top home bar */
+#homeNavbar {
+  width: min(1180px, calc(100% - 40px));
+  margin: 0 auto;
+
+  min-height: 72px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#homeNavbar .brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+}
+
+/* Main hero */
+#home .home-content,
+#home .home-hero {
+  width: min(1180px, calc(100% - 40px));
+  margin: 0 auto;
+
+  padding: 72px 0 48px;
+}
+
+#home h1 {
+  max-width: 760px;
+
+  margin: 0 auto;
+
+  text-align: center;
+
+  font-size: clamp(38px, 5.5vw, 62px);
+  line-height: 1.04;
+
+  letter-spacing: -0.055em;
+  font-weight: 800;
+}
+
+#home p {
+  max-width: 600px;
+
+  margin: 16px auto 0;
+
+  text-align: center;
+
+  color: #69717d;
+
+  font-size: 15px;
+}
+
+/* Search */
+#searchInput {
+  height: 64px;
+
+  padding-left: 22px;
+  padding-right: 122px;
+
+  border: 1px solid #dfe3e9;
+  border-radius: 12px;
+
+  background: #fff;
+
+  box-shadow:
+    0 8px 28px rgba(20, 25, 35, .06);
+}
+
+#searchInput:focus {
+  border-color: #4f46e5;
+
+  box-shadow:
+    0 0 0 4px rgba(79,70,229,.08),
+    0 10px 30px rgba(20,25,35,.07);
+}
+
+#searchButton {
+  height: 48px;
+
+  right: 8px;
+  top: 8px;
+
+  min-width: 100px;
+
+  border-radius: 9px;
+}
+
+/* Search wrapper spacing */
+#searchButton + * {
+  box-sizing: border-box;
+}
+
+/* Suggestions */
+#suggestions {
+  border-radius: 12px;
+  margin-top: 7px;
+}
+
+/* =========================================================
+   DIRECTORY CATEGORY STRIP
+   ========================================================= */
+
+.home-categories {
+  width: min(1180px, calc(100% - 40px));
+
+  margin: 12px auto 0;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(5, minmax(0, 1fr));
+
+  gap: 12px;
+}
+
+.home-category {
+  min-height: 78px;
+
+  padding: 14px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #e4e7ec;
+  border-radius: 12px;
+
+  background: #fff;
+
+  color: #30353d;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  transition:
+    transform .18s ease,
+    border-color .18s ease,
+    box-shadow .18s ease;
+}
+
+.home-category:hover {
+  transform: translateY(-2px);
+
+  border-color: #cfd3df;
+
+  box-shadow:
+    0 10px 25px rgba(20,25,35,.07);
+}
+
+/* =========================================================
+   DIRECTORY CONTENT
+   ========================================================= */
+
+.home-section {
+  width: min(1180px, calc(100% - 40px));
+
+  margin: 0 auto;
+
+  padding: 50px 0 90px;
+}
+
+.home-section-header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  margin-bottom: 18px;
+}
+
+.home-section-header h2 {
+  font-size: 23px;
+
+  letter-spacing: -0.035em;
+  font-weight: 800;
+}
+
+.home-section-header p {
+  margin: 0;
+
+  text-align: right;
+
+  color: #7a818c;
+
+  font-size: 12px;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+  #homeNavbar {
+    width: calc(100% - 24px);
+
+    min-height: 62px;
+  }
+
+  #home .home-content,
+  #home .home-hero {
+    width: calc(100% - 24px);
+
+    padding:
+      50px 0
+      35px;
+  }
+
+  #home h1 {
+    font-size: 35px;
+  }
+
+  #home p {
+    font-size: 13px;
+  }
+
+  #searchInput {
+    height: 58px;
+
+    padding-left: 17px;
+    padding-right: 105px;
+
+    font-size: 13px;
+  }
+
+  #searchButton {
+    min-width: 82px;
+    height: 44px;
+
+    font-size: 11px;
+  }
+
+  .home-categories {
+    width: calc(100% - 24px);
+
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+
+    gap: 9px;
+  }
+
+  .home-category {
+    min-height: 62px;
+  }
+
+  .home-section {
+    width: calc(100% - 24px);
+  }
+
+  .home-section-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .home-section-header p {
+    text-align: left;
+  }
+}
