@@ -427,6 +427,113 @@ document.addEventListener(
     applyTheme(savedTheme);
 
     showView("home");
+/* =========================================================
+   TZTOOLS CATEGORY MENU
+   ========================================================= */
 
+const menuButton = document.getElementById("menuButton");
+const categoryMenu = document.getElementById("categoryMenu");
+const categoryMenuClose = document.getElementById("categoryMenuClose");
+const categoryMenuBackdrop = document.getElementById("categoryMenuBackdrop");
+
+function openCategoryMenu() {
+  if (!categoryMenu) return;
+
+  categoryMenu.classList.add("open");
+  categoryMenu.setAttribute("aria-hidden", "false");
+
+  if (menuButton) {
+    menuButton.setAttribute("aria-expanded", "true");
+  }
+
+  document.body.classList.add("menu-open");
+}
+
+function closeCategoryMenu() {
+  if (!categoryMenu) return;
+
+  categoryMenu.classList.remove("open");
+  categoryMenu.setAttribute("aria-hidden", "true");
+
+  if (menuButton) {
+    menuButton.setAttribute("aria-expanded", "false");
+  }
+
+  document.body.classList.remove("menu-open");
+}
+
+if (menuButton) {
+  menuButton.addEventListener("click", () => {
+    const isOpen = categoryMenu?.classList.contains("open");
+
+    if (isOpen) {
+      closeCategoryMenu();
+    } else {
+      openCategoryMenu();
+    }
+  });
+}
+
+if (categoryMenuClose) {
+  categoryMenuClose.addEventListener("click", closeCategoryMenu);
+}
+
+if (categoryMenuBackdrop) {
+  categoryMenuBackdrop.addEventListener("click", closeCategoryMenu);
+}
+
+
+/* ESC CLOSES MENU */
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    closeCategoryMenu();
+  }
+});
+
+
+/* CATEGORY BUTTONS */
+
+document.querySelectorAll(".menu-category[data-category]").forEach((button) => {
+
+  button.addEventListener("click", () => {
+
+    const category = button.dataset.category;
+
+    closeCategoryMenu();
+
+    const filter = document.getElementById("resultsCategoryFilter");
+
+    if (filter) {
+      filter.value = category;
+    }
+
+    const resultsView = document.getElementById("searchResultsView");
+
+    if (resultsView) {
+      document.querySelectorAll(".app-view").forEach((view) => {
+        view.classList.remove("active");
+      });
+
+      resultsView.classList.add("active");
+
+      document.querySelectorAll(".bottom-nav-item").forEach((item) => {
+        item.classList.remove("active");
+      });
+    }
+
+    if (typeof window.TzApp !== "undefined" &&
+        typeof window.TzApp.renderTools === "function") {
+      window.TzApp.renderTools();
+    }
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+
+  });
+
+});
   }
 );
