@@ -541,3 +541,6 @@ document.querySelectorAll(".menu-category[data-category]").forEach((button) => {
 body.menu-open {
   overflow: hidden;
 }
+  });
+
+});
