@@ -291,10 +291,11 @@ document.addEventListener("click", event => {
     }
   }
 
-  if (signupTab) {
-    if (typeof openAuthModal === "function") {
-      openAuthModal("signup");
-    }
+ if (signupTab) {
+  if (typeof openAuthModal === "function") {
+    openAuthModal("signup");
+  }
+}
 });
 
 
