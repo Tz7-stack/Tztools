@@ -518,16 +518,17 @@ function updateFeatureAccess(loggedIn) {
       );
     }
 
-    const signOutButton = $("signOutButton");
+    const logoutButton = $("logoutButton");
 
-    if (signOutButton) {
-      signOutButton.addEventListener(
-        "click",
-        async function () {
-          await signOut();
-        }
-      );
+if (logoutButton) {
+  logoutButton.addEventListener(
+    "click",
+    async function (event) {
+      event.preventDefault();
+      await signOut();
     }
+  );
+}
 
     const authButton = $("authButton");
 
