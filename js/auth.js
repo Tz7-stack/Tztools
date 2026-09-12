@@ -1,89 +1,154 @@
 /* =========================================================
    TzTools Authentication
-   Supabase Auth + Guest / Signed-in Feature Gating
+   Supabase Auth
    ========================================================= */
 
 (function () {
   "use strict";
-
-  /* ---------------------------------------------------------
-     Supabase setup
-     --------------------------------------------------------- */
 
   const SUPABASE_URL =
     "https://nslaakklgidpzwlymrhf.supabase.co";
 
   /*
     IMPORTANT:
-    Use your CURRENT Supabase Publishable key here.
-    Never use the service-role / secret key in browser code.
+    Put your existing Supabase PUBLISHABLE key here.
+    Do NOT use a service-role/secret key.
   */
-  const SUPABASE_KEY =
+  const SUPABASE_PUBLISHABLE_KEY =
     "sb_publishable_XoDQsJkHs_7PA8wQAoutHA_glygnyxK";
 
   let client = null;
   let currentUser = null;
 
-  /* ---------------------------------------------------------
-     Create Supabase client
-     --------------------------------------------------------- */
+  /* =========================================================
+     HELPERS
+     ========================================================= */
 
-  function initializeAuth() {
-    if (window.supabaseClient) {
-      client = window.supabaseClient;
-    } else if (window.supabase && window.supabase.createClient) {
-      client = window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
-      );
-
-      window.supabaseClient = client;
-    }
-
-    if (!client) {
-      console.error("TzTools Auth: Supabase client not available.");
-      return false;
-    }
-
-    return true;
-  }
-
-  /* ---------------------------------------------------------
-     Helpers
-     --------------------------------------------------------- */
-
-  function getElement(id) {
+  function $(id) {
     return document.getElementById(id);
   }
 
-  function toast(message, type = "info") {
+  function toast(message) {
     if (typeof window.showToast === "function") {
-      window.showToast(message, type);
-    } else {
-      console.log(`[TzTools ${type}] ${message}`);
+      window.showToast(message);
+      return;
     }
+
+    console.log("TzTools Auth:", message);
   }
 
-  function getUserDisplayName(user) {
+  function getDisplayName(user) {
     if (!user) return "Guest";
 
-    const metadata = user.user_metadata || {};
-
     return (
-      metadata.full_name ||
-      metadata.name ||
-      metadata.display_name ||
+      user.user_metadata?.full_name ||
+      user.user_metadata?.name ||
       user.email?.split("@")[0] ||
       "User"
     );
   }
 
-  /* ---------------------------------------------------------
-     Modal
-     --------------------------------------------------------- */
+  /* =========================================================
+     SUPABASE
+     ========================================================= */
 
-  function openAuthModal(mode = "signin") {
-    const modal = getElement("authModal");
+  function initializeSupabase() {
+    if (window.supabaseClient) {
+      client = window.supabaseClient;
+      return true;
+    }
+
+    if (!window.supabase) {
+      console.error("TzTools Auth: Supabase library not found.");
+      return false;
+    }
+
+    if (
+      !SUPABASE_PUBLISHABLE_KEY ||
+      SUPABASE_PUBLISHABLE_KEY === "YOUR_SUPABASE_PUBLISHABLE_KEY"
+    ) {
+      console.error(
+        "TzTools Auth: Supabase publishable key is missing."
+      );
+      return false;
+    }
+
+    client = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY
+    );
+
+    window.supabaseClient = client;
+
+    return true;
+  }
+
+  /* =========================================================
+     AUTH UI
+     ========================================================= */
+
+  function updateAuthUI(user) {
+    currentUser = user || null;
+
+    const loggedIn = !!currentUser;
+
+    document.body.classList.toggle("user-signed-in", loggedIn);
+    document.body.classList.toggle("user-signed-out", !loggedIn);
+
+    const accountName = $("accountName");
+    const accountEmail = $("accountEmail");
+
+    const authButton = $("authButton");
+    const signInButton = $("signInButton");
+    const signOutButton = $("signOutButton");
+
+    if (accountName) {
+      accountName.textContent = loggedIn
+        ? getDisplayName(currentUser)
+        : "Guest";
+    }
+
+    if (accountEmail) {
+      accountEmail.textContent = loggedIn
+        ? currentUser.email || ""
+        : "Sign in to unlock TzTools";
+    }
+
+    if (authButton) {
+      authButton.textContent = loggedIn
+        ? "Sign out"
+        : "Sign in";
+    }
+
+    if (signInButton) {
+      signInButton.style.display = loggedIn
+        ? "none"
+        : "";
+    }
+
+    if (signOutButton) {
+      signOutButton.style.display = loggedIn
+        ? ""
+        : "none";
+    }
+
+    updateFeatureAccess(loggedIn);
+  }
+
+  function updateFeatureAccess(loggedIn) {
+    document
+      .querySelectorAll("[data-requires-auth]")
+      .forEach(function (element) {
+        element.classList.toggle("auth-locked", !loggedIn);
+      });
+  }
+
+  /* =========================================================
+     AUTH MODAL
+     ========================================================= */
+
+  function openAuthModal(mode) {
+    const modal = $("authModal");
 
     if (!modal) {
       console.warn("TzTools Auth: authModal not found.");
@@ -91,296 +156,108 @@
     }
 
     modal.classList.add("active");
-    modal.classList.add("open");
-    modal.setAttribute("aria-hidden", "false");
+    modal.classList.remove("hidden");
 
-    switchAuthMode(mode);
-
-    setTimeout(() => {
-      const input =
-        mode === "signup"
-          ? getElement("signupEmail") ||
-            getElement("authEmail")
-          : getElement("signinEmail") ||
-            getElement("authEmail");
-
-      if (input) input.focus();
-    }, 50);
+    if (mode) {
+      switchAuthMode(mode);
+    }
   }
 
   function closeAuthModal() {
-    const modal = getElement("authModal");
+    const modal = $("authModal");
 
     if (!modal) return;
 
-    const activeElement = document.activeElement;
-
-    if (activeElement && modal.contains(activeElement)) {
-      activeElement.blur();
-    }
-
     modal.classList.remove("active");
-    modal.classList.remove("open");
-    modal.setAttribute("aria-hidden", "true");
+    modal.classList.add("hidden");
   }
-
-  window.openAuthModal = openAuthModal;
-  window.closeAuthModal = closeAuthModal;
-
-  /* ---------------------------------------------------------
-     Sign in / Sign up mode
-     --------------------------------------------------------- */
 
   function switchAuthMode(mode) {
-    const signinForm = getElement("signinForm");
-    const signupForm = getElement("signupForm");
-
-    const signinTab = getElement("signinTab");
-    const signupTab = getElement("signupTab");
+    const signinPanel = $("signinPanel");
+    const signupPanel = $("signupPanel");
 
     if (mode === "signup") {
-      if (signinForm) signinForm.style.display = "none";
-      if (signupForm) signupForm.style.display = "block";
-
-      if (signinTab) signinTab.classList.remove("active");
-      if (signupTab) signupTab.classList.add("active");
+      if (signinPanel) signinPanel.style.display = "none";
+      if (signupPanel) signupPanel.style.display = "";
     } else {
-      if (signinForm) signinForm.style.display = "block";
-      if (signupForm) signupForm.style.display = "none";
-
-      if (signinTab) signinTab.classList.add("active");
-      if (signupTab) signupTab.classList.remove("active");
+      if (signinPanel) signinPanel.style.display = "";
+      if (signupPanel) signupPanel.style.display = "none";
     }
   }
 
-  window.switchAuthMode = switchAuthMode;
+  /* =========================================================
+     SIGN IN
+     ========================================================= */
 
-  /* ---------------------------------------------------------
-     Get form values
-     --------------------------------------------------------- */
+  async function signIn(email, password) {
+    if (!client) return false;
 
-  function getSigninValues() {
-    const email =
-      getElement("signinEmail")?.value?.trim() ||
-      getElement("authEmail")?.value?.trim() ||
-      "";
+    email = String(email || "").trim();
+    password = String(password || "");
 
-    const password =
-      getElement("signinPassword")?.value ||
-      getElement("authPassword")?.value ||
-      "";
-
-    return {
-      email,
-      password
-    };
-  }
-
-  function getSignupValues() {
-    const name =
-      getElement("signupName")?.value?.trim() ||
-      getElement("signupFullName")?.value?.trim() ||
-      "";
-
-    const email =
-      getElement("signupEmail")?.value?.trim() ||
-      "";
-
-    const password =
-      getElement("signupPassword")?.value ||
-      "";
-
-    const confirmPassword =
-      getElement("signupConfirmPassword")?.value ||
-      "";
-
-    return {
-      name,
-      email,
-      password,
-      confirmPassword
-    };
-  }
-
-  /* ---------------------------------------------------------
-     Validation
-     --------------------------------------------------------- */
-
-  function validateEmail(email) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  }
-
-  function validateSignin(email, password) {
-    if (!email) {
-      toast("Please enter your email.", "error");
+    if (!email || !password) {
+      toast("Please enter your email and password.");
       return false;
-    }
-
-    if (!validateEmail(email)) {
-      toast("Please enter a valid email.", "error");
-      return false;
-    }
-
-    if (!password) {
-      toast("Please enter your password.", "error");
-      return false;
-    }
-
-    return true;
-  }
-
-  function validateSignup(name, email, password, confirmPassword) {
-    if (!name) {
-      toast("Please enter your name.", "error");
-      return false;
-    }
-
-    if (!email) {
-      toast("Please enter your email.", "error");
-      return false;
-    }
-
-    if (!validateEmail(email)) {
-      toast("Please enter a valid email.", "error");
-      return false;
-    }
-
-    if (!password) {
-      toast("Please create a password.", "error");
-      return false;
-    }
-
-    if (password.length < 6) {
-      toast("Your password must be at least 6 characters.", "error");
-      return false;
-    }
-
-    if (password !== confirmPassword) {
-      toast("Passwords do not match.", "error");
-      return false;
-    }
-
-    return true;
-  }
-
-  /* ---------------------------------------------------------
-     Sign in
-     --------------------------------------------------------- */
-
-  async function signIn() {
-    if (!initializeAuth()) return;
-
-    const {
-      email,
-      password
-    } = getSigninValues();
-
-    if (!validateSignin(email, password)) return;
-
-    const button =
-      getElement("signinButton") ||
-      getElement("authSubmitButton");
-
-    if (button) {
-      button.disabled = true;
-      button.dataset.originalText = button.textContent;
-      button.textContent = "Signing in...";
     }
 
     try {
       const { data, error } =
         await client.auth.signInWithPassword({
-          email,
-          password
+          email: email,
+          password: password
         });
 
       if (error) {
-        console.error("TzTools sign-in error:", error);
-
-        if (
-          error.message?.toLowerCase().includes("email not confirmed")
-        ) {
-          toast(
-            "Please confirm your email before signing in.",
-            "error"
-          );
-        } else {
-          toast(
-            error.message || "Unable to sign in.",
-            "error"
-          );
-        }
-
-        return;
+        console.error("TzTools Auth sign-in error:", error);
+        toast(error.message || "Sign in failed.");
+        return false;
       }
 
-      currentUser = data.user;
+      currentUser = data?.user || null;
 
-      toast("Welcome back! 🔐", "success");
+      updateAuthUI(currentUser);
 
       closeAuthModal();
 
+      toast("Welcome back 👋");
+
       await handleAuthenticatedUser(currentUser);
 
+      return true;
+
     } catch (error) {
-      console.error("TzTools sign-in exception:", error);
-
-      toast(
-        "Something went wrong while signing in.",
-        "error"
-      );
-
-    } finally {
-      if (button) {
-        button.disabled = false;
-        button.textContent =
-          button.dataset.originalText || "Sign in";
-      }
+      console.error("TzTools Auth sign-in exception:", error);
+      toast("Something went wrong while signing in.");
+      return false;
     }
   }
 
-  window.signIn = signIn;
+  /* =========================================================
+     SIGN UP
+     ========================================================= */
 
-  /* ---------------------------------------------------------
-     Sign up
-     --------------------------------------------------------- */
+  async function signUp(name, email, password) {
+    if (!client) return false;
 
-  async function signUp() {
-    if (!initializeAuth()) return;
+    name = String(name || "").trim();
+    email = String(email || "").trim();
+    password = String(password || "");
 
-    const {
-      name,
-      email,
-      password,
-      confirmPassword
-    } = getSignupValues();
-
-    if (
-      !validateSignup(
-        name,
-        email,
-        password,
-        confirmPassword
-      )
-    ) {
-      return;
+    if (!name || !email || !password) {
+      toast("Please complete all fields.");
+      return false;
     }
 
-    const button =
-      getElement("signupButton") ||
-      getElement("authSignupButton");
-
-    if (button) {
-      button.disabled = true;
-      button.dataset.originalText = button.textContent;
-      button.textContent = "Creating account...";
+    if (password.length < 6) {
+      toast("Password must be at least 6 characters.");
+      return false;
     }
 
     try {
       const { data, error } =
         await client.auth.signUp({
-          email,
-          password,
+          email: email,
+          password: password,
 
           options: {
             emailRedirectTo:
@@ -394,347 +271,152 @@
         });
 
       if (error) {
-        console.error("TzTools sign-up error:", error);
-
-        toast(
-          error.message || "Unable to create account.",
-          "error"
-        );
-
-        return;
+        console.error("TzTools Auth sign-up error:", error);
+        toast(error.message || "Account creation failed.");
+        return false;
       }
 
-      /*
-        Supabase may return a user without a session when
-        email confirmation is required.
-      */
-
-      if (data.user && !data.session) {
+      if (!data?.session) {
         toast(
-          "Account created! Check your email to confirm it. 📧",
-          "success"
+          "Account created 🎉 Check your email to confirm your account."
         );
 
         closeAuthModal();
 
-        return;
+        return true;
       }
 
-      if (data.user) {
-        currentUser = data.user;
+      currentUser = data.user || null;
 
-        toast(
-          "Account created successfully! 🎉",
-          "success"
-        );
+      updateAuthUI(currentUser);
 
-        closeAuthModal();
+      closeAuthModal();
 
-        await handleAuthenticatedUser(currentUser);
-      }
+      toast("Account created successfully 🎉");
+
+      await handleAuthenticatedUser(currentUser);
+
+      return true;
 
     } catch (error) {
-      console.error("TzTools sign-up exception:", error);
-
-      toast(
-        "Something went wrong while creating your account.",
-        "error"
-      );
-
-    } finally {
-      if (button) {
-        button.disabled = false;
-        button.textContent =
-          button.dataset.originalText || "Create account";
-      }
+      console.error("TzTools Auth sign-up exception:", error);
+      toast("Something went wrong while creating your account.");
+      return false;
     }
   }
 
-  window.signUp = signUp;
-
-  /* ---------------------------------------------------------
-     Sign out
-     --------------------------------------------------------- */
+  /* =========================================================
+     SIGN OUT
+     ========================================================= */
 
   async function signOut() {
-    if (!initializeAuth()) return;
+    if (!client) return false;
 
     try {
-      const { error } =
-        await client.auth.signOut();
+      const { error } = await client.auth.signOut();
 
       if (error) {
-        console.error(
-          "TzTools sign-out error:",
-          error
-        );
-
-        toast(
-          error.message || "Unable to sign out.",
-          "error"
-        );
-
-        return;
+        console.error("TzTools Auth sign-out error:", error);
+        toast(error.message || "Sign out failed.");
+        return false;
       }
 
       currentUser = null;
 
       updateAuthUI(null);
 
-      toast(
-        "You've been signed out.",
-        "success"
-      );
+      toast("Signed out 👋");
 
-      if (typeof window.resetHome === "function") {
-        window.resetHome();
-      }
+      return true;
 
     } catch (error) {
-      console.error(
-        "TzTools sign-out exception:",
-        error
-      );
+      console.error("TzTools Auth sign-out exception:", error);
+      return false;
     }
   }
 
-  window.signOut = signOut;
-
-  /* ---------------------------------------------------------
-     Get current user
-     --------------------------------------------------------- */
+  /* =========================================================
+     CURRENT USER
+     ========================================================= */
 
   async function getCurrentUser() {
-    if (!initializeAuth()) return null;
+    if (!client) return null;
 
     try {
-      const {
-        data,
-        error
-      } = await client.auth.getUser();
+      const { data, error } =
+        await client.auth.getUser();
 
       if (error) {
-        /*
-          Not being signed in is normal.
-        */
         if (
-          error.name === "AuthSessionMissingError"
+          error.name === "AuthSessionMissingError" ||
+          error.message?.includes("Auth session missing")
         ) {
-          currentUser = null;
           return null;
         }
 
-        console.warn(
-          "TzTools getUser:",
-          error.message
+        console.error(
+          "TzTools Auth getUser error:",
+          error
         );
 
-        currentUser = null;
         return null;
       }
 
-      currentUser = data?.user || null;
-
-      return currentUser;
+      return data?.user || null;
 
     } catch (error) {
-      currentUser = null;
+      console.error(
+        "TzTools Auth getUser exception:",
+        error
+      );
+
       return null;
     }
   }
 
-  window.getCurrentUser = getCurrentUser;
-
-  /* ---------------------------------------------------------
-     Authenticated user handling
-     --------------------------------------------------------- */
+  /* =========================================================
+     AUTHENTICATED USER HANDLER
+     ========================================================= */
 
   async function handleAuthenticatedUser(user) {
-    if (!user) return;
+    if (!user) {
+      updateAuthUI(null);
+      return;
+    }
 
     currentUser = user;
 
+    // Update immediately
     updateAuthUI(user);
 
-    /*
-      Tell app.js that authentication is ready.
-    */
+    // Update again after the browser paints the UI
+    requestAnimationFrame(function () {
+      updateAuthUI(user);
+    });
 
-    if (typeof window.onTzToolsAuthReady === "function") {
+    if (
+      typeof window.onTzToolsAuthReady === "function"
+    ) {
       try {
         await window.onTzToolsAuthReady(user);
       } catch (error) {
-        console.warn(
-          "TzTools app auth callback failed:",
+        console.error(
+          "TzTools Auth callback error:",
           error
         );
       }
     }
   }
 
-  /* ---------------------------------------------------------
-     Auth UI
-     --------------------------------------------------------- */
-
-  function updateAuthUI(user) {
-    const loggedIn = !!user;
-
-    document.body.classList.toggle(
-      "user-signed-in",
-      loggedIn
-    );
-
-    document.body.classList.toggle(
-      "guest-user",
-      !loggedIn
-    );
-
-    const accountName =
-      getElement("accountName");
-
-    if (accountName) {
-      accountName.textContent =
-        loggedIn
-          ? getUserDisplayName(user)
-          : "Guest";
-    }
-
-    const accountEmail =
-      getElement("accountEmail");
-
-    if (accountEmail) {
-      accountEmail.textContent =
-        loggedIn
-          ? user.email || ""
-          : "Sign in to unlock TzTools";
-    }
-
-    const authButton =
-      getElement("authButton");
-
-    if (authButton) {
-      authButton.textContent =
-        loggedIn
-          ? "Sign out"
-          : "Sign in";
-    }
-
-    const signInButton =
-      getElement("signInButton");
-
-    if (signInButton) {
-      signInButton.style.display =
-        loggedIn ? "none" : "";
-    }
-
-    const signOutButton =
-      getElement("signOutButton");
-
-    if (signOutButton) {
-      signOutButton.style.display =
-        loggedIn ? "" : "none";
-    }
-
-    updateFeatureAccess(loggedIn);
-  }
-
-  /* ---------------------------------------------------------
-     Feature gating
-     --------------------------------------------------------- */
-
-  function updateFeatureAccess(loggedIn) {
-    const gatedElements =
-      document.querySelectorAll(
-        "[data-requires-auth]"
-      );
-
-    gatedElements.forEach((element) => {
-      if (loggedIn) {
-        element.classList.remove("auth-locked");
-        element.removeAttribute("aria-disabled");
-      } else {
-        element.classList.add("auth-locked");
-        element.setAttribute(
-          "aria-disabled",
-          "true"
-        );
-      }
-    });
-  }
-
-  function requireAuth(featureName = "this feature") {
-    if (currentUser) {
-      return true;
-    }
-
-    toast(
-      `🔐 Sign in to unlock ${featureName}.`,
-      "info"
-    );
-
-    openAuthModal("signin");
-
-    return false;
-  }
-
-  window.requireAuth = requireAuth;
-
-  /* ---------------------------------------------------------
-     Feature helpers for app.js
-     --------------------------------------------------------- */
-
-  window.TzAuth = {
-    isSignedIn: function () {
-      return !!currentUser;
-    },
-
-    getUser: function () {
-      return currentUser;
-    },
-
-    requireAuth: requireAuth,
-
-    openAuthModal: openAuthModal,
-
-    closeAuthModal: closeAuthModal,
-
-    signIn: signIn,
-
-    signUp: signUp,
-
-    signOut: signOut
-  };
-
-  /* ---------------------------------------------------------
-     Protect actions
-     --------------------------------------------------------- */
-
-  window.requireAuthForFavorite = function () {
-    return requireAuth("Favorites");
-  };
-
-  window.requireAuthForRecentlyUsed = function () {
-    return requireAuth("Recently Used");
-  };
-
-  window.requireAuthForCompare = function () {
-    return requireAuth("Compare");
-  };
-
-  window.requireAuthForDashboard = function () {
-    return requireAuth("your Dashboard");
-  };
-
-  /* ---------------------------------------------------------
-     Auth state listener
-     --------------------------------------------------------- */
+  /* =========================================================
+     AUTH LISTENER
+     ========================================================= */
 
   function setupAuthListener() {
-    if (!initializeAuth()) return;
+    if (!client) return;
 
     client.auth.onAuthStateChange(
-      async function (event, session) {
-
+      function (event, session) {
         console.log(
           "TzTools Auth:",
           event
@@ -746,11 +428,7 @@
         updateAuthUI(currentUser);
 
         if (currentUser) {
-          /*
-            Don't await Supabase callbacks directly inside
-            the auth listener.
-          */
-          setTimeout(() => {
+          setTimeout(function () {
             handleAuthenticatedUser(
               currentUser
             );
@@ -760,95 +438,113 @@
     );
   }
 
-  /* ---------------------------------------------------------
-     Form event wiring
-     --------------------------------------------------------- */
+  /* =========================================================
+     FORM SETUP
+     ========================================================= */
 
   function setupForms() {
-
-    const signinForm =
-      getElement("signinForm");
+    const signinForm = $("signinForm");
+    const signupForm = $("signupForm");
 
     if (signinForm) {
       signinForm.addEventListener(
         "submit",
-        function (event) {
+        async function (event) {
           event.preventDefault();
-          signIn();
+
+          const email =
+            $("signinEmail")?.value || "";
+
+          const password =
+            $("signinPassword")?.value || "";
+
+          await signIn(
+            email,
+            password
+          );
         }
       );
     }
-
-    const signupForm =
-      getElement("signupForm");
 
     if (signupForm) {
       signupForm.addEventListener(
         "submit",
-        function (event) {
+        async function (event) {
           event.preventDefault();
-          signUp();
+
+          const name =
+            $("signupName")?.value || "";
+
+          const email =
+            $("signupEmail")?.value || "";
+
+          const password =
+            $("signupPassword")?.value || "";
+
+          await signUp(
+            name,
+            email,
+            password
+          );
         }
       );
     }
 
-    const signinButton =
-      getElement("signinButton");
+    const signInButton = $("signInButton");
 
-    if (
-      signinButton &&
-      !signinForm
-    ) {
-      signinButton.addEventListener(
+    if (signInButton) {
+      signInButton.addEventListener(
         "click",
-        function (event) {
-          event.preventDefault();
-          signIn();
+        function () {
+          openAuthModal("signin");
         }
       );
     }
 
-    const signupButton =
-      getElement("signupButton");
-
-    if (
-      signupButton &&
-      !signupForm
-    ) {
-      signupButton.addEventListener(
-        "click",
-        function (event) {
-          event.preventDefault();
-          signUp();
-        }
-      );
-    }
-
-    const signOutButton =
-      getElement("signOutButton");
+    const signOutButton = $("signOutButton");
 
     if (signOutButton) {
       signOutButton.addEventListener(
         "click",
-        function (event) {
-          event.preventDefault();
-          signOut();
+        async function () {
+          await signOut();
         }
       );
     }
 
-    const modal =
-      getElement("authModal");
+    const authButton = $("authButton");
+
+    if (authButton) {
+      authButton.addEventListener(
+        "click",
+        async function () {
+          if (currentUser) {
+            await signOut();
+          } else {
+            openAuthModal("signin");
+          }
+        }
+      );
+    }
+
+    const closeButton = $("authModalClose");
+
+    if (closeButton) {
+      closeButton.addEventListener(
+        "click",
+        closeAuthModal
+      );
+    }
+
+    const modal = $("authModal");
 
     if (modal) {
       modal.addEventListener(
         "click",
         function (event) {
-
           if (event.target === modal) {
             closeAuthModal();
           }
-
         }
       );
     }
@@ -856,47 +552,69 @@
     document.addEventListener(
       "keydown",
       function (event) {
-
         if (event.key === "Escape") {
           closeAuthModal();
         }
-
       }
     );
   }
 
-  /* ---------------------------------------------------------
-     Start authentication
-     --------------------------------------------------------- */
+  /* =========================================================
+     PUBLIC API
+     ========================================================= */
+
+  window.TzAuth = {
+    isSignedIn: function () {
+      return !!currentUser;
+    },
+
+    getUser: function () {
+      return currentUser;
+    },
+
+    requireAuth: function () {
+      if (currentUser) return true;
+
+      openAuthModal("signin");
+
+      toast("Please sign in to continue.");
+
+      return false;
+    },
+
+    open: openAuthModal,
+    close: closeAuthModal,
+
+    signIn: signIn,
+    signUp: signUp,
+    signOut: signOut
+  };
+
+  /* =========================================================
+     INITIALIZATION
+     ========================================================= */
 
   async function initializeTzToolsAuth() {
-
-    if (!initializeAuth()) {
-      console.warn(
-        "TzTools authentication could not initialize."
-      );
-
+    if (!initializeSupabase()) {
       return;
     }
 
     setupForms();
     setupAuthListener();
 
-    /*
-      Check existing session.
-    */
-
     try {
-      const {
-        data,
-        error
-      } = await client.auth.getSession();
+      const { data, error } =
+        await client.auth.getSession();
 
       if (error) {
-        console.warn(
-          "TzTools session check:",
-          error.message
+        console.error(
+          "TzTools Auth getSession error:",
+          error
         );
+
+        updateAuthUI(null);
+
+        return;
       }
 
       currentUser =
@@ -910,26 +628,28 @@
         );
       }
 
+      console.log(
+        "TzTools authentication ready 🔐 —",
+        getDisplayName(currentUser)
+      );
+
     } catch (error) {
-      console.warn(
-        "TzTools initial auth check failed:",
+      console.error(
+        "TzTools Auth initialization error:",
         error
       );
-    }
 
-    console.log(
-      "TzTools authentication ready 🔐 —",
-      currentUser
-        ? getUserDisplayName(currentUser)
-        : "Guest"
-    );
+      updateAuthUI(null);
+    }
   }
 
-  /* ---------------------------------------------------------
-     DOM ready
-     --------------------------------------------------------- */
+  /* =========================================================
+     START
+     ========================================================= */
 
-  if (document.readyState === "loading") {
+  if (
+    document.readyState === "loading"
+  ) {
     document.addEventListener(
       "DOMContentLoaded",
       initializeTzToolsAuth
