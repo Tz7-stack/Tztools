@@ -87,61 +87,115 @@
      AUTH UI
      ========================================================= */
 
-  function updateAuthUI(user) {
-    currentUser = user || null;
+ function updateAuthUI(user) {
+  const loggedIn = !!user;
 
-    const loggedIn = !!currentUser;
+  document.body.classList.toggle("is-authenticated", loggedIn);
+  document.body.classList.toggle("is-guest", !loggedIn);
 
-    document.body.classList.toggle("user-signed-in", loggedIn);
-    document.body.classList.toggle("user-signed-out", !loggedIn);
+  const profileName = document.getElementById("profileName");
+  const profileEmail = document.getElementById("profileEmail");
+  const profileAvatar = document.getElementById("profileAvatar");
 
-    const accountName = $("accountName");
-    const accountEmail = $("accountEmail");
+  const accountButton = document.getElementById("accountButton");
+  const loggedInPanel = document.getElementById("loggedInPanel");
 
-    const authButton = $("authButton");
-    const signInButton = $("signInButton");
-    const signOutButton = $("signOutButton");
+  const loginForm = document.getElementById("loginForm");
+  const signupForm = document.getElementById("signupForm");
 
-    if (accountName) {
-      accountName.textContent = loggedIn
-        ? getDisplayName(currentUser)
-        : "Guest";
+  const loginTab = document.getElementById("loginTab");
+  const signupTab = document.getElementById("signupTab");
+
+  // GUEST
+  if (!user) {
+    if (profileName) {
+      profileName.textContent = "Guest";
     }
 
-    if (accountEmail) {
-      accountEmail.textContent = loggedIn
-        ? currentUser.email || ""
-        : "Sign in to unlock TzTools";
+    if (profileEmail) {
+      profileEmail.textContent = "Sign in to sync your tools";
     }
 
-    if (authButton) {
-      authButton.textContent = loggedIn
-        ? "Sign out"
-        : "Sign in";
+    if (profileAvatar) {
+      profileAvatar.textContent = "G";
     }
 
-    if (signInButton) {
-      signInButton.style.display = loggedIn
-        ? "none"
-        : "";
+    if (accountButton) {
+      accountButton.querySelector(".setting-content strong").textContent = "Account";
+      accountButton.querySelector(".setting-content small").textContent =
+        "Sign in or create an account";
     }
 
-    if (signOutButton) {
-      signOutButton.style.display = loggedIn
-        ? ""
-        : "none";
+    if (loggedInPanel) {
+      loggedInPanel.style.display = "none";
     }
 
-    updateFeatureAccess(loggedIn);
+    if (loginForm) {
+      loginForm.style.display = "";
+    }
+
+    if (signupForm) {
+      signupForm.style.display = "none";
+    }
+
+    if (loginTab) {
+      loginTab.style.display = "";
+    }
+
+    if (signupTab) {
+      signupTab.style.display = "";
+    }
+
+    updateFeatureAccess(false);
+    return;
   }
 
-  function updateFeatureAccess(loggedIn) {
-    document
-      .querySelectorAll("[data-requires-auth]")
-      .forEach(function (element) {
-        element.classList.toggle("auth-locked", !loggedIn);
-      });
+  // SIGNED IN
+  const displayName = getUserDisplayName(user);
+  const email = user.email || "";
+
+  if (profileName) {
+    profileName.textContent = displayName || "User";
   }
+
+  if (profileEmail) {
+    profileEmail.textContent = email || "Signed in";
+  }
+
+  if (profileAvatar) {
+    profileAvatar.textContent =
+      (displayName || email || "U").trim().charAt(0).toUpperCase();
+  }
+
+  if (accountButton) {
+    accountButton.querySelector(".setting-content strong").textContent =
+      "Account";
+    accountButton.querySelector(".setting-content small").textContent =
+      "You're signed in";
+  }
+
+  if (loggedInPanel) {
+    loggedInPanel.style.display = "block";
+  }
+
+  if (loginForm) {
+    loginForm.style.display = "none";
+  }
+
+  if (signupForm) {
+    signupForm.style.display = "none";
+  }
+
+  if (loginTab) {
+    loginTab.style.display = "none";
+  }
+
+  if (signupTab) {
+    signupTab.style.display = "none";
+  }
+
+  updateFeatureAccess(true);
+}
 
   /* =========================================================
      AUTH MODAL
