@@ -1,100 +1,174 @@
 /* =========================================================
-   TzTools V8 — Authentication System
-   Supabase Auth
+   TZTOOLS AUTH.JS — V8 FINAL CLEAN EDITION
    ========================================================= */
 
 (function () {
   "use strict";
 
-  /* ---------------------------------------------------------
-     CONFIG
-     --------------------------------------------------------- */
+  /* =========================================================
+     1. SUPABASE CONFIG
+     ========================================================= */
 
   const SUPABASE_URL =
     "https://nslaakklgidpzwlymrhf.supabase.co";
+
+  /*
+    IMPORTANT:
+    Paste your EXISTING Supabase publishable key below.
+    Do NOT use a service-role/secret key here.
+  */
 
   const SUPABASE_PUBLISHABLE_KEY =
     "sb_publishable_XoDQsJkHs_7PA8wQAoutHA_glygnyxK";
 
 
-  /* ---------------------------------------------------------
-     HELPERS
-     --------------------------------------------------------- */
+  /* =========================================================
+     2. GLOBAL AUTH STATE
+     ========================================================= */
+
+  let supabaseClient = null;
+  let currentUser = null;
+  let authInitialized = false;
+
+
+  /* =========================================================
+     3. SMALL DOM HELPER
+     ========================================================= */
 
   function $(id) {
     return document.getElementById(id);
   }
 
 
+  /* =========================================================
+     4. SUPABASE CLIENT
+     ========================================================= */
+
   function getClient() {
-    if (window.supabaseClient) {
-      return window.supabaseClient;
+    if (supabaseClient) {
+      return supabaseClient;
     }
 
-    if (
-      !window.supabase ||
-      typeof window.supabase.createClient !== "function"
-    ) {
+    if (!window.supabase) {
       console.error(
         "TzTools Auth: Supabase library was not found."
       );
+
       return null;
     }
 
-    if (
-      !SUPABASE_PUBLISHABLE_KEY ||
-      SUPABASE_PUBLISHABLE_KEY.includes(
-        "PASTE_YOUR_EXISTING"
-      )
-    ) {
+    try {
+      supabaseClient =
+        window.supabase.createClient(
+          SUPABASE_URL,
+          SUPABASE_PUBLISHABLE_KEY
+        );
+
+      return supabaseClient;
+
+    } catch (error) {
       console.error(
-        "TzTools Auth: Supabase publishable key is missing."
+        "TzTools Auth: Failed to create Supabase client.",
+        error
       );
+
       return null;
     }
-
-    window.supabaseClient =
-      window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_PUBLISHABLE_KEY
-      );
-
-    return window.supabaseClient;
   }
 
 
-  const client = getClient();
+  /* =========================================================
+     5. TOAST
+     ========================================================= */
 
-  let currentUser = null;
+  function showToast(message, type) {
 
+    type = type || "info";
 
-  /* ---------------------------------------------------------
-     TOAST
-     --------------------------------------------------------- */
-
-  function toast(message, type) {
     if (typeof window.showToast === "function") {
       window.showToast(message, type);
       return;
     }
 
-    if (typeof window.toast === "function") {
-      window.toast(message, type);
-      return;
+    let toast = document.getElementById(
+      "tztoolsAuthToast"
+    );
+
+    if (!toast) {
+
+      toast = document.createElement("div");
+
+      toast.id = "tztoolsAuthToast";
+
+      toast.style.position = "fixed";
+      toast.style.left = "50%";
+      toast.style.bottom = "100px";
+      toast.style.transform =
+        "translateX(-50%) translateY(20px)";
+
+      toast.style.padding =
+        "12px 18px";
+
+      toast.style.borderRadius =
+        "12px";
+
+      toast.style.background =
+        "rgba(20,20,30,.95)";
+
+      toast.style.color =
+        "#fff";
+
+      toast.style.fontSize =
+        "14px";
+
+      toast.style.fontWeight =
+        "600";
+
+      toast.style.zIndex =
+        "999999";
+
+      toast.style.opacity =
+        "0";
+
+      toast.style.pointerEvents =
+        "none";
+
+      toast.style.transition =
+        "all .25s ease";
+
+      document.body.appendChild(toast);
     }
 
-    console.log(
-      "TzTools Auth:",
-      message
+    toast.textContent = message;
+
+    requestAnimationFrame(function () {
+      toast.style.opacity = "1";
+      toast.style.transform =
+        "translateX(-50%) translateY(0)";
+    });
+
+    clearTimeout(
+      toast._hideTimer
     );
+
+    toast._hideTimer =
+      setTimeout(function () {
+
+        toast.style.opacity = "0";
+
+        toast.style.transform =
+          "translateX(-50%) translateY(20px)";
+
+      }, 3000);
   }
 
 
-  /* ---------------------------------------------------------
-     DISPLAY NAME
-     --------------------------------------------------------- */
+  /* =========================================================
+     6. DISPLAY NAME
+     ========================================================= */
 
   function getDisplayName(user) {
+
     if (!user) {
       return "Guest";
     }
@@ -112,26 +186,37 @@
   }
 
 
-  /* ---------------------------------------------------------
-     AUTH UI
-     --------------------------------------------------------- */
+  /* =========================================================
+     7. AUTH FEATURE ACCESS
+     ========================================================= */
 
   function updateFeatureAccess(loggedIn) {
+
     document
-      .querySelectorAll("[data-requires-auth]")
+      .querySelectorAll(
+        "[data-requires-auth]"
+      )
       .forEach(function (element) {
+
         element.classList.toggle(
           "auth-locked",
           !loggedIn
         );
+
       });
   }
 
 
+  /* =========================================================
+     8. UPDATE AUTH UI
+     ========================================================= */
+
   function updateAuthUI(user) {
+
     currentUser = user || null;
 
-    const loggedIn = !!currentUser;
+    const loggedIn =
+      !!currentUser;
 
     document.body.classList.toggle(
       "user-signed-in",
@@ -144,7 +229,9 @@
     );
 
 
-    /* Profile */
+    /* -------------------------
+       PROFILE
+       ------------------------- */
 
     const profileName =
       $("profileName");
@@ -157,6 +244,7 @@
 
 
     if (profileName) {
+
       profileName.textContent =
         loggedIn
           ? getDisplayName(currentUser)
@@ -165,14 +253,19 @@
 
 
     if (profileEmail) {
+
       profileEmail.textContent =
         loggedIn
-          ? currentUser.email || ""
+          ? (
+              currentUser.email ||
+              ""
+            )
           : "Sign in to sync your tools";
     }
 
 
     if (profileAvatar) {
+
       profileAvatar.textContent =
         loggedIn
           ? getDisplayName(
@@ -184,20 +277,43 @@
     }
 
 
-    /* Account button */
+    /* -------------------------
+       ACCOUNT BUTTON
+       ------------------------- */
 
     const accountButton =
       $("accountButton");
 
     if (accountButton) {
-      accountButton.textContent =
-        loggedIn
-          ? "You're signed in"
-          : "Sign in or create an account";
+
+      const title =
+        accountButton.querySelector(
+          ".setting-content strong"
+        );
+
+      const subtitle =
+        accountButton.querySelector(
+          ".setting-content small"
+        );
+
+      if (title) {
+        title.textContent =
+          "Account";
+      }
+
+      if (subtitle) {
+
+        subtitle.textContent =
+          loggedIn
+            ? "You're signed in"
+            : "Sign in or create an account";
+      }
     }
 
 
-    /* Auth modal */
+    /* -------------------------
+       AUTH FORMS
+       ------------------------- */
 
     const loggedInPanel =
       $("loggedInPanel");
@@ -216,34 +332,43 @@
 
 
     if (loggedInPanel) {
+
       loggedInPanel.style.display =
         loggedIn ? "" : "none";
     }
 
 
     if (loginForm) {
+
       loginForm.style.display =
         loggedIn ? "none" : "";
     }
 
 
     if (signupForm) {
+
       signupForm.style.display =
         "none";
     }
 
 
     if (loginTab) {
+
       loginTab.style.display =
         loggedIn ? "none" : "";
     }
 
 
     if (signupTab) {
+
       signupTab.style.display =
         loggedIn ? "none" : "";
     }
 
+
+    /* -------------------------
+       FEATURE ACCESS
+       ------------------------- */
 
     updateFeatureAccess(
       loggedIn
@@ -251,18 +376,77 @@
   }
 
 
-  /* ---------------------------------------------------------
-     OPEN / CLOSE AUTH MODAL
-     --------------------------------------------------------- */
+  /* =========================================================
+     9. SWITCH LOGIN / SIGNUP
+     ========================================================= */
+
+  function switchAuthMode(mode) {
+
+    const loginForm =
+      $("loginForm");
+
+    const signupForm =
+      $("signupForm");
+
+    const loginTab =
+      $("loginTab");
+
+    const signupTab =
+      $("signupTab");
+
+
+    const isSignup =
+      mode === "signup";
+
+
+    if (loginForm) {
+
+      loginForm.style.display =
+        isSignup ? "none" : "";
+    }
+
+
+    if (signupForm) {
+
+      signupForm.style.display =
+        isSignup ? "" : "none";
+    }
+
+
+    if (loginTab) {
+
+      loginTab.classList.toggle(
+        "active",
+        !isSignup
+      );
+    }
+
+
+    if (signupTab) {
+
+      signupTab.classList.toggle(
+        "active",
+        isSignup
+      );
+    }
+  }
+
+
+  /* =========================================================
+     10. OPEN AUTH MODAL
+     ========================================================= */
 
   function openAuthModal(mode) {
+
     const modal =
       $("authModal");
 
     if (!modal) {
+
       console.warn(
         "TzTools Auth: authModal not found."
       );
+
       return;
     }
 
@@ -271,21 +455,49 @@
       "active"
     );
 
+    modal.classList.remove(
+      "hidden"
+    );
+
     modal.setAttribute(
       "aria-hidden",
       "false"
     );
 
 
-    if (mode === "signup") {
-      showSignupForm();
-    } else {
-      showLoginForm();
+    /*
+      Only switch forms when a mode was
+      explicitly requested.
+    */
+
+    if (mode) {
+
+      switchAuthMode(
+        mode
+      );
+    }
+
+
+    /*
+      If the user is already logged in,
+      refresh the logged-in panel.
+    */
+
+    if (currentUser) {
+
+      updateAuthUI(
+        currentUser
+      );
     }
   }
 
 
+  /* =========================================================
+     11. CLOSE AUTH MODAL
+     ========================================================= */
+
   function closeAuthModal() {
+
     const modal =
       $("authModal");
 
@@ -293,8 +505,13 @@
       return;
     }
 
+
     modal.classList.remove(
       "active"
+    );
+
+    modal.classList.add(
+      "hidden"
     );
 
     modal.setAttribute(
@@ -304,338 +521,356 @@
   }
 
 
-  /* ---------------------------------------------------------
-     LOGIN / SIGNUP TABS
-     --------------------------------------------------------- */
-
-  function showLoginForm() {
-    const loginForm =
-      $("loginForm");
-
-    const signupForm =
-      $("signupForm");
-
-    const loginTab =
-      $("loginTab");
-
-    const signupTab =
-      $("signupTab");
-
-
-    if (loginForm) {
-      loginForm.style.display =
-        "";
-    }
-
-    if (signupForm) {
-      signupForm.style.display =
-        "none";
-    }
-
-
-    if (loginTab) {
-      loginTab.classList.add(
-        "active"
-      );
-      loginTab.setAttribute(
-        "aria-selected",
-        "true"
-      );
-    }
-
-
-    if (signupTab) {
-      signupTab.classList.remove(
-        "active"
-      );
-      signupTab.setAttribute(
-        "aria-selected",
-        "false"
-      );
-    }
-  }
-
-
-  function showSignupForm() {
-    const loginForm =
-      $("loginForm");
-
-    const signupForm =
-      $("signupForm");
-
-    const loginTab =
-      $("loginTab");
-
-    const signupTab =
-      $("signupTab");
-
-
-    if (loginForm) {
-      loginForm.style.display =
-        "none";
-    }
-
-    if (signupForm) {
-      signupForm.style.display =
-        "";
-    }
-
-
-    if (signupTab) {
-      signupTab.classList.add(
-        "active"
-      );
-      signupTab.setAttribute(
-        "aria-selected",
-        "true"
-      );
-    }
-
-
-    if (loginTab) {
-      loginTab.classList.remove(
-        "active"
-      );
-      loginTab.setAttribute(
-        "aria-selected",
-        "false"
-      );
-    }
-  }
-
-
-  /* ---------------------------------------------------------
-     SIGN UP
-     --------------------------------------------------------- */
+  /* =========================================================
+     12. SIGN UP
+     ========================================================= */
 
   async function signUp(
     name,
     email,
     password
   ) {
+
+    const client =
+      getClient();
+
     if (!client) {
-      toast(
-        "Authentication is unavailable.",
+
+      showToast(
+        "Authentication is unavailable right now.",
         "error"
       );
-      return;
+
+      return false;
     }
 
 
     name =
-      String(name || "")
-        .trim();
+      String(name || "").trim();
 
     email =
-      String(email || "")
-        .trim();
+      String(email || "").trim();
 
     password =
       String(password || "");
 
 
     if (!name) {
-      toast(
+
+      showToast(
         "Please enter your name.",
         "error"
       );
-      return;
+
+      return false;
     }
 
 
     if (!email) {
-      toast(
+
+      showToast(
         "Please enter your email.",
         "error"
       );
-      return;
+
+      return false;
     }
 
 
     if (!password) {
-      toast(
+
+      showToast(
         "Please enter a password.",
         "error"
       );
-      return;
+
+      return false;
+    }
+
+
+    if (password.length < 6) {
+
+      showToast(
+        "Password must be at least 6 characters.",
+        "error"
+      );
+
+      return false;
     }
 
 
     try {
+
       const {
         data,
         error
-      } = await client.auth.signUp({
-        email: email,
-        password: password,
-        options: {
-          data: {
-            full_name: name,
-            name: name
+      } =
+        await client.auth.signUp({
+
+          email: email,
+
+          password: password,
+
+          options: {
+
+            emailRedirectTo:
+              "https://tz7-stack.github.io/",
+
+            data: {
+
+              full_name:
+                name,
+
+              name:
+                name
+            }
           }
-        }
-      });
+        });
 
 
       if (error) {
-        throw error;
+
+        console.error(
+          "TzTools Auth: Sign up error",
+          error
+        );
+
+        showToast(
+          error.message ||
+          "Could not create your account.",
+          "error"
+        );
+
+        return false;
+      }
+
+
+      /*
+        Supabase may require email confirmation.
+      */
+
+      if (
+        data &&
+        data.user &&
+        !data.session
+      ) {
+
+        showToast(
+          "Account created! Check your email to confirm it.",
+          "success"
+        );
+
+        return true;
       }
 
 
       if (
         data &&
-        data.session
+        data.user
       ) {
+
         currentUser =
-          data.user || null;
+          data.user;
 
         updateAuthUI(
           currentUser
         );
 
+        showToast(
+          "Account created successfully! 🎉",
+          "success"
+        );
+
         closeAuthModal();
 
-        toast(
-          "Account created successfully."
-        );
-      } else {
-        toast(
-          "Account created! Check your email to confirm your account."
-        );
-
-        showLoginForm();
+        return true;
       }
 
 
+      showToast(
+        "Account created successfully!",
+        "success"
+      );
+
+      return true;
+
     } catch (error) {
+
       console.error(
-        "TzTools Auth signUp error:",
+        "TzTools Auth: Unexpected sign up error",
         error
       );
 
-      toast(
-        error.message ||
-          "Could not create your account.",
+      showToast(
+        "Something went wrong creating your account.",
         "error"
       );
+
+      return false;
     }
   }
 
 
-  /* ---------------------------------------------------------
-     SIGN IN
-     --------------------------------------------------------- */
+  /* =========================================================
+     13. SIGN IN
+     ========================================================= */
 
   async function signIn(
     email,
     password
   ) {
+
+    const client =
+      getClient();
+
     if (!client) {
-      toast(
-        "Authentication is unavailable.",
+
+      showToast(
+        "Authentication is unavailable right now.",
         "error"
       );
-      return;
+
+      return false;
     }
 
 
     email =
-      String(email || "")
-        .trim();
+      String(email || "").trim();
 
     password =
       String(password || "");
 
 
     if (!email) {
-      toast(
+
+      showToast(
         "Please enter your email.",
         "error"
       );
-      return;
+
+      return false;
     }
 
 
     if (!password) {
-      toast(
+
+      showToast(
         "Please enter your password.",
         "error"
       );
-      return;
+
+      return false;
     }
 
 
     try {
+
       const {
         data,
         error
-      } = await client.auth.signInWithPassword({
-        email: email,
-        password: password
-      });
+      } =
+        await client.auth.signInWithPassword({
+
+          email: email,
+
+          password: password
+        });
 
 
       if (error) {
-        throw error;
+
+        console.error(
+          "TzTools Auth: Sign in error",
+          error
+        );
+
+        showToast(
+          error.message ||
+          "Could not sign in.",
+          "error"
+        );
+
+        return false;
       }
 
 
       currentUser =
-        data.user || null;
+        data.user;
 
       updateAuthUI(
         currentUser
       );
 
+
+      showToast(
+        "Welcome back! 👋",
+        "success"
+      );
+
+
       closeAuthModal();
 
 
-      toast(
-        "Welcome back, " +
-          getDisplayName(
-            currentUser
-          ) +
-          "!"
-      );
-
+      return true;
 
     } catch (error) {
+
       console.error(
-        "TzTools Auth signIn error:",
+        "TzTools Auth: Unexpected sign in error",
         error
       );
 
-      toast(
-        error.message ||
-          "Could not sign in.",
+      showToast(
+        "Something went wrong signing you in.",
         "error"
       );
+
+      return false;
     }
   }
 
 
-  /* ---------------------------------------------------------
-     SIGN OUT
-     --------------------------------------------------------- */
+  /* =========================================================
+     14. SIGN OUT
+     ========================================================= */
 
   async function signOut() {
+
+    const client =
+      getClient();
+
     if (!client) {
-      return;
+      return false;
     }
 
 
     try {
+
       const {
         error
-      } = await client.auth.signOut();
+      } =
+        await client.auth.signOut();
 
 
       if (error) {
-        throw error;
+
+        console.error(
+          "TzTools Auth: Sign out error",
+          error
+        );
+
+        showToast(
+          error.message ||
+          "Could not sign out.",
+          "error"
+        );
+
+        return false;
       }
 
 
-      currentUser = null;
+      currentUser =
+        null;
 
       updateAuthUI(
         null
@@ -644,71 +879,108 @@
       closeAuthModal();
 
 
-      if (
-        typeof window.resetHome ===
-        "function"
-      ) {
-        window.resetHome();
-      }
-
-
-      toast(
-        "Signed out successfully."
+      showToast(
+        "You've been signed out.",
+        "success"
       );
 
 
-      console.log(
-        "TzTools Auth: SIGNED_OUT"
-      );
-
+      return true;
 
     } catch (error) {
+
       console.error(
-        "TzTools Auth signOut error:",
+        "TzTools Auth: Unexpected sign out error",
         error
       );
 
-      toast(
-        error.message ||
-          "Could not sign out.",
+      showToast(
+        "Something went wrong signing you out.",
         "error"
       );
+
+      return false;
     }
   }
 
 
-  /* ---------------------------------------------------------
-     GET CURRENT USER
-     --------------------------------------------------------- */
+  /* =========================================================
+     15. GET CURRENT USER
+     ========================================================= */
 
   async function getCurrentUser() {
+
+    const client =
+      getClient();
+
     if (!client) {
       return null;
     }
 
 
     try {
+
       const {
         data,
         error
-      } = await client.auth.getUser();
+      } =
+        await client.auth.getUser();
 
 
       if (error) {
+
+        /*
+          No active session is normal.
+        */
+
+        if (
+          error.name ===
+          "AuthSessionMissingError"
+        ) {
+
+          currentUser =
+            null;
+
+          updateAuthUI(
+            null
+          );
+
+          return null;
+        }
+
+
+        console.warn(
+          "TzTools Auth: getUser warning",
+          error
+        );
+
         return null;
       }
 
 
       currentUser =
-        data.user || null;
+        data?.user || null;
+
+
+      updateAuthUI(
+        currentUser
+      );
+
 
       return currentUser;
 
-
     } catch (error) {
-      console.error(
-        "TzTools Auth getCurrentUser error:",
+
+      console.warn(
+        "TzTools Auth: Could not get current user.",
         error
+      );
+
+      currentUser =
+        null;
+
+      updateAuthUI(
+        null
       );
 
       return null;
@@ -716,147 +988,240 @@
   }
 
 
-  /* ---------------------------------------------------------
-     FORM SETUP
-     --------------------------------------------------------- */
+  /* =========================================================
+     16. SETUP FORM EVENTS
+     ========================================================= */
 
   function setupForms() {
 
-    /* LOGIN */
+    /* -----------------------------------------
+       LOGIN FORM
+       ----------------------------------------- */
 
     const loginForm =
       $("loginForm");
 
-
     if (loginForm) {
+
       loginForm.addEventListener(
         "submit",
         async function (event) {
+
           event.preventDefault();
 
-
           const email =
-            $("loginEmail")?.value ||
-            "";
+            $("loginEmail")?.value || "";
 
           const password =
-            $("loginPassword")?.value ||
-            "";
+            $("loginPassword")?.value || "";
 
 
-          await signIn(
-            email,
-            password
-          );
+          const button =
+            loginForm.querySelector(
+              'button[type="submit"]'
+            );
+
+
+          if (button) {
+
+            button.disabled =
+              true;
+
+            button.dataset.originalText =
+              button.textContent;
+
+            button.textContent =
+              "Signing in...";
+          }
+
+
+          try {
+
+            await signIn(
+              email,
+              password
+            );
+
+          } finally {
+
+            if (button) {
+
+              button.disabled =
+                false;
+
+              button.textContent =
+                button.dataset.originalText ||
+                "Sign in";
+            }
+          }
         }
       );
     }
 
 
-    /* SIGN UP */
+    /* -----------------------------------------
+       SIGNUP FORM
+       ----------------------------------------- */
 
     const signupForm =
       $("signupForm");
 
-
     if (signupForm) {
+
       signupForm.addEventListener(
         "submit",
         async function (event) {
+
           event.preventDefault();
 
-
           const name =
-            $("signupName")?.value ||
-            "";
+            $("signupName")?.value || "";
 
           const email =
-            $("signupEmail")?.value ||
-            "";
+            $("signupEmail")?.value || "";
 
           const password =
-            $("signupPassword")?.value ||
-            "";
+            $("signupPassword")?.value || "";
 
 
-          await signUp(
-            name,
-            email,
-            password
-          );
+          const button =
+            signupForm.querySelector(
+              'button[type="submit"]'
+            );
+
+
+          if (button) {
+
+            button.disabled =
+              true;
+
+            button.dataset.originalText =
+              button.textContent;
+
+            button.textContent =
+              "Creating account...";
+          }
+
+
+          try {
+
+            await signUp(
+              name,
+              email,
+              password
+            );
+
+          } finally {
+
+            if (button) {
+
+              button.disabled =
+                false;
+
+              button.textContent =
+                button.dataset.originalText ||
+                "Create account";
+            }
+          }
         }
       );
     }
 
 
-    /* LOGIN TAB */
+    /* -----------------------------------------
+       LOGIN TAB
+       ----------------------------------------- */
 
     const loginTab =
       $("loginTab");
 
-
     if (loginTab) {
+
       loginTab.addEventListener(
         "click",
         function (event) {
+
           event.preventDefault();
 
-          showLoginForm();
-        }
-      );
-    }
-
-
-    /* SIGNUP TAB */
-
-    const signupTab =
-      $("signupTab");
-
-
-    if (signupTab) {
-      signupTab.addEventListener(
-        "click",
-        function (event) {
-          event.preventDefault();
-
-          showSignupForm();
-        }
-      );
-    }
-
-
-    /* ACCOUNT BUTTON */
-
-    const accountButton =
-      $("accountButton");
-
-
-    if (accountButton) {
-      accountButton.addEventListener(
-        "click",
-        function (event) {
-          event.preventDefault();
-
-          openAuthModal(
-            currentUser
-              ? "signin"
-              : "signin"
+          switchAuthMode(
+            "signin"
           );
         }
       );
     }
 
 
-    /* LOGOUT BUTTON */
+    /* -----------------------------------------
+       SIGNUP TAB
+       ----------------------------------------- */
+
+    const signupTab =
+      $("signupTab");
+
+    if (signupTab) {
+
+      signupTab.addEventListener(
+        "click",
+        function (event) {
+
+          event.preventDefault();
+
+          switchAuthMode(
+            "signup"
+          );
+        }
+      );
+    }
+
+
+    /* -----------------------------------------
+       ACCOUNT BUTTON
+       ----------------------------------------- */
+
+    const accountButton =
+      $("accountButton");
+
+    if (accountButton) {
+
+      accountButton.addEventListener(
+        "click",
+        function (event) {
+
+          event.preventDefault();
+
+          /*
+            If logged in, open the account
+            panel without forcing the login form.
+          */
+
+          if (currentUser) {
+
+            openAuthModal();
+
+          } else {
+
+            openAuthModal(
+              "signin"
+            );
+          }
+        }
+      );
+    }
+
+
+    /* -----------------------------------------
+       LOGOUT BUTTON
+       ----------------------------------------- */
 
     const logoutButton =
       $("logoutButton");
 
-
     if (logoutButton) {
+
       logoutButton.addEventListener(
         "click",
         async function (event) {
+
           event.preventDefault();
 
           await signOut();
@@ -865,16 +1230,19 @@
     }
 
 
-    /* CLOSE MODAL */
+    /* -----------------------------------------
+       CLOSE BUTTON
+       ----------------------------------------- */
 
     const closeButton =
       $("authModalClose");
 
-
     if (closeButton) {
+
       closeButton.addEventListener(
         "click",
         function (event) {
+
           event.preventDefault();
 
           closeAuthModal();
@@ -883,30 +1251,38 @@
     }
 
 
-    /* BACKDROP */
+    /* -----------------------------------------
+       BACKDROP
+       ----------------------------------------- */
 
     const backdrop =
       $("authModalBackdrop");
 
-
     if (backdrop) {
+
       backdrop.addEventListener(
         "click",
         function () {
+
           closeAuthModal();
         }
       );
     }
 
 
-    /* ESC KEY */
+    /* -----------------------------------------
+       ESCAPE KEY
+       ----------------------------------------- */
 
     document.addEventListener(
       "keydown",
       function (event) {
+
         if (
-          event.key === "Escape"
+          event.key ===
+          "Escape"
         ) {
+
           closeAuthModal();
         }
       }
@@ -914,11 +1290,15 @@
   }
 
 
-  /* ---------------------------------------------------------
-     SUPABASE SESSION LISTENER
-     --------------------------------------------------------- */
+  /* =========================================================
+     17. SUPABASE AUTH LISTENER
+     ========================================================= */
 
   function setupAuthListener() {
+
+    const client =
+      getClient();
+
     if (!client) {
       return;
     }
@@ -929,9 +1309,6 @@
         event,
         session
       ) {
-        currentUser =
-          session?.user || null;
-
 
         console.log(
           "TzTools Auth:",
@@ -939,92 +1316,166 @@
         );
 
 
+        currentUser =
+          session?.user || null;
+
+
         updateAuthUI(
           currentUser
         );
+
+
+        /*
+          If user has just signed in,
+          close the modal.
+        */
+
+        if (
+          event ===
+            "SIGNED_IN"
+        ) {
+
+          closeAuthModal();
+        }
+
+
+        /*
+          If user signed out,
+          make sure the UI resets.
+        */
+
+        if (
+          event ===
+            "SIGNED_OUT"
+        ) {
+
+          currentUser =
+            null;
+
+          updateAuthUI(
+            null
+          );
+        }
       }
     );
   }
 
 
-  /* ---------------------------------------------------------
-     INITIALIZE
-     --------------------------------------------------------- */
+  /* =========================================================
+     18. INITIALIZE AUTH
+     ========================================================= */
 
-  async function initAuth() {
+  async function initializeTzToolsAuth() {
+
+    if (authInitialized) {
+      return;
+    }
+
+
+    authInitialized =
+      true;
+
+
+    const client =
+      getClient();
+
     if (!client) {
+
       console.error(
         "TzTools Auth: Supabase client unavailable."
-      );
-
-      updateAuthUI(
-        null
       );
 
       return;
     }
 
 
-    setupForms();
+    /*
+      Set a safe initial UI immediately.
+    */
+
+    updateAuthUI(
+      null
+    );
+
+
+    /*
+      Attach auth listener.
+    */
 
     setupAuthListener();
 
 
+    /*
+      Recover existing session.
+    */
+
     try {
+
       const {
         data,
         error
-      } = await client.auth.getSession();
+      } =
+        await client.auth.getSession();
 
 
       if (error) {
-        console.error(
-          "TzTools Auth session error:",
+
+        console.warn(
+          "TzTools Auth: getSession warning",
           error
+        );
+
+      } else {
+
+        currentUser =
+          data?.session?.user ||
+          null;
+
+
+        updateAuthUI(
+          currentUser
         );
       }
 
-
-      currentUser =
-        data?.session?.user ||
-        null;
-
-
-      updateAuthUI(
-        currentUser
-      );
-
-
-      console.log(
-        "TzTools authentication ready 🔐 — " +
-          getDisplayName(
-            currentUser
-          )
-      );
-
-
     } catch (error) {
-      console.error(
-        "TzTools Auth initialization error:",
+
+      console.warn(
+        "TzTools Auth: Session recovery failed.",
         error
       );
-
-      updateAuthUI(
-        null
-      );
     }
+
+
+    /*
+      Setup buttons/forms.
+    */
+
+    setupForms();
+
+
+    console.log(
+      "TzTools authentication ready 🔐 —",
+      currentUser
+        ? getDisplayName(currentUser)
+        : "Guest"
+    );
   }
 
 
-  /* ---------------------------------------------------------
-     PUBLIC API
-     --------------------------------------------------------- */
+  /* =========================================================
+     19. PUBLIC API
+     ========================================================= */
 
   window.TzAuth = {
 
-    get currentUser() {
-      return currentUser;
-    },
+    getClient:
+      getClient,
+
+    getCurrentUser:
+      getCurrentUser,
+
+    getDisplayName:
+      getDisplayName,
 
     signIn:
       signIn,
@@ -1035,24 +1486,29 @@
     signOut:
       signOut,
 
-    getCurrentUser:
-      getCurrentUser,
-
     openAuthModal:
       openAuthModal,
 
     closeAuthModal:
       closeAuthModal,
 
-    updateAuthUI:
-      updateAuthUI,
+    switchAuthMode:
+      switchAuthMode,
 
-    getDisplayName:
-      getDisplayName
+    updateAuthUI:
+      updateAuthUI
   };
 
 
-  /* Keep compatibility with existing TzTools code */
+  /* =========================================================
+     20. GLOBAL COMPATIBILITY
+     ========================================================= */
+
+  window.openAuthModal =
+    openAuthModal;
+
+  window.closeAuthModal =
+    closeAuthModal;
 
   window.signIn =
     signIn;
@@ -1063,33 +1519,33 @@
   window.signOut =
     signOut;
 
-  window.openAuthModal =
-    openAuthModal;
-
-  window.closeAuthModal =
-    closeAuthModal;
-
-  window.updateAuthUI =
-    updateAuthUI;
+  window.getCurrentUser =
+    getCurrentUser;
 
   window.getDisplayName =
     getDisplayName;
 
 
-  /* ---------------------------------------------------------
-     START
-     --------------------------------------------------------- */
+  /* =========================================================
+     21. START
+     ========================================================= */
 
   if (
     document.readyState ===
     "loading"
   ) {
+
     document.addEventListener(
       "DOMContentLoaded",
-      initAuth
+      initializeTzToolsAuth,
+      {
+        once: true
+      }
     );
+
   } else {
-    initAuth();
+
+    initializeTzToolsAuth();
   }
 
 })();
