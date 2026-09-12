@@ -88,98 +88,54 @@
      ========================================================= */
 
  function updateAuthUI(user) {
-  const loggedIn = !!user;
+  currentUser = user || null;
 
-  document.body.classList.toggle("is-authenticated", loggedIn);
-  document.body.classList.toggle("is-guest", !loggedIn);
+  const loggedIn = !!currentUser;
 
-  const profileName = document.getElementById("profileName");
-  const profileEmail = document.getElementById("profileEmail");
-  const profileAvatar = document.getElementById("profileAvatar");
+  document.body.classList.toggle("user-signed-in", loggedIn);
+  document.body.classList.toggle("user-signed-out", !loggedIn);
 
-  const accountButton = document.getElementById("accountButton");
-  const loggedInPanel = document.getElementById("loggedInPanel");
+  const profileName = $("profileName");
+  const profileEmail = $("profileEmail");
+  const profileAvatar = $("profileAvatar");
+  const accountButton = $("accountButton");
 
-  const loginForm = document.getElementById("loginForm");
-  const signupForm = document.getElementById("signupForm");
-
-  const loginTab = document.getElementById("loginTab");
-  const signupTab = document.getElementById("signupTab");
-
-  // GUEST
-  if (!user) {
-    if (profileName) {
-      profileName.textContent = "Guest";
-    }
-
-    if (profileEmail) {
-      profileEmail.textContent = "Sign in to sync your tools";
-    }
-
-    if (profileAvatar) {
-      profileAvatar.textContent = "G";
-    }
-
-    if (accountButton) {
-      accountButton.querySelector(".setting-content strong").textContent = "Account";
-      accountButton.querySelector(".setting-content small").textContent =
-        "Sign in or create an account";
-    }
-
-    if (loggedInPanel) {
-      loggedInPanel.style.display = "none";
-    }
-
-    if (loginForm) {
-      loginForm.style.display = "";
-    }
-
-    if (signupForm) {
-      signupForm.style.display = "none";
-    }
-
-    if (loginTab) {
-      loginTab.style.display = "";
-    }
-
-    if (signupTab) {
-      signupTab.style.display = "";
-    }
-
-    updateFeatureAccess(false);
-    return;
-  }
-
-  // SIGNED IN
-  const displayName = getUserDisplayName(user);
-  const email = user.email || "";
+  const loggedInPanel = $("loggedInPanel");
+  const loginForm = $("loginForm");
+  const signupForm = $("signupForm");
+  const loginTab = $("loginTab");
+  const signupTab = $("signupTab");
 
   if (profileName) {
-    profileName.textContent = displayName || "User";
+    profileName.textContent = loggedIn
+      ? getDisplayName(currentUser)
+      : "Guest";
   }
 
   if (profileEmail) {
-    profileEmail.textContent = email || "Signed in";
+    profileEmail.textContent = loggedIn
+      ? currentUser.email || ""
+      : "Sign in to sync your tools";
   }
 
   if (profileAvatar) {
-    profileAvatar.textContent =
-      (displayName || email || "U").trim().charAt(0).toUpperCase();
+    profileAvatar.textContent = loggedIn
+      ? getDisplayName(currentUser).charAt(0).toUpperCase()
+      : "G";
   }
 
   if (accountButton) {
-    accountButton.querySelector(".setting-content strong").textContent =
-      "Account";
-    accountButton.querySelector(".setting-content small").textContent =
-      "You're signed in";
+    accountButton.textContent = loggedIn
+      ? "You're signed in"
+      : "Sign in or create an account";
   }
 
   if (loggedInPanel) {
-    loggedInPanel.style.display = "block";
+    loggedInPanel.style.display = loggedIn ? "" : "none";
   }
 
   if (loginForm) {
-    loginForm.style.display = "none";
+    loginForm.style.display = loggedIn ? "none" : "";
   }
 
   if (signupForm) {
@@ -187,15 +143,16 @@
   }
 
   if (loginTab) {
-    loginTab.style.display = "none";
+    loginTab.style.display = loggedIn ? "none" : "";
   }
 
   if (signupTab) {
-    signupTab.style.display = "none";
+    signupTab.style.display = loggedIn ? "none" : "";
   }
 
-  updateFeatureAccess(true);
+  updateFeatureAccess(loggedIn);
 }
+      
 
   /* =========================================================
      AUTH MODAL
