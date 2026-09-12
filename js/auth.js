@@ -153,7 +153,13 @@
   updateFeatureAccess(loggedIn);
 }
       
-
+function updateFeatureAccess(loggedIn) {
+  document
+    .querySelectorAll("[data-requires-auth]")
+    .forEach(function (element) {
+      element.classList.toggle("auth-locked", !loggedIn);
+    });
+}
   /* =========================================================
      AUTH MODAL
      ========================================================= */
